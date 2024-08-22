@@ -1,0 +1,40 @@
+services:
+  pg:
+    container_name: pg
+    image: pgvector/pgvector:pg16
+    ports:
+      - "${PGPORT}:5432"
+    environment:
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
+    volumes:
+      - ./database/create.sql:/docker-entrypoint-initdb.d/01-create.sql
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - market0
+    restart: always
+
+  schemas:
+    image: flyway/flyway
+    command: migrate
+    volumes:
+      - ./database/market0/:/flyway/sql/
+    depends_on:
+      - pg
+    environment:
+      - FLYWAY_LOCATIONS=filesystem:sql
+      - FLYWAY_USER=${PGUSER}
+      - FLYWAY_PASSWORD=${PGPASSWORD}
+      - FLYWAY_CONNECT_RETRIES=60
+      - FLYWAY_URL=jdbc:postgresql://pg/${PGDATABASE}
+      - FLYWAY_BASELINE_ON_MIGRATE=true
+    networks:
+      - market0
+
+volumes:
+  pgdata:
+
+networks:
+  market0:
+    driver: bridge

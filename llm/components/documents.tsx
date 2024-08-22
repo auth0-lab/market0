@@ -1,0 +1,83 @@
+"use client";
+
+import { useActions } from "ai/rsc";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import { ExternalLink } from "@/components/icons";
+import { Badge } from "@/components/ui/badge";
+import { Document } from "@/llm/types";
+
+import { FormattedText } from "./FormattedText";
+import WarningWrapper from "./warning-wrapper";
+
+export const Documents = ({
+  documents,
+  text,
+  requestedForecasts,
+  symbol,
+}: {
+  text: string;
+  documents: Document[];
+  requestedForecasts: boolean;
+  symbol: string;
+}) => {
+  const [showEnrollment, setShowEnrollment] = useState(false);
+
+  const { checkEnrollment, enrollToForecasts } = useActions();
+
+  useEffect(() => {
+    if (requestedForecasts) {
+      checkEnrollment({ symbol }).then((isEnrolled?: Boolean) => {
+        setShowEnrollment(!isEnrolled);
+      });
+    }
+    // TODO: verify this. checkEnrollment keeps changing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedForecasts, symbol]);
+
+  const enroll = () => {
+    enrollToForecasts();
+    setShowEnrollment(false);
+  };
+
+  return (
+    <WarningWrapper>
+      <div className="p-8 rounded-2xl bg-white">
+        <FormattedText content={text} />
+        {documents.length > 0 && (
+          <div className="flex flex-row gap-2 mt-4">
+            {documents.map((document: Document) => (
+              <Badge
+                key={document.metadata.id}
+                variant="outline"
+                className="font-normal pl-3"
+              >
+                <Link
+                  href={document.metadata.link}
+                  target="_black"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer flex items-center gap-4 py-2 px-3 pr-1 justify-between"
+                >
+                  {document.metadata.title}
+                  <ExternalLink />
+                </Link>
+              </Badge>
+            ))}
+          </div>
+        )}
+        {showEnrollment && (
+          <p>
+            <button
+              onClick={() => enroll()}
+              className="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border-black border shadow hover:bg-primary/90 hover:text-white h-9 py-1 px-2"
+            >
+              Join our newsletter
+            </button>{" "}
+            to get access to analyst forecasts.
+          </p>
+        )}
+      </div>
+    </WarningWrapper>
+  );
+};
