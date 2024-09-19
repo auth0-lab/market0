@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { getStockPrices } from "@/lib/market/stocks";
 import { defineTool } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
 import { Stock } from "@/llm/components/stock";
@@ -27,9 +28,7 @@ export default defineTool("show_stock_price", () => {
     generate: async function* ({ symbol, market, company, currency }) {
       yield <StockSkeleton />;
 
-      const doc = await (
-        await fetch(`${process.env.AUTH0_BASE_URL}/api/stocks?query=` + symbol)
-      ).json();
+      const doc = await getStockPrices({ symbol });
 
       if (!doc) {
         history.update(`[Price not found for ${symbol}]`);

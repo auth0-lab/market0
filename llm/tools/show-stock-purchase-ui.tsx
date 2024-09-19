@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { RELATION } from "@/lib/constants";
+import { getStockPrices } from "@/lib/market/stocks";
 import * as serialization from "@/llm/components/serialization";
 import { withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permisssion";
@@ -16,13 +17,6 @@ type ToolParams = {
   market: string;
   currency: string;
   company: string;
-};
-
-const getStockStatus = async (symbol: string) => {
-  const doc = await (
-    await fetch(`${process.env.AUTH0_BASE_URL}/api/stocks?query=` + symbol)
-  ).json();
-  return doc;
 };
 
 export default defineTool("show_stock_purchase_ui", () => {
@@ -87,7 +81,7 @@ export default defineTool("show_stock_purchase_ui", () => {
           });
           return <>Invalid amount: ${numberOfShares}</>;
         }
-        const stockStatus = await getStockStatus(symbol);
+        const stockStatus = await getStockPrices({ symbol });
         const price = limit ?? stockStatus.current_price;
 
         history.update({
