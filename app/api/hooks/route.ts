@@ -1,9 +1,13 @@
 import { getMatchingPurchases, update } from "@/lib/db/conditional-purchases";
 import { pollMode } from "@/sdk/auth0/ciba";
+import { getSession } from "@auth0/nextjs-auth0";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const { type, data } = await request.json();
+
+  const session = await getSession();
+  const user = session ? session!.user : {};
 
   // TODO: implement a proper payload validation
   if (type !== "metric") {
@@ -24,7 +28,8 @@ export async function POST(request: NextRequest) {
   const matchingPurchases = await getMatchingPurchases(
     data.symbol,
     data.metric,
-    data.value
+    data.value,
+    user.sub
   );
 
   console.log("matchingPurchases", matchingPurchases);
