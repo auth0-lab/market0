@@ -1,0 +1,22 @@
+name: Go
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ["1.19", "1.20", "1.21.x"]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://flyway/flyway:9
+        env:
+          FLYWAY_URL: ${{secrets.DB_URL}}
+          FLYWAY_USER: ${{secrets.DB_USER}}
+          FLYWAY_PASSWORD: ${{secrets.DB_PASSWORD}}
+          FLYWAY_LOCATIONS: filesystem:./database/market0
+          FLYWAY_CONNECT_RETRIES: 60
