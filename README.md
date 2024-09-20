@@ -22,22 +22,22 @@ To setup OKTA FGA for the sample, create a client with the following permissions
 
 To setup your Auth0 Lab tenant for the sample, create two applications:
 
-- `Regular Web Application` application:
+- **Regular Web Application**
 
-  - Allowed Callback URLs: `http://localhost:3000/api/auth/callback`
-  - Allowed Logout URLs: `http://localhost:3000`
+  - **Allowed Callback URLs:** `http://localhost:3000/api/auth/callback`
+  - **Allowed Logout URLs:** `http://localhost:3000`
 
-- `Machine to Machine` application:
-  - API: `Auth0 Management API`
-  - Permissions: `read:users update:users delete:users read:authentication_methods`
+- **Machine to Machine**
+  - **API:** `Auth0 Management API`
+  - **Permissions:** `read:users update:users delete:users read:authentication_methods`
 
 ### Setup
 
 1. Clone this repository to your local machine.
 2. Install the dependencies by running `npm install` in your terminal.
 3. Set up the environment variables making a copy of the [.env-example](./.env-example) file.
-4. Start the database with `npm run db:up`.
-5. Configure your FGA store with `npm run fga:migrate:create`.
+4. Start the database with `npm run db:up`
+5. Configure your FGA store with `npm run fga:migrate:create`
 
 ### Running the Project
 
