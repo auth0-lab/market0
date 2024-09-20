@@ -11,20 +11,19 @@ import {
 
 export const examples = [
   {
-    message: "What's the stock price of NVDA?",
-    description: "Show the stock price of NVDA",
+    id: generateId(),
+    title: "ATKO price",
+    message: "Show the stock price of NVDA",
   },
   {
-    message: "Show me earnings for NVDA",
-    description: "Summarize earnings data and forecasts for NVDA",
-  },
-  {
+    id: generateId(),
+    title: "Buy 10 shares of ATKO",
     message: "I'd like to buy 10 shares of NVDA",
-    description: "Initiate a buy order for 10 shares of NVDA",
   },
   {
-    message: "Show NVDA's key events for this year",
-    description: "List key events like earnings, splits, etc.",
+    id: generateId(),
+    title: "Show me forecast for NVDIA",
+    message: "Show me forecast for NVDIA",
   },
 ];
 
