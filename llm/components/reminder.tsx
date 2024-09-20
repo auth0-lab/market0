@@ -68,7 +68,7 @@ export function Reminder({ reminderID }: { reminderID: string }) {
           </div>
           <div>
             <a
-              href="#"
+              href="https://tasks.google.com"
               rel="noopener noreferrer"
               target="_blank"
               className="flex gap-2 items-center bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
