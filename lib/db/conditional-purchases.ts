@@ -96,9 +96,10 @@ export const getByID = async (
 export const getMatchingPurchases = async (
   symbol: string,
   metric: string,
-  value: number
+  value: number,
+  user_id?: string
 ): Promise<ConditionalPurchase[]> => {
-  const result = await sql`
+  let query = sql`
     SELECT * FROM conditional_purchases
     WHERE symbol = ${symbol.toUpperCase()} AND metric = ${metric.toUpperCase()} AND status = 'pending' AND (
       (operator = '=' AND ${value} = threshold) OR
@@ -109,5 +110,10 @@ export const getMatchingPurchases = async (
     )
   `;
 
+  if (user_id) {
+    query = sql`${query} AND user_id = ${user_id}`;
+  }
+
+  const result = await query;
   return result.map(mapConditionalPurchaseFromDB);
 };

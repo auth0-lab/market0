@@ -6,89 +6,38 @@ This is a demo of an interactive financial assistant. It can show you stocks, te
 
 ### Prerequisites
 
-- An Auth0 account, you can create one [here](https://auth0.com/signup).
+- An Auth0 Lab account, you can create one [here](https://manage.auth0lab.com/).
 - An OKTA FGA account, you can create one [here](https://dashboard.fga.dev).
 - An OpenAI account and API key create one [here](https://platform.openai.com).
 - Docker to run the postgresql container.
 
 ### FGA Configuration
 
-To setup OKTA FGA for the sample, navigate to OKTA's FGA dashboard and follow these easy-to-follow configuration steps:
+To setup OKTA FGA for the sample, create a client with the following permissions:
 
-#### 01. Update The Authorization Model
+- `Read/Write model, changes, and assertions`
+- `Read and query`
 
-```yaml
-model
-  schema 1.1
+### Auth0 Configuration
 
-type user
+To setup your Auth0 Lab tenant for the sample, create two applications:
 
-type assets
-  relations
-    define trader: [user]
-    define viewer: [user] or trader
-```
+- **Regular Web Application**
 
-#### 02. Use Relationship Tuples To Tie The Users To The Roles
+  - **Allowed Callback URLs:** `http://localhost:3000/api/auth/callback`
+  - **Allowed Logout URLs:** `http://localhost:3000`
 
-```ts
-write(
-  [
-    // UserID is assigned the viewer for stocks
-    {
-      user: "user:auth0|xxxxxxxxxxxxxxx",
-      object: "assets:stocks",
-      relation: "trader",
-    },
-    // UserID is assigned the trader for stocks
-    {
-      user: "user:auth0|xxxxxxxxxxxxxxx",
-      object: "assets:stocks",
-      relation: "viewer",
-    },
-  ],
-  (authorization_model_id = "xxxxxxxxxxxxxxx")
-);
-```
+- **Machine to Machine**
+  - **API:** `Auth0 Management API`
+  - **Permissions:** `read:users update:users delete:users read:authentication_methods`
 
 ### Setup
 
 1. Clone this repository to your local machine.
 2. Install the dependencies by running `npm install` in your terminal.
-3. Set up the environment [variables](#enviroment-variables).
-4. Start the database `npm run db:up`.
-5. Run `npm run dev`.
-
-### Enviroment Variables
-
-For running the sample, you'll need to have the following values in your `.env.local`.
-
-```bash
-# A long, secret value used to encrypt the session cookie
-AUTH0_SECRET='LONG_RANDOM_VALUE'
-AUTH0_BASE_URL='http://localhost:3000'
-AUTH0_ISSUER_BASE_URL='https://YOUR_AUTH0_DOMAIN.auth0.com'
-AUTH0_CLIENT_ID='YOUR_AUTH0_CLIENT_ID'
-AUTH0_CLIENT_SECRET='YOUR_AUTH0_CLIENT_SECRET'
-
-FGA_STORE_ID='YOUR_FGA_STORE_ID'
-FGA_MODEL_ID='YOUR_FGA_MODEL_ID'
-FGA_CLIENT_ID='YOUR_FGA_CLIENT_ID'
-FGA_CLIENT_SECRET='YOUR_FGA_CLIENT_SECRET'
-
-OPENAI_API_KEY='YOUR_OPENAI_API_KEY'
-
-PGUSER=postgres
-PGPASSWORD=postgres
-PGDATABASE=market0
-PGPORT=5442
-```
-
-You can execute the following command to generate a suitable string for the `AUTH0_SECRET` value:
-
-```bash
-node -e "console.log(crypto.randomBytes(32).toString('hex'))"
-```
+3. Set up the environment variables making a copy of the [.env-example](./.env-example) file.
+4. Start the database with `npm run db:up`
+5. Configure your FGA store with `npm run fga:migrate:create`
 
 ### Running the Project
 
