@@ -27,8 +27,10 @@ export async function Header() {
           <DropdownMenu>
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                <a href="/profile" className="flex gap-2 items-center">
+                  Profile
+                </a>
+                <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenu>

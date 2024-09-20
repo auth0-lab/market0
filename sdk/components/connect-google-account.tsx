@@ -19,7 +19,7 @@ export const ConnectGoogleAccount = ({
       </div>
       <div>
         <a
-          href={`/api/auth/login?3rd_party_api=${api}&return_to=${window.location.pathname}`}
+          href={`/api/auth/login?3rdPartyApi=${api}&linkWith=google-oauth2&returnTo=${window.location.pathname}`}
           className="bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
         >
           Connect

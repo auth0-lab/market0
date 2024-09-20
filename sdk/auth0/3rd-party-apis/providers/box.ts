@@ -13,42 +13,19 @@ const fetchAccessToken = async (auth0IdToken: string): Promise<string> => {
       subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
       subject_token: auth0IdToken,
       requested_token_type:
-        "http://auth0.com/oauth/token-type/google-social-access-token",
+        "http://auth0.com/oauth/token-type/box-access-token",
     }),
   });
 
   if (!res.ok) {
     throw new Error(
-      `Unable to get a Google API access token: ${await res.text()}`
+      `Unable to get a Box API access token: ${await res.text()}`
     );
   }
 
   const { access_token } = await res.json();
   return access_token;
 };
-
-export async function verifyAccessToken(
-  accessToken: string,
-  scopesToCheck: string[] | string
-): Promise<boolean> {
-  const res = await fetch(
-    `https://oauth2.googleapis.com/tokeninfo?access_token=${accessToken}`
-  );
-
-  if (!res.ok) {
-    console.log(
-      `Unable to verify Google API access token: ${await res.text()}`
-    );
-    return false;
-  }
-
-  const tokenInfo = await res.json();
-  const tokenScopes = tokenInfo.scope.split(" ");
-
-  return (Array.isArray(scopesToCheck) ? scopesToCheck : [scopesToCheck]).every(
-    (scope) => tokenScopes.includes(scope)
-  );
-}
 
 export async function getAccessToken() {
   "use server";
@@ -64,7 +41,7 @@ export async function getAccessToken() {
   return accessToken;
 }
 
-export async function withGoogleApi(fn: (accessToken: string) => Promise<any>) {
+export async function withBoxApi(fn: (accessToken: string) => Promise<any>) {
   const accessToken = await getAccessToken();
   return await fn(accessToken!);
 }

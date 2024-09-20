@@ -1,12 +1,7 @@
-import { NextApiRequest } from "next";
-
 import { getSession } from "@auth0/nextjs-auth0";
 
-import {
-  getGoogleAccessToken,
-  isGoogleUser,
-  verifyAccessToken,
-} from "./providers/google";
+import * as google from "./providers/google";
+import * as box from "./providers/box";
 
 const PROVIDERS_APIS = [
   {
@@ -19,19 +14,38 @@ const PROVIDERS_APIS = [
     api: "google-tasks",
     requiredScopes: ["https://www.googleapis.com/auth/tasks"],
   },
+  {
+    name: "google",
+    api: "google-drive",
+    requiredScopes: ["https://www.googleapis.com/auth/drive.file"],
+  },
+  {
+    name: "google",
+    api: "google-all",
+    requiredScopes: [
+      "https://www.googleapis.com/auth/calendar.events",
+      "https://www.googleapis.com/auth/tasks",
+      "https://www.googleapis.com/auth/drive.file",
+    ],
+  },
+  {
+    name: "box",
+    api: "box-write",
+    requiredScopes: ["root_readwrite"],
+  },
 ];
 
 type ProviderContext = {
-  userBelongsToProvider: boolean;
   isAPIAccessEnabled: boolean;
   containsRequiredScopes: boolean;
 };
 
 export type Context = {
   google: ProviderContext;
+  box: ProviderContext;
 };
 
-type AvailableProviders = "google";
+type AvailableProviders = "google" | "box";
 
 export type Provider = {
   name: AvailableProviders;
@@ -46,21 +60,32 @@ type With3PartyApisParams = {
 const providerMapper = {
   google: async (requiredScopes: string[]) => {
     const provider: ProviderContext = {
-      userBelongsToProvider: false,
       isAPIAccessEnabled: false,
       containsRequiredScopes: false,
     };
-    const accessToken = await getGoogleAccessToken();
 
+    const accessToken = await google.getAccessToken();
     if (accessToken) {
-      provider.containsRequiredScopes = await verifyAccessToken(
+      provider.containsRequiredScopes = await google.verifyAccessToken(
         accessToken,
         requiredScopes
       );
     }
 
-    provider.userBelongsToProvider = await isGoogleUser();
     provider.isAPIAccessEnabled = !!accessToken;
+    return provider;
+  },
+  box: async () => {
+    const provider: ProviderContext = {
+      isAPIAccessEnabled: false,
+      containsRequiredScopes: false,
+    };
+
+    const accessToken = await box.getAccessToken();
+    if (accessToken) {
+      provider.isAPIAccessEnabled = true;
+      provider.containsRequiredScopes = true; // TODO: find a way to validate required scopes
+    }
 
     return provider;
   },
@@ -69,7 +94,10 @@ const providerMapper = {
 export async function getThirdPartyContext(params: With3PartyApisParams) {
   const context: Context = {
     google: {
-      userBelongsToProvider: false,
+      isAPIAccessEnabled: false,
+      containsRequiredScopes: false,
+    },
+    box: {
       isAPIAccessEnabled: false,
       containsRequiredScopes: false,
     },
@@ -84,11 +112,9 @@ export async function getThirdPartyContext(params: With3PartyApisParams) {
   return context;
 }
 
-export async function handle3rdPartyParams(req: NextApiRequest) {
+export async function handle3rdPartyParams(thirdPartyApi: string) {
   const session = await getSession();
   const user = session?.user;
-  const url = new URL(req.url!);
-  const thirdPartyApi = url.searchParams.get("3rd_party_api");
   let authorizationParams = {};
 
   const provider = PROVIDERS_APIS.find(
@@ -96,8 +122,8 @@ export async function handle3rdPartyParams(req: NextApiRequest) {
       provider.api === thirdPartyApi || provider.name === thirdPartyApi
   );
 
-  switch (thirdPartyApi) {
-    case "google-calendar":
+  switch (provider?.name) {
+    case "google":
       authorizationParams = {
         connection: "google-oauth2",
         connection_scope: provider?.requiredScopes.join(),
@@ -105,9 +131,9 @@ export async function handle3rdPartyParams(req: NextApiRequest) {
         login_hint: user?.email,
       };
       break;
-    case "google-tasks":
+    case "box":
       authorizationParams = {
-        connection: "google-oauth2",
+        connection: "box",
         connection_scope: provider?.requiredScopes.join(),
         access_type: "offline",
         login_hint: user?.email,
