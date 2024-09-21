@@ -1,6 +1,8 @@
 import { generateId } from "ai";
 
 import {
+  CartIcon,
+  EarningsIcon,
   PositionsIcon,
   PurchaseStockIcon,
   ReminderIcon,
@@ -11,29 +13,23 @@ import {
 
 export const examples = [
   {
-    message: "What's the stock price of NVDA?",
-    description: "Show the stock price of NVDA",
+    id: generateId(),
+    title: "ATKO price",
+    message: "Show the stock price of NVDA",
   },
   {
-    message: "Show me earnings for NVDA",
-    description: "Summarize earnings data and forecasts for NVDA",
-  },
-  {
+    id: generateId(),
+    title: "Buy 10 shares of ATKO",
     message: "I'd like to buy 10 shares of NVDA",
-    description: "Initiate a buy order for 10 shares of NVDA",
   },
   {
-    message: "Show NVDA's key events for this year",
-    description: "List key events like earnings, splits, etc.",
+    id: generateId(),
+    title: "Show me forecast for NVDIA",
+    message: "Show me forecast for NVDIA",
   },
 ];
 
 export const menuItems = [
-  {
-    id: generateId(),
-    message: "Show me trending shares",
-    icon: <TrendingStocksIcon />,
-  },
   {
     id: generateId(),
     message: "What's the stock price of NVDA?",
@@ -42,12 +38,12 @@ export const menuItems = [
   {
     id: generateId(),
     message: "Show me earnings for NVDA",
-    icon: <ShowEventsIcon />,
+    icon: <EarningsIcon />,
   },
   {
     id: generateId(),
-    message: "Buy 10 NVDA when P/E ratio is above 0",
-    icon: <ShowEventsIcon />,
+    message: "Show me forecast for NVDIA",
+    icon: <TrendingStocksIcon />,
   },
   {
     id: generateId(),
@@ -56,13 +52,17 @@ export const menuItems = [
   },
   {
     id: generateId(),
-    message: "I'd like to buy 10 shares of NVDA",
+    message: "Buy 10 shares of NVDA",
     icon: <PurchaseStockIcon />,
+  },
+  {
+    id: generateId(),
+    message: "Buy 10 NVDA when P/E ratio is above 0",
+    icon: <CartIcon />,
   },
   {
     id: generateId(),
     message: "Remind me to buy NVDA in two weeks",
     icon: <ReminderIcon />,
   },
-  { id: generateId(), message: "Show my positions", icon: <PositionsIcon /> },
 ];

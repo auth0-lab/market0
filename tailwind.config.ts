@@ -21,6 +21,10 @@ const config = {
     },
 
     extend: {
+      backgroundImage: {
+        "text-gradient":
+          "linear-gradient(91deg, #574ACD 57.13%, #1A163C 92.88%)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
