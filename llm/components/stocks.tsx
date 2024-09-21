@@ -12,11 +12,11 @@ export function Stocks({ stocks }: { stocks: any[] }) {
   const { continueConversation } = useActions();
 
   return (
-    <WarningWrapper className="max-w-[550px]">
+    <WarningWrapper className="max-w-xl">
       <div className="flex flex-col gap-2">
         {stocks.map((stock) => (
           <button
-            className="flex p-8 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
+            className="flex p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
             key={stock.symbol}
             onClick={async () => {
               const response = await continueConversation(
@@ -28,22 +28,22 @@ export function Stocks({ stocks }: { stocks: any[] }) {
               ]);
             }}
           >
-            <div className="flex flex-row justify-between gap-4 w-full">
+            <div className="flex flex-row justify-between px-3 w-full">
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-semibold text-white text-left">
+                <div className="text-base font-semibold text-white text-left">
                   {stock.symbol}
                 </div>
 
-                <div className="text-base text text-white/40 leading-6">
+                <div className="text-sm text text-white/40 leading-6">
                   {stock.company} • {stock.market} • {stock.currency}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-semibold text-white text-right">
+                <div className="text-base font-semibold text-white text-right">
                   ${stock.price}
                 </div>
                 <div
-                  className={`inline-flex items-center gap-2 text-base ${
+                  className={`inline-flex items-center gap-2 text-sm ${
                     stock.delta > 0 ? "text-green-400" : "text-red-400"
                   }`}
                 >

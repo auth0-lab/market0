@@ -6,13 +6,14 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { getAvatarFallback } from "@/components/auth0/user-button";
 import {
   ArrowUpIcon,
   ChevronRightIcon,
   CircleIcon,
   Market0Icon,
-  PlusIcon,
 } from "@/components/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { examples, menuItems } from "@/lib/examples";
 import { cn } from "@/lib/utils";
 import { ClientMessage } from "@/llm/types";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
@@ -38,6 +40,7 @@ export const maxDuration = 30;
 export default function Chat({ params }: { params: { id: string } }) {
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
+  const { user } = useUser();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,17 +91,23 @@ export default function Chat({ params }: { params: { id: string } }) {
               message.role === "user" ? (
                 <div
                   key={message.id}
-                  className="flex w-full flex-col gap-1 empty:hidden items-end rtl:items-start py-5"
+                  className="flex flex-row gap-4 py-3 items-center"
                 >
-                  <div className="relative max-w-[70%] rounded-3xl bg-[#f4f4f4] px-5 py-2.5 text-stone-600 font-light">
+                  <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
+                    <Avatar className="h-full w-full rounded-md">
+                      <AvatarImage src={user?.picture!} alt={user?.nickname!} />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="relative max-w-[70%] text-base text-stone-600 font-light">
                     {message.display}
                   </div>
                 </div>
               ) : message.role === "assistant" ||
                 message.role === "function" ? (
-                <div key={message.id} className="flex flex-row gap-4 py-5">
+                <div key={message.id} className="flex flex-row gap-4 py-3">
                   <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
-                    <span className="text-xs font-bold">AI</span>
+                    <Market0Icon />
                   </div>
                   <div className="w-full font-light text-stone-600 flex items-center">
                     {message.display}

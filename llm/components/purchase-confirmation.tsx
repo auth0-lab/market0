@@ -20,22 +20,22 @@ export const PurchaseConfirmation = ({
   delta: number;
 }) => {
   return (
-    <WarningWrapper>
-      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-14">
-        <div className="flex flex-row justify-between px-10">
+    <WarningWrapper className="max-w-xl">
+      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-5">
+        <div className="flex flex-row justify-between px-3">
           <div className="flex flex-col gap-2">
-            <div className="text-xl font-semibold text-white">{symbol}</div>
+            <div className="text-base font-semibold text-white">{symbol}</div>
 
-            <div className="mt-1 text-base text text-white/40 leading-6">
+            <div className="text-sm text text-white/40 leading-6">
               {company} • {market} • {currency}
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="text-xl font-semibold text-white text-right">
+            <div className="text-base font-semibold text-white text-right">
               ${price}
             </div>
             <div
-              className={`inline-flex items-center gap-2 text-base ${
+              className={`inline-flex items-center gap-2 text-sm ${
                 delta > 0 ? "text-green-400" : "text-red-400"
               }`}
             >
@@ -51,9 +51,9 @@ export const PurchaseConfirmation = ({
           </div>
         </div>
 
-        <div className="flex flex-row gap-4 px-10 mt-8 items-center mb-10">
+        <div className="flex flex-row gap-4 pb-2 mt-5 mx-3 border-t border-white/20 pt-5 items-center">
           <CheckGreenIcon />
-          <div className="text-white text-xl font-light">
+          <div className="text-white text-lg font-light">
             You have successfully purchased {amount} ${symbol}.
           </div>
         </div>

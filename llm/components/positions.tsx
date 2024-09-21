@@ -12,12 +12,12 @@ export function Positions({ positions }: { positions: Position[] }) {
   const { continueConversation } = useActions();
 
   return (
-    <WarningWrapper className="max-w-[550px]">
+    <WarningWrapper className="max-w-xl">
       <div className="flex flex-col gap-2">
         {positions.map((position) => (
           <button
             key={position.ticker_id}
-            className="flex p-8 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
+            className="flex p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
             onClick={async () => {
               const response = await continueConversation(
                 `View ${position.ticker_id}`
@@ -28,16 +28,16 @@ export function Positions({ positions }: { positions: Position[] }) {
               ]);
             }}
           >
-            <div className="flex flex-row justify-between w-full items-end">
+            <div className="flex flex-row justify-between w-full items-end px-3">
               <div className="flex flex-col gap-2">
-                <div className="text-base text-left text-green-400 leading-6">
+                <div className="text-sm text text-white leading-6 text-left">
                   {position.ticker_id}
                 </div>
-                <div className="text-xl font-semibold text-white text-left">
+                <div className="text-base font-semibold text-white text-left">
                   Qty: {position.quantity}
                 </div>
               </div>
-              <div className="text-base text-white text-right">
+              <div className="text-sm text-white text-right">
                 Avg. Price: $
                 {parseFloat(position.av_price.toString()).toFixed(2)}
               </div>

@@ -55,22 +55,22 @@ export function Stock({
   }
 
   return (
-    <WarningWrapper>
-      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-14">
-        <div className="flex flex-row justify-between px-10">
+    <WarningWrapper className="max-w-xl">
+      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-5">
+        <div className="flex flex-row justify-between px-3">
           <div className="flex flex-col gap-2">
-            <div className="text-xl font-semibold text-white">{symbol}</div>
+            <div className="text-base font-semibold text-white">{symbol}</div>
 
-            <div className="text-base text text-white/40 leading-6">
+            <div className="text-sm text text-white/40 leading-6">
               {company} • {market} • {currency}
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="text-xl font-semibold text-white text-right">
+            <div className="text-base font-semibold text-white text-right">
               ${price}
             </div>
             <div
-              className={`inline-flex items-center gap-2 text-base ${
+              className={`inline-flex items-center gap-2 text-sm ${
                 delta > 0 ? "text-green-400" : "text-red-400"
               }`}
             >
@@ -87,7 +87,7 @@ export function Stock({
         </div>
 
         <div
-          className="relative -mx-4 cursor-default mt-6"
+          className="relative -mx-4 cursor-default mt-5"
           onPointerMove={(event) => {
             if (chartRef.current) {
               const { clientX } = event;
@@ -131,7 +131,7 @@ export function Stock({
 
           <svg
             viewBox="0 0 250.0 168.0"
-            height="150"
+            height="80"
             width="100%"
             preserveAspectRatio="none"
           >
