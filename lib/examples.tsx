@@ -1,6 +1,8 @@
 import { generateId } from "ai";
 
 import {
+  CartIcon,
+  EarningsIcon,
   PositionsIcon,
   PurchaseStockIcon,
   ReminderIcon,
@@ -30,23 +32,18 @@ export const examples = [
 export const menuItems = [
   {
     id: generateId(),
-    message: "Show me trending shares",
-    icon: <TrendingStocksIcon />,
-  },
-  {
-    id: generateId(),
     message: "What's the stock price of NVDA?",
     icon: <StockPriceIcon />,
   },
   {
     id: generateId(),
     message: "Show me earnings for NVDA",
-    icon: <ShowEventsIcon />,
+    icon: <EarningsIcon />,
   },
   {
     id: generateId(),
-    message: "Buy 10 NVDA when P/E ratio is above 0",
-    icon: <ShowEventsIcon />,
+    message: "Show me forecast for NVDIA",
+    icon: <TrendingStocksIcon />,
   },
   {
     id: generateId(),
@@ -55,13 +52,17 @@ export const menuItems = [
   },
   {
     id: generateId(),
-    message: "I'd like to buy 10 shares of NVDA",
+    message: "Buy 10 shares of NVDA",
     icon: <PurchaseStockIcon />,
+  },
+  {
+    id: generateId(),
+    message: "Buy 10 NVDA when P/E ratio is above 0",
+    icon: <CartIcon />,
   },
   {
     id: generateId(),
     message: "Remind me to buy NVDA in two weeks",
     icon: <ReminderIcon />,
   },
-  { id: generateId(), message: "Show my positions", icon: <PositionsIcon /> },
 ];
