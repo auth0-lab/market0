@@ -46,7 +46,7 @@ export default defineTool("show_stock_purchase_ui", () => {
       market: z
         .string()
         .describe(
-          "The market of the stock or currency. e.g. NASDAQ/NYSE. This is provided by the model."
+          "The market of the stock or currency. e.g. ITMX/CSB. This is provided by the model."
         ),
       company: z
         .string()

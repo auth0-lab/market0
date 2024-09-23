@@ -15,54 +15,54 @@ export const examples = [
   {
     id: generateId(),
     title: "ATKO price",
-    message: "Show the stock price of NVDA",
+    message: "Show the stock price of ZEKO",
   },
   {
     id: generateId(),
     title: "Buy 10 shares of ATKO",
-    message: "I'd like to buy 10 shares of NVDA",
+    message: "I'd like to buy 10 shares of ZEKO",
   },
   {
     id: generateId(),
-    title: "Show me forecast for NVDIA",
-    message: "Show me forecast for NVDIA",
+    title: "Show me forecast for ZEKO",
+    message: "Show me forecast for ZEKO",
   },
 ];
 
 export const menuItems = [
   {
     id: generateId(),
-    message: "What's the stock price of NVDA?",
+    message: "What's the stock price of ZEKO?",
     icon: <StockPriceIcon />,
   },
   {
     id: generateId(),
-    message: "Show me earnings for NVDA",
+    message: "Show me earnings for ZEKO",
     icon: <EarningsIcon />,
   },
   {
     id: generateId(),
-    message: "Show me forecast for NVDIA",
+    message: "Show me forecast for ZEKO",
     icon: <TrendingStocksIcon />,
   },
   {
     id: generateId(),
-    message: "Show NVDA's key events for this year",
+    message: "Show ZEKO's key events for this year",
     icon: <ShowEventsIcon />,
   },
   {
     id: generateId(),
-    message: "Buy 10 shares of NVDA",
+    message: "Buy 10 shares of ZEKO",
     icon: <PurchaseStockIcon />,
   },
   {
     id: generateId(),
-    message: "Buy 10 NVDA when P/E ratio is above 0",
+    message: "Buy 10 ZEKO when P/E ratio is above 0",
     icon: <CartIcon />,
   },
   {
     id: generateId(),
-    message: "Remind me to buy NVDA in two weeks",
+    message: "Remind me to buy ZEKO in two weeks",
     icon: <ReminderIcon />,
   },
 ];

@@ -1,5 +1,5 @@
 'use server';
-
+import { documents } from "@/lib/db";
 import { fgaClient, getUser } from "@/sdk/fga";
 
 /**
@@ -7,14 +7,13 @@ import { fgaClient, getUser } from "@/sdk/fga";
  */
 export async function enrollToForecasts() {
   const user = await getUser();
-  const symbols = ['AAPL', 'GOOGL', 'TSLA', 'AMZN', 'MSFT', 'NVDA', 'INTC', 'AMD'];
-
+  const docs = await documents.query("forecast");
   await fgaClient.write(
     {
-      writes: symbols.map(symbol => ({
+      writes: docs.map(doc => ({
         user: `user:${user.sub}`,
         relation: "can_view",
-        object: `doc:forecast-${symbol}`,
+        object: `doc:${doc.metadata.id}`,
       })),
     }
   );
@@ -30,10 +29,13 @@ export async function enrollToForecasts() {
  */
 export async function checkEnrollment({ symbol }: { symbol: string }) {
   const user = await getUser();
+  const docs = await documents.query("forecast", symbol);
+  if (docs.length === 0) { return false; }
 
+  //Test if the user is allowed to view any forecast.
   const { allowed } = await fgaClient.check({
     user: `user:${user.sub}`,
-    object: `doc:forecast-${symbol}`,
+    object: `doc:${docs[0].metadata.id}`,
     relation: "can_view",
   });
 
