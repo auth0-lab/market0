@@ -15,6 +15,6 @@ jobs:
           FLYWAY_URL: ${{secrets.DB_URL}}
           FLYWAY_USER: ${{secrets.DB_USER}}
           FLYWAY_PASSWORD: ${{secrets.DB_PASSWORD}}
+          FLYWAY_LOCATIONS: filesystem:./database/market0
         with:
-          entrypoint: "/flyway/flyway"
-        args: -locations=filesystem:./database/market0 migrate
+          args: migrate
