@@ -1,18 +1,9 @@
-import {
-  DeleteUserIdentityByUserIdProviderEnum,
-  ManagementClient,
-} from "auth0";
 import { NextResponse } from "next/server";
-
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 
 import { withRateLimit } from "@/hooks/auth0/helpers/rate-limit";
-
-const auth0 = new ManagementClient({
-  domain: new URL(process.env.AUTH0_ISSUER_BASE_URL!).host,
-  clientId: process.env.AUTH0_CLIENT_ID_MGMT!,
-  clientSecret: process.env.AUTH0_CLIENT_SECRET_MGMT!,
-});
+import { deleteUser, getUser, unlinkUser } from "@/sdk/auth0/mgmt";
+import { DeleteUserIdentityByUserIdProviderEnum } from "auth0";
 
 export function handleUserAccountsFetch() {
   return withRateLimit(
@@ -20,7 +11,7 @@ export function handleUserAccountsFetch() {
       try {
         const session = await getSession();
         const mainUserId = session?.user.sub;
-        const response = await auth0.users.get({ id: mainUserId });
+        const response = await getUser(mainUserId);
         const { data } = response;
 
         return NextResponse.json(
@@ -62,8 +53,7 @@ export function handleDeleteUserAccount() {
           const session = await getSession();
           const mainUserId = session?.user.sub;
 
-          const response1 = await auth0.users.unlink({
-            id: mainUserId,
+          const response1 = await unlinkUser(mainUserId, {
             provider,
             user_id,
           });
@@ -74,9 +64,7 @@ export function handleDeleteUserAccount() {
             });
           }
 
-          const response2 = await auth0.users.delete({
-            id: `${provider}|${user_id}`,
-          });
+          const response2 = await deleteUser(`${provider}|${user_id}`);
 
           return NextResponse.json({
             status: response2.status,

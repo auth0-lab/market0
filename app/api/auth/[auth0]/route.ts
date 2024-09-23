@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { handle3rdPartyParams } from "@/sdk/auth0/3rd-party-apis";
+import { linkUser } from "@/sdk/auth0/mgmt";
 import {
   getSession,
   handleAuth,
@@ -8,15 +9,6 @@ import {
   handleLogin,
   LoginOptions,
 } from "@auth0/nextjs-auth0";
-
-import { ManagementClient } from "auth0";
-import _ from "lodash";
-
-const auth0 = new ManagementClient({
-  domain: new URL(process.env.AUTH0_ISSUER_BASE_URL!).host,
-  clientId: process.env.AUTH0_CLIENT_ID_MGMT!,
-  clientSecret: process.env.AUTH0_CLIENT_SECRET_MGMT!,
-});
 
 export const GET = handleAuth({
   login: async (req: NextApiRequest, res: NextApiResponse) => {
@@ -62,10 +54,10 @@ export const GET = handleAuth({
         console.log(`linking ${primaryUserId} with ${user.sub}`);
 
         // TODO: this approach is allowing multiple identities for the same connection, should we restrict it to 1 identity per connection?
-        await auth0.users.link(
-          { id: primaryUserId },
-          { provider: secondaryProvider, user_id: user.sub }
-        );
+        await linkUser(primaryUserId, {
+          provider: secondaryProvider,
+          user_id: user.sub,
+        });
 
         // force a silent login to get a fresh session for the updated user profile
         state.returnTo = `/api/auth/login?returnTo=${encodeURI(

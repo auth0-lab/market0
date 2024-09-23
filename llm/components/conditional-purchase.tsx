@@ -6,7 +6,10 @@ import { useCallback, useEffect, useState } from "react";
 import Loader from "@/components/loader";
 import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditional-purchases";
 import { getConditionalPurchaseById } from "@/llm/actions/conditional-purchases";
-import { isGuardianEnrolled, requireGuardianEnrollment } from "@/sdk/auth0/mfa";
+import {
+  isGuardianEnrolled,
+  requireGuardianEnrollment,
+} from "@/sdk/auth0/mgmt";
 
 import WarningWrapper from "./warning-wrapper";
 

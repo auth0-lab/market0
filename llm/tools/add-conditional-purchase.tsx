@@ -8,7 +8,10 @@ import { defineTool } from "@/llm/ai-helpers";
 import { ConditionalPurchase } from "@/llm/components/conditional-purchase";
 import * as serialization from "@/llm/components/serialization";
 import { getHistory } from "@/llm/utils";
-import { isGuardianEnrolled, requireGuardianEnrollment } from "@/sdk/auth0/mfa";
+import {
+  isGuardianEnrolled,
+  requireGuardianEnrollment,
+} from "@/sdk/auth0/mgmt";
 import { getUser, withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permisssion";
 

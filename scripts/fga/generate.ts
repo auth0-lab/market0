@@ -116,6 +116,21 @@ const fgaClient = new OpenFgaClient({
           },
         },
       },
+      {
+        type: "chat",
+        relations: { can_view: { this: {} }, owner: { this: {} } },
+        metadata: {
+          relations: {
+            can_view: {
+              directly_related_user_types: [
+                { type: "user" },
+                { type: "user", wildcard: {} },
+              ],
+            },
+            owner: { directly_related_user_types: [{ type: "user" }] },
+          },
+        },
+      },
     ],
     conditions: {
       is_trading_window_closed: {
