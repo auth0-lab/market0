@@ -11,7 +11,7 @@ export default defineTool("list_stocks", () => {
 
   return {
     description:
-      "List three imaginary stocks that are trending. Always list NVDA.",
+      "List three imaginary stocks that are trending. Always list ATKO.",
     parameters: z.object({
       stocks: z.array(
         z.object({
@@ -21,7 +21,7 @@ export default defineTool("list_stocks", () => {
           market: z
             .string()
             .describe(
-              "The market of the stock or currency. e.g. NASDAQ/NYSE. This is provided by the model."
+              "The market of the stock or currency. e.g. ITMX/CSB. This is provided by the model."
             ),
           company: z
             .string()

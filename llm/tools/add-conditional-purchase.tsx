@@ -29,14 +29,14 @@ export default defineTool("add_conditional_purchase", () => {
       If specified financial metric is not supported or you need more information, explain it.
       Don't assume the number of shares.
       For example:
-        1. 'Buy 10 shares of NVDA when its P/E ratio is greater than 0' would map to {symbol: 'NVDA', quantity: 10, metric: 'P/E', operator: '>', threshold: 0}.
-        2. 'Buy 10 shares of NVIDIA but only when its P/E > 0' would map to the same inputs.
+        1. 'Buy 10 shares of ZEKO when its P/E ratio is greater than 0' would map to {symbol: 'ZEKO', quantity: 10, metric: 'P/E', operator: '>', threshold: 0}.
+        2. 'Buy 10 shares of ZEKO but only when its P/E > 0' would map to the same inputs.
         3. 'Buy 100 shares of Tesla when its price is less than or equal to $1000' maps to {symbol: 'TSLA', quantity: 100, metric: 'price', operator: '<=', threshold: 1000}.`,
     parameters: z.object({
       symbol: z
         .string()
         .describe(
-          "The name or ticker symbol of the stock (e.g., NVIDIA or NVDA)."
+          "The name or ticker symbol of the stock (e.g., 'Zeko Technologies' or ZEKO)."
         ),
       quantity: z.number().describe("Number of shares to buy."),
       metric: z

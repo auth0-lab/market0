@@ -1,7 +1,10 @@
 import dotenv from "dotenv";
-import { CredentialsMethod, OpenFgaClient, TypeName } from "@openfga/sdk";
-
 dotenv.config({ path: ".env.local" });
+
+import { CredentialsMethod, OpenFgaClient, TypeName } from "@openfga/sdk";
+import stocks from "../../lib/market/stocks.json";
+import { documents } from "../..//lib/db";
+
 
 const fgaClient = new OpenFgaClient({
   apiUrl: process.env.FGA_API_URL,
@@ -135,60 +138,44 @@ const fgaClient = new OpenFgaClient({
   if (readTuples.tuples.length > 0) {
     await fgaClient.deleteTuples(readTuples.tuples.map((tuple) => tuple.key));
   }
-
+  const earningsReports = await documents.query("earning");
   // 03. WRITE TUPLES
   await fgaClient.write(
     {
       writes: [
-        // NVDA:1st Quarter 2025 Doc
-        {
-          user: "user:*",
-          relation: "can_view",
-          object: "doc:gFPKKADh5HEwckh3br36Sm",
-        },
-        // NVDA:2nd Quarter 2024 Doc
-        {
-          user: "user:*",
-          relation: "can_view",
-          object: "doc:xih1ux26z9SicARvmcZJYj",
-        },
-        // OKTA stock
-        {
-          user: "user:*",
-          relation: "can_buy",
-          object: "asset:okta",
-        },
-        {
-          user: "user:*",
-          relation: "can_sell",
-          object: "asset:okta",
-        },
-        {
-          user: "user:*",
-          relation: "can_view",
-          object: "asset:okta",
-        },
-        // NVDA stock
-        {
-          user: "user:*",
-          relation: "can_buy",
-          object: "asset:nvda",
-        },
-        {
-          user: "user:*",
-          relation: "can_sell",
-          object: "asset:nvda",
-        },
-        {
-          user: "user:*",
-          relation: "can_view",
-          object: "asset:nvda",
-        },
+        ...(
+          earningsReports.map((report) => ({
+            user: "user:*",
+            relation: "can_view",
+            object: `doc:${report.metadata.id}`,
+          }))
+        ),
+
+        ...(
+          stocks.map((stock) => [
+            {
+              user: "user:*",
+              relation: "can_buy",
+              object: `asset:${stock.symbol.toLowerCase()}`,
+            },
+            {
+              user: "user:*",
+              relation: "can_sell",
+              object: `asset:${stock.symbol.toLowerCase()}`,
+            },
+            {
+              user: "user:*",
+              relation: "can_view",
+              object: `asset:${stock.symbol.toLowerCase()}`,
+            },
+          ]).flat()
+        ),
+
         // Company Stock Restriction
         {
-          user: "company:okta#employee",
+          user: "company:atko#employee",
           relation: "_restricted_employee",
-          object: "asset:okta",
+          object: "asset:atko",
           condition: {
             name: "is_trading_window_closed",
             context: {
@@ -197,11 +184,12 @@ const fgaClient = new OpenFgaClient({
             },
           },
         },
-        // OKTA employee
+
+        // ATKO employee
         {
           user: `user:${process.env.RESTRICTED_USER_ID_EXAMPLE}`,
           relation: "employee",
-          object: "company:okta",
+          object: "company:atko",
         },
       ],
     },
@@ -209,4 +197,6 @@ const fgaClient = new OpenFgaClient({
       authorizationModelId: model.authorization_model_id,
     }
   );
+
+  process.exit(0);
 })();

@@ -21,7 +21,7 @@ export default defineTool("show_stock_price", () => {
         ),
       market: z
         .string()
-        .describe("The market of the stock or currency. e.g. NASDAQ/NYSE."),
+        .describe("The market of the stock or currency. e.g. ITMX/CSB."),
       company: z.string().describe("The company name of the stock."),
       currency: z.string().describe("The currency of the stock."),
     }),

@@ -2,12 +2,14 @@ import { generateText } from "ai";
 import toPlainObject from "lodash.toplainobject";
 import { z } from "zod";
 
+import { userUsage } from "@/lib/db";
+import { checkEnrollment } from "@/llm/actions/forecast-enrollment";
 import { getSymbolRetriever } from "@/llm/actions/langchain-helpers";
 import { defineTool } from "@/llm/ai-helpers";
 import { Documents } from "@/llm/components/documents";
 import * as serialization from "@/llm/components/serialization";
 import { getHistory } from "@/llm/utils";
-import { checkAuthorization, getUser } from "@/sdk/fga";
+import { getUser } from "@/sdk/fga";
 import { openai } from "@ai-sdk/openai";
 
 const buildRequiredInfoText = ({ earnings, forecasts}: { earnings: boolean, forecasts: boolean }) => {
@@ -44,10 +46,7 @@ export default defineTool("get_docs", () => {
         .default(false),
     }),
     generate: async function* ({ symbol, earnings, forecasts }) {
-      const canEnroll = forecasts && !(await checkAuthorization({
-        object: `doc:forecast-${symbol}`,
-        relation: "can_view"
-      }));
+      const canEnroll = forecasts && !(await checkEnrollment({ symbol }));
 
       const retriever = await getSymbolRetriever(symbol);
       const messageToRetrieve = `${buildRequiredInfoText({ earnings, forecasts })} for ${symbol}`;
@@ -55,12 +54,12 @@ export default defineTool("get_docs", () => {
         messageToRetrieve
       );
 
-      const { text } = await generateText({
+      const { text, usage } = await generateText({
         model: openai("gpt-4o"),
         temperature: 1,
         system: `
           You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
-          ${canEnroll ? 'The user requested forecast but is not currently enrolled to received forecast data.' : ''}
+          ${canEnroll ? 'The user requested forecast but is not currently enrolled to received forecast data. Do not generate any forecast.' : ''}
           ${documents.length > 0 ? "Here are the documents you have:" : "Inform the user there is no related information."}
           ${documents
             .map(
@@ -71,6 +70,10 @@ export default defineTool("get_docs", () => {
           `,
         prompt: `Summarize ${buildRequiredInfoText({earnings, forecasts})} for ${symbol}.`,
       });
+
+      // TODO can we track this globally?
+      const user = await getUser();
+      await userUsage.track(user.sub, usage.totalTokens);
 
       const params = {
         symbol,

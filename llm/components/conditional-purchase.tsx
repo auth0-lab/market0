@@ -91,7 +91,7 @@ export function ConditionalPurchase({
       body: JSON.stringify({
         type: "metric",
         data: {
-          symbol: "NVDA",
+          symbol: "ZEKO",
           metric: "P/E",
           value: 51.53,
         },
