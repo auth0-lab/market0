@@ -56,56 +56,6 @@ export async function getUser() {
   return session?.user!;
 }
 
-export async function assignChatOwner(chatId: string) {
-  const user = await getUser();
-  await fgaClient.writeTuples([
-    {
-      user: `user:${user.sub}`,
-      relation: "owner",
-      object: `chat:${chatId}`,
-    },
-  ]);
-}
-
-export async function getChatReaders(chatId: string) {
-  const { $response } = await fgaClient.listUsers({
-    object: {
-      type: "chat",
-      id: chatId,
-    },
-    user_filters: [
-      {
-        type: "user",
-      },
-    ],
-    relation: "can_view",
-  });
-
-  return $response.data.users.map((u) => ({
-    email: u.object?.id,
-  }));
-}
-
-export async function assignChatReader(chatId: string, emails: string[]) {
-  await fgaClient.writeTuples(
-    emails.map((email) => ({
-      user: `user:${email}`,
-      relation: "can_view",
-      object: `chat:${chatId}`,
-    }))
-  );
-}
-
-export async function revokeChatReader(chatId: string, emails: string[]) {
-  await fgaClient.deleteTuples(
-    emails.map((email) => ({
-      user: `user:${email}`,
-      relation: "can_view",
-      object: `chat:${chatId}`,
-    }))
-  );
-}
-
 /**
  * @param params
  * @param [params.user] - The user to check permissions for. If not provided, the current user is used.

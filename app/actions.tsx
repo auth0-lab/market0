@@ -13,7 +13,8 @@ import {
 import { createGoogleTask } from "@/llm/actions/reminders";
 import * as serialization from "@/llm/components/serialization";
 import { ClientMessage, ServerMessage } from "@/llm/types";
-import { assignChatOwner, getUser } from "@/sdk/fga";
+import { getUser } from "@/sdk/fga";
+import { assignChatOwner } from "@/sdk/fga/chats";
 
 type Props = Parameters<
   ReturnType<typeof createAI<ServerMessage[], ClientMessage[]>>
@@ -43,6 +44,7 @@ export const AI = (p: Props) => {
           userID: user.sub,
         });
 
+        // TODO: find a better way to detect chat creation
         const isNewConversation = state.length <= 2;
         if (isNewConversation) {
           await assignChatOwner(conversationID);
