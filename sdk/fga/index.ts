@@ -80,5 +80,3 @@ export async function withFGA(params: withFGAParams) {
 
   return await checkPermission(checkPermissionsParams);
 }
-
-export const checkAuthorization = withFGA;

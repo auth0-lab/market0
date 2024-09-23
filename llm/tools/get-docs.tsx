@@ -44,8 +44,10 @@ export default defineTool("get_docs", () => {
         .describe('Whether to include forecasts in the summary.')
         .optional()
         .default(false),
+      originalMessage: z.string()
+        .describe('The original and complete message the user send.')
     }),
-    generate: async function* ({ symbol, earnings, forecasts }) {
+    generate: async function* ({ symbol, earnings, forecasts, originalMessage }) {
       const canEnroll = forecasts && !(await checkEnrollment({ symbol }));
 
       const retriever = await getSymbolRetriever(symbol);
@@ -59,7 +61,9 @@ export default defineTool("get_docs", () => {
         temperature: 1,
         system: `
           You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
+          Be succint, no more than 500 words.
           ${canEnroll ? 'The user requested forecast but is not currently enrolled to received forecast data. Do not generate any forecast.' : ''}
+          ${forecasts && !earnings ? 'Be very concise about earnings and focus only on forecast. Be explicit about your sentiment Bullish / Bearish.' : ''}
           ${documents.length > 0 ? "Here are the documents you have:" : "Inform the user there is no related information."}
           ${documents
             .map(
@@ -68,7 +72,7 @@ export default defineTool("get_docs", () => {
             )
             .join("")}
           `,
-        prompt: `Summarize ${buildRequiredInfoText({earnings, forecasts})} for ${symbol}.`,
+        prompt: originalMessage,
       });
 
       // TODO can we track this globally?

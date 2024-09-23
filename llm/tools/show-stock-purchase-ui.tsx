@@ -4,7 +4,7 @@ import { RELATION } from "@/lib/constants";
 import { getStockPrices } from "@/lib/market/stocks";
 import * as serialization from "@/llm/components/serialization";
 import { withFGA } from "@/sdk/fga";
-import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permisssion";
+import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permission";
 
 import { defineTool } from "../ai-helpers";
 import { StockPurchase } from "../components/stock-purchase";

@@ -23,6 +23,20 @@ async function* defaultOnUnauthorized(): AsyncGenerator<
   return DEFAULT_UNAUTHORIZED_MESSAGE;
 }
 
+/**
+ * Wrap the generate function of a vercel/ai tool with an FGA permission check.
+ *
+ * @param params
+ * @param params.checker - A function that receives the same parameter
+ *     than the generate func and checks
+ *     if the user has permission to the tool.
+ *     This can be `withFGA`.
+ * @param params.onUnauthorized - A function that receives the same parameter
+ *     than the generate func and returns a UI generator.
+ *     This can be used to customize the unauthorized message.
+ * @param fn - The generate func to wrap.
+ * @returns A new generate func that checks permissions before executing the original function.
+ */
 export function withCheckPermission<ToolParam = any>(
   params: WithCheckPermissionParams<ToolParam>,
   fn: (toolParam: ToolParam) => AsyncGenerator<ReactNode, ReactNode, unknown>
