@@ -14,12 +14,12 @@ import {
 export const examples = [
   {
     id: generateId(),
-    title: "ATKO price",
+    title: "ZEKO price",
     message: "Show the stock price of ZEKO",
   },
   {
     id: generateId(),
-    title: "Buy 10 shares of ATKO",
+    title: "Buy 10 shares of ZEKO",
     message: "I'd like to buy 10 shares of ZEKO",
   },
   {
