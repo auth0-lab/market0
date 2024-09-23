@@ -6,46 +6,41 @@ import { Stocks } from "@/llm/components/stocks";
 import { StocksSkeleton } from "@/llm/components/stocks-skeleton";
 import { getHistory } from "@/llm/utils";
 
+import allStocks from "../../lib/market/stocks.json";
+
 export default defineTool("list_stocks", () => {
   const history = getHistory();
 
   return {
     description:
-      "List three imaginary stocks that are trending. Always list ATKO.",
+      "List stocks, always list ATKO.",
     parameters: z.object({
-      stocks: z.array(
-        z.object({
-          symbol: z.string().describe("The symbol of the stock"),
-          price: z.number().describe("The price of the stock"),
-          delta: z.number().describe("The change in price of the stock"),
-          market: z
-            .string()
-            .describe(
-              "The market of the stock or currency. e.g. ITMX/CSB. This is provided by the model."
-            ),
-          company: z
-            .string()
-            .describe(
-              "The company name of the stock. This is provided by the model."
-            ),
-          currency: z
-            .string()
-            .describe(
-              "The currency of the stock. This is provided by the model."
-            ),
-        })
-      ),
+      tickers: z.array(
+        z.string().describe("The symbol or ticker of the stock")
+      )
     }),
-    generate: async function* ({ stocks }) {
+    generate: async function* ({ tickers }) {
       yield <StocksSkeleton />;
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const stocks = tickers.map((ticker) => {
+        const stock = allStocks.find((stock) => stock.symbol === ticker);
+        return {
+          symbol: stock?.symbol,
+          price: stock?.current_price,
+          delta: stock?.delta,
+          market: stock?.exchange,
+          company: stock?.shortname,
+          currency: 'USD',
+        }
+      });
 
       history.update({
         role: "assistant",
         componentName: serialization.names.get(Stocks),
         params: { stocks },
-        content: `[Listed stocks: JSON.stringify({ stocks })]`,
+        content: `[Listed stocks: ${JSON.stringify({ stocks })}]`,
       });
 
       return <Stocks stocks={stocks} />;

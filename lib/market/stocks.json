@@ -2,7 +2,7 @@
   {
     "exchange": "NMS",
     "symbol": "ATKO",
-    "shortname": "Atko Industries",
+    "shortname": "Atko Tech.",
     "longname": "Atko Technologies Corporation",
     "sector": "Technology",
     "industry": "Semiconductors",
@@ -21,7 +21,7 @@
   {
     "exchange": "CSB",
     "symbol": "ACME",
-    "shortname": "ACME Corporation",
+    "shortname": "ACME Global",
     "longname": "ACME Global Enterprises",
     "sector": "Consumer Goods",
     "industry": "Industrial Products",
@@ -40,7 +40,7 @@
   {
     "exchange": "NMS",
     "symbol": "ZEKO",
-    "shortname": "Zeko Technologies",
+    "shortname": "Zeko Systems",
     "longname": "Zeko Advanced Systems Inc.",
     "sector": "Healthcare",
     "industry": "Medical Devices",
