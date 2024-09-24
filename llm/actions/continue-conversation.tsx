@@ -79,9 +79,8 @@ export async function continueConversation(
     initial: <Loader />,
     // TODO: implement a max token limit
     onFinish: async ({ usage }) => {
-      const { promptTokens, completionTokens, totalTokens } = usage;
-      const stats = await userUsage.track(user.sub, totalTokens);
-      console.log(`User ${user.email} used ${totalTokens} tokens in this conversation. Last hour: ${stats.lastHour}, last day: ${stats.lastDay}.`);
+      const stats = await userUsage.track(user.sub, usage);
+      console.log(`User ${user.email} used ${usage.totalTokens} tokens in this conversation. Last hour: ${stats.lastHour}, last day: ${stats.lastDay}.`);
     },
   });
 
