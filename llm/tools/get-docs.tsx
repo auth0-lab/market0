@@ -1,4 +1,4 @@
-import { generateText } from "ai";
+import { generateText, streamText } from "ai";
 import toPlainObject from "lodash.toplainobject";
 import { z } from "zod";
 
@@ -56,12 +56,12 @@ export default defineTool("get_docs", () => {
         messageToRetrieve
       );
 
-      const { text, usage } = await generateText({
+      const { textStream, text: fullText, usage } = await streamText({
         model: openai("gpt-4o"),
         temperature: 1,
         system: `
           You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
-          Be succint, no more than 500 words.
+          Summarize the response in no more than 500 words, focusing on key points.
           ${canEnroll ? 'The user requested forecast but is not currently enrolled to received forecast data. Do not generate any forecast.' : ''}
           ${forecasts && !earnings ? 'Be very concise about earnings and focus only on forecast. Be explicit about your sentiment Bullish / Bearish.' : ''}
           ${documents.length > 0 ? "Here are the documents you have:" : "Inform the user there is no related information."}
@@ -75,15 +75,27 @@ export default defineTool("get_docs", () => {
         prompt: originalMessage,
       });
 
-      // TODO can we track this globally?
-      const user = await getUser();
-      await userUsage.track(user.sub, usage.totalTokens);
-
-      const params = {
+      const baseParams = {
         symbol,
-        text,
         documents: documents.map(toPlainObject),
         requestedForecasts: forecasts
+      };
+
+      let currentText = '';
+      for await (const textPart of textStream) {
+        currentText += textPart;
+        yield <Documents {...baseParams} text={currentText} documents={[]} />
+      }
+
+      // TODO can we track this globally?
+      const user = await getUser();
+      await userUsage.track(user.sub, (await usage).totalTokens);
+
+      //once finished:
+      const text = await fullText;
+      const params = {
+        ...baseParams,
+        text,
       };
 
        history.update({
