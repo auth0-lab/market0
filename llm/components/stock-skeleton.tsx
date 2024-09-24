@@ -2,11 +2,11 @@ import WarningWrapper from "./warning-wrapper";
 
 export const StockSkeleton = () => {
   return (
-    <WarningWrapper>
-      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-14 min-h-[310px]">
-        <div className="flex flex-row justify-between px-10">
+    <WarningWrapper className="max-w-xl">
+      <div className="p-5 text-green-400 rounded-2xl bg-zinc-950 pt-14 min-h-[192px]">
+        <div className="flex flex-row justify-between px-5">
           <div className="flex flex-col gap-2">
-            <div className="text-xl font-bold text-transparent w-fit bg-zinc-700 rounded-md">
+            <div className="text-base font-bold text-transparent w-fit bg-zinc-700 rounded-md">
               xxxxx
             </div>
             <div className="text text-xs text-transparent mt-1 bg-zinc-700 w-fit rounded-md">
@@ -14,7 +14,7 @@ export const StockSkeleton = () => {
             </div>
           </div>
           <div className="flex flex-col gap-2 items-end">
-            <div className="inline-block px-2 py-1 rounded-md bg-white/10 text-xl text-transparent w-fit bg-zinc-700">
+            <div className="inline-block px-2 py-1 rounded-md bg-white/10 text-base text-transparent w-fit bg-zinc-700">
               xxx
             </div>
             <div className="text text-xs text-transparent mt-1 bg-zinc-700 w-fit rounded-md">
@@ -24,7 +24,7 @@ export const StockSkeleton = () => {
         </div>
 
         <div className="-mx-4 relative cursor-col-resize">
-          <div style={{ height: 146 }}></div>
+          <div style={{ height: 50 }}></div>
         </div>
       </div>
     </WarningWrapper>

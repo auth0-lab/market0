@@ -33,7 +33,7 @@ function LogOut() {
   );
 }
 
-function getAvatarFallback(user: KeyValueMap) {
+export function getAvatarFallback(user: KeyValueMap) {
   const givenName = user.given_name;
   const familyName = user.family_name;
   const nickname = user.nickname;

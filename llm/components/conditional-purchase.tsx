@@ -3,6 +3,7 @@
 import { format, formatRelative } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 
+import { CancelRedIcon, CheckGreenIcon } from "@/components/icons";
 import Loader from "@/components/loader";
 import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditional-purchases";
 import { getConditionalPurchaseById } from "@/llm/actions/conditional-purchases";
@@ -108,13 +109,14 @@ export function ConditionalPurchase({
     case "pending":
       return (
         <WarningWrapper
+          className="max-w-xl"
           message={
             <>
               {!simulating && (
-                <div>
+                <div className="text-slate-500 text-sm leading-6">
                   To simulate the agent executing the task, please click{" "}
                   <button
-                    className="border-b border-black"
+                    className="border-b border-slate-500 leading-none"
                     onClick={simulateExecution}
                   >
                     here
@@ -123,14 +125,14 @@ export function ConditionalPurchase({
                 </div>
               )}
               {simulating && (
-                <div className="flex gap-3 items-center w-fit mx-auto">
+                <div className="flex gap-3 items-center w-fit mx-auto text-slate-500 text-sm leading-6">
                   Simulating <Loader />
                 </div>
               )}
             </>
           }
         >
-          <div className="p-8 rounded-2xl bg-zinc-950 text-white">
+          <div className="p-8 rounded-2xl bg-zinc-950 text-white text-base">
             Noted. I will proceed with purchasing {conditionalPurchase.quantity}{" "}
             shares of{" "}
             <span className="text-green-400">
@@ -147,33 +149,39 @@ export function ConditionalPurchase({
       );
     case "canceled":
       return (
-        <WarningWrapper>
-          <div className="p-8 rounded-2xl bg-zinc-950 text-white">
+        <WarningWrapper className="max-w-xl">
+          <div className="p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-semibold text-white">
+                <div className="text-base font-semibold text-white">
                   Buy {conditionalPurchase.quantity} shares of{" "}
                   {conditionalPurchase.symbol}
                 </div>
-                <div className="text-base text text-white/40 leading-6">
+                <div className="text-sm text text-white/40 leading-6">
                   Created{" "}
                   {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-semibold text-green-400">
+                <div className="text-base font-semibold text-green-400">
                   If {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
                   {conditionalPurchase.threshold}
                 </div>
-                <div className="text-base text text-white/40 leading-6 uppercase">
+                <div className="text-sm text text-white/40 leading-6 uppercase">
                   Condition
                 </div>
               </div>
             </div>
-            <div className="border-t border-gray-500 mt-6 pt-6">
-              <div className="text-white font-light">
-                The purchase was <strong>CANCELED</strong> on{" "}
-                {format(conditionalPurchase.updated_at, "PPPP p")}.
+            <div className="border-t border-white/20 mt-5 pt-5">
+              <div className="flex flex-row gap-4 items-start">
+                <div className="w-[25px]">
+                  <CancelRedIcon />
+                </div>
+                <div className="text-white font-light">
+                  The purchase was{" "}
+                  <strong className="text-red-400">CANCELED</strong> on{" "}
+                  {format(conditionalPurchase.updated_at, "PPPP p")}.
+                </div>
               </div>
             </div>
           </div>
@@ -181,33 +189,39 @@ export function ConditionalPurchase({
       );
     case "completed":
       return (
-        <WarningWrapper>
-          <div className="p-8 rounded-2xl bg-zinc-950 text-white">
+        <WarningWrapper className="max-w-xl">
+          <div className="p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-semibold text-white">
+                <div className="text-base font-semibold text-white">
                   Buy {conditionalPurchase.quantity} shares of{" "}
                   {conditionalPurchase.symbol}
                 </div>
-                <div className="text-base text text-white/40 leading-6">
+                <div className="text-sm text text-white/40 leading-6">
                   Created{" "}
                   {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-xl font-semibold text-green-400">
+                <div className="text-base font-semibold text-green-400">
                   If {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
                   {conditionalPurchase.threshold}
                 </div>
-                <div className="text-base text text-white/40 leading-6 uppercase">
+                <div className="text-sm text text-white/40 leading-6 uppercase">
                   Condition
                 </div>
               </div>
             </div>
-            <div className="border-t border-gray-500 mt-6 pt-6">
-              <div className="text-white font-light">
-                The purchase was <strong>COMPLETED</strong> on{" "}
-                {format(conditionalPurchase.updated_at, "PPPP p")}.
+            <div className="border-t border-white/20 mt-5 pt-5">
+              <div className="flex flex-row gap-4 items-start">
+                <div className="w-[25px]">
+                  <CheckGreenIcon />
+                </div>
+                <div className="text-white font-light">
+                  The purchase was{" "}
+                  <strong className="text-green-400">COMPLETED</strong> on{" "}
+                  {format(conditionalPurchase.updated_at, "PPPP p")}.
+                </div>
               </div>
             </div>
           </div>

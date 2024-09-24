@@ -56,22 +56,22 @@ export function StockPurchase({
   }
 
   return (
-    <WarningWrapper>
-      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-14">
-        <div className="flex flex-row justify-between px-10">
+    <WarningWrapper className="max-w-xl">
+      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-5">
+        <div className="flex flex-row justify-between px-3">
           <div className="flex flex-col gap-2">
-            <div className="text-xl font-semibold text-white">{symbol}</div>
+            <div className="text-base font-semibold text-white">{symbol}</div>
 
-            <div className="mt-1 text-base text text-white/40 leading-6">
+            <div className="text-sm text text-white/40 leading-6">
               {company} • {market} • {currency}
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="text-xl font-semibold text-white text-right">
+            <div className="text-base font-semibold text-white text-right">
               ${price}
             </div>
             <div
-              className={`inline-flex items-center gap-2 text-base ${
+              className={`inline-flex items-center gap-2 text-sm ${
                 delta > 0 ? "text-green-400" : "text-red-400"
               }`}
             >
@@ -88,13 +88,13 @@ export function StockPurchase({
         </div>
 
         {purchasingUI ? (
-          <div className="flex flex-row gap-4 px-10 mt-8 items-center mb-10">
-            <div className="text-white text-xl font-light">{purchasingUI}</div>
+          <div className="flex flex-row gap-4 pb-2 mt-5 mx-3 border-t border-white/20 pt-5 items-center">
+            <div className="text-white text-lg font-light">{purchasingUI}</div>
           </div>
         ) : (
           <>
-            <div className="relative pb-6 mt-6 mx-10">
-              <p className="text-white/80">Shares to purchase</p>
+            <div className="relative pb-5 mt-5 mx-3 border-t border-white/20 pt-5">
+              <p className="text-white/80 text-base mb-5">Shares to purchase</p>
               <input
                 id="labels-range-input"
                 type="range"
@@ -118,7 +118,7 @@ export function StockPurchase({
               </span>
             </div>
 
-            <div className="mt-6 mx-10 border-t border-white/30 pt-3 ">
+            <div className="mt-6 mx-3">
               <div className="flex justify-between items-end">
                 <div>
                   <p className="font-medium text-white text-sm mb-1">
@@ -128,15 +128,15 @@ export function StockPurchase({
                     {value} shares x ${price} per share
                   </div>
                 </div>
-                <div className="text-2xl leading-8 font-semibold">
+                <div className="text-xl leading-8 font-semibold">
                   <span>{formatNumber(value * price)}</span>
                 </div>
               </div>
             </div>
 
-            <div className="mx-10 mb-10">
+            <div className="mx-3 mb-3">
               <button
-                className="w-full px-4 py-4 mt-6 bg-green-500 rounded-lg text-black text-base font-semibold"
+                className="w-full py-2 mt-6 bg-green-500 rounded-lg text-black text-base font-normal"
                 onClick={async () => {
                   const response = await confirmPurchase(
                     symbol,
