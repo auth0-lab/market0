@@ -27,8 +27,12 @@ export const getUsage = async (userID: string) => {
 const dailyLimit = process.env.DAILY_TOKEN_LIMIT ? parseInt(process.env.DAILY_TOKEN_LIMIT, 10) : Infinity;
 const hourlyLimit = process.env.HOURLY_TOKEN_LIMIT ? parseInt(process.env.HOURLY_TOKEN_LIMIT, 10) : Infinity;
 const unthrottledUsers = process.env.UNTHROTTLED_USERS ? process.env.UNTHROTTLED_USERS.split(",") : [];
+const unlimitedUsers = process.env.UNLIMITED_USERS ? process.env.UNLIMITED_USERS.split(",") : [];
 
-export const hasAvailableTokens = async (userID: string): Promise<Boolean> => {
+export const hasAvailableTokens = async (userID: string, email: string): Promise<Boolean> => {
+  if (unlimitedUsers.includes(email) || unlimitedUsers.includes(userID)) {
+    return true;
+  }
   const stats = await getUsage(userID);
   if (unthrottledUsers.includes(userID)) {
     return true;
