@@ -21,6 +21,7 @@ import { openai } from "@ai-sdk/openai";
 import { FormattedText } from "../components/FormattedText";
 import addConditionalPurchase from "../tools/add-conditional-purchase";
 import addReminder from "../tools/add-reminder";
+import setEmployeer from "../tools/set-employeer";
 
 export async function continueConversation(
   input: string
@@ -72,7 +73,8 @@ export async function continueConversation(
       showStockPurchaseUI,
       listStocks,
       getEvents,
-      getDocs
+      getDocs,
+      setEmployeer
     ),
     initial: <Loader />,
     // TODO: implement a max token limit
