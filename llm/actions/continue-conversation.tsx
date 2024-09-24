@@ -29,7 +29,7 @@ export async function continueConversation(
   const user = await getUser();
   const history = getMutableAIState();
 
-  if (!(await userUsage.hasAvailableTokens(user.sub))) {
+  if (!(await userUsage.hasAvailableTokens(user.sub, user.email))) {
     return {
       id: generateId(),
       role: "assistant",
