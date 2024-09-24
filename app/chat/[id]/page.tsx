@@ -127,7 +127,6 @@ export default function Chat({ params }: { params: { id: string } }) {
             )}
             <div ref={visibilityRef} className="w-full h-px" />
           </div>
-
           {conversation.length === 0 && (
             <div className="flex flex-col gap-80 max-w-4xl mx-auto w-full mb-5 mt-auto">
               <div className="min-w-0 min-h-0 w-full flex flex-col items-center gap-6">
