@@ -1,6 +1,14 @@
+import { LanguageModelUsage } from "ai";
+
 import { sql } from "./sql";
 
-export const track = async (userID: string, tokens: number) => {
+export const track = async (userID: string, usage: number | LanguageModelUsage | Promise<LanguageModelUsage>) => {
+  let tokens = 0;
+  if (typeof usage === "number") {
+    tokens = usage;
+  } else {
+    tokens = (await usage).totalTokens;
+  }
   await sql`
     INSERT INTO token_usage (user_id, tokens_used)
     VALUES (${userID}, ${tokens});

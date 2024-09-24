@@ -89,7 +89,7 @@ export default defineTool("get_docs", () => {
 
       // TODO can we track this globally?
       const user = await getUser();
-      await userUsage.track(user.sub, (await usage).totalTokens);
+      await userUsage.track(user.sub, usage);
 
       //once finished:
       const text = await fullText;
