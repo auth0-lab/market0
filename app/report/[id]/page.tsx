@@ -35,6 +35,20 @@ export default withCheckPermission(
         object: `doc:${params.id}`,
         relation: "can_view",
       }),
+    onUnauthorized: async () => {
+      return     <main
+      className="flex overflow-hidden h-full  mx-auto pt-4"
+      style={{ maxHeight: "calc(100vh - 56px)" }}
+    >
+      <div className="h-full w-full overflow-hidden rounded-md">
+        <div className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none">
+          <div className="flex flex-col max-w-4xl mx-auto w-full mb-5">
+              You are not authorized to view this document.
+          </div>
+        </div>
+      </div>
+      </main>;
+    }
   },
   Report
 );
