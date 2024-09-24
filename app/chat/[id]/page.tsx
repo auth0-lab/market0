@@ -7,12 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getAvatarFallback } from "@/components/auth0/user-button";
-import {
-  ArrowUpIcon,
-  ChevronRightIcon,
-  CircleIcon,
-  Market0Icon,
-} from "@/components/icons";
+import { ArrowUpIcon, ChevronRightIcon, CircleIcon, Market0Icon } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +30,7 @@ const formSchema = z.object({
 });
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 export default function Chat({ params }: { params: { id: string } }) {
   const [conversation, setConversation] = useUIState();
