@@ -29,8 +29,8 @@ export const query = async (type?: 'earning' | 'forecast', symbol?: string): Pro
   const res = await sql<Document[]>`
     SELECT *
     FROM documents
-    WHERE metadata->>'type' = ${type ?? null} OR ${type == null}
-      AND metadata->>'symbol' = ${symbol ?? null} OR ${symbol == null}
+    WHERE (metadata->>'type' = ${type ?? null} OR ${type == null})
+      AND (metadata->>'symbol' = ${symbol ?? null} OR ${symbol == null})
   `;
   return res;
 };
