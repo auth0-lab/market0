@@ -19,6 +19,18 @@ export async function enrollToForecasts() {
   );
 }
 
+export async function unenrollFromForecasts() {
+  const user = await getUser();
+  const docs = await documents.query("forecast");
+  await fgaClient.deleteTuples(
+    docs.map(doc => ({
+      user: `user:${user.sub}`,
+      relation: "can_view",
+      object: `doc:${doc.metadata.id}`,
+    }))
+  );
+}
+
 /**
  *
  * Checks if the current user is enrolled to receive forecasts for a given symbol.
