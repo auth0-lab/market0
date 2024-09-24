@@ -54,7 +54,7 @@ export const Documents = ({
                 className="font-normal pl-3"
               >
                 <Link
-                  href={document.metadata.link}
+                  href={document.metadata.link ?? `/report/${document.metadata.id}`}
                   target="_black"
                   rel="noopener noreferrer"
                   className="cursor-pointer flex items-center gap-4 py-2 px-3 pr-1 justify-between"

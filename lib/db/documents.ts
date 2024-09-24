@@ -1,3 +1,5 @@
+import { getUser } from "@/sdk/fga";
+
 import { sql } from "./sql";
 
 type Document = {
@@ -31,4 +33,13 @@ export const query = async (type?: 'earning' | 'forecast', symbol?: string): Pro
       AND metadata->>'symbol' = ${symbol ?? null} OR ${symbol == null}
   `;
   return res;
+};
+
+export const getByID = async (id: string): Promise<Document> => {
+  const res = await sql<Document[]>`
+    SELECT *
+    FROM documents
+    WHERE metadata->>'id' = ${id}
+  `;
+  return res[0];
 };

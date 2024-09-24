@@ -13,7 +13,7 @@ import {
   requireGuardianEnrollment,
 } from "@/sdk/auth0/mgmt";
 import { getUser, withFGA } from "@/sdk/fga";
-import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permisssion";
+import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permission";
 
 type ToolParams = {
   symbol: string;
