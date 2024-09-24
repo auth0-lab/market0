@@ -2,7 +2,10 @@ import { LanguageModelUsage } from "ai";
 
 import { sql } from "./sql";
 
-export const track = async (userID: string, usage: number | LanguageModelUsage | Promise<LanguageModelUsage>) => {
+export const track = async (
+  userID: string,
+  usage: number | LanguageModelUsage | Promise<LanguageModelUsage>
+) => {
   let tokens = 0;
   if (typeof usage === "number") {
     tokens = usage;
