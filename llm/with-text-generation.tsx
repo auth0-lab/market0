@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 
 import { openai } from "@ai-sdk/openai";
 
+import { aiParams } from "./ai-params";
 import { getSystemPrompt } from "./system-prompt";
 
 type WithTextGenerationParams = Partial<Omit<Parameters<typeof generateText>[0], 'messages'>>;
@@ -41,8 +42,7 @@ const buildMessage = async (
 
   const currentMessages = state.get() as CoreMessage[];
   const { textStream, text } = await streamText({
-    model: openai("gpt-3.5-turbo"),
-    temperature: 0.3,
+    ...aiParams,
     ...params,
     messages: [
       {
