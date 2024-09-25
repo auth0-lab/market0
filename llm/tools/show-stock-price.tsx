@@ -19,13 +19,8 @@ export default defineTool("show_stock_price", () => {
         .describe(
           "The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD."
         ),
-      market: z
-        .string()
-        .describe("The market of the stock or currency. e.g. ITMX/CSB."),
-      company: z.string().describe("The company name of the stock."),
-      currency: z.string().describe("The currency of the stock."),
     }),
-    generate: async function* ({ symbol, market, company, currency }) {
+    generate: async function* ({ symbol }) {
       yield <StockSkeleton />;
 
       const doc = await getStockPrices({ symbol });
@@ -37,21 +32,25 @@ export default defineTool("show_stock_price", () => {
 
       const { delta, current_price: price } = doc;
 
+      const params = {
+        symbol,
+        price,
+        delta,
+        company: doc.shortname,
+        currency: doc.current_price,
+        market: doc.exchange,
+      };
+
       history.update({
         role: "assistant",
         content: `[Price of ${symbol} = ${price}]`,
         componentName: serialization.names.get(Stock)!,
-        params: { symbol, price, delta, company, currency, market },
+        params,
       });
 
       return (
         <Stock
-          symbol={symbol}
-          price={price}
-          delta={delta}
-          market={market}
-          currency={currency}
-          company={company}
+          {...params}
         />
       );
     },
