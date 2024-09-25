@@ -22,6 +22,7 @@ import { FormattedText } from "../components/FormattedText";
 import addConditionalPurchase from "../tools/add-conditional-purchase";
 import addReminder from "../tools/add-reminder";
 import setEmployeer from "../tools/set-employeer";
+import setProfileAttributes from "../tools/set-profile-attributes";
 import setSubscription from "../tools/set-subscription";
 
 export async function continueConversation(
@@ -76,7 +77,8 @@ export async function continueConversation(
       getEvents,
       getDocs,
       setEmployeer,
-      setSubscription
+      setSubscription,
+      setProfileAttributes
     ),
     initial: <Loader />,
     // TODO: implement a max token limit
