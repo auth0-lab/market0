@@ -91,8 +91,6 @@ export default defineTool("get_docs", () => {
         yield <Documents {...baseParams} text={currentText} documents={[]} />
       }
 
-
-
       //once finished:
       const text = await fullText;
       const params = {
