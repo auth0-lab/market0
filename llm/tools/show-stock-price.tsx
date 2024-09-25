@@ -37,7 +37,7 @@ export default defineTool("show_stock_price", () => {
         price,
         delta,
         company: doc.shortname,
-        currency: doc.current_price,
+        currency: 'USD',
         market: doc.exchange,
       };
 

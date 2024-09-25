@@ -6,10 +6,7 @@ import { createAI, getAIState } from "ai/rsc";
 import { saveAIState } from "@/lib/db";
 import { confirmPurchase } from "@/llm/actions/confirm-purchase";
 import { continueConversation } from "@/llm/actions/continue-conversation";
-import {
-  checkEnrollment,
-  enrollToForecasts,
-} from "@/llm/actions/forecast-enrollment";
+import { checkEnrollment, enrollToForecasts } from "@/llm/actions/forecast-enrollment";
 import { createGoogleTask } from "@/llm/actions/reminders";
 import * as serialization from "@/llm/components/serialization";
 import { ClientMessage, ServerMessage } from "@/llm/types";
@@ -21,7 +18,7 @@ type Props = Parameters<
 >[0] & {
   conversationID: string;
 };
-
+const HIDDEN_ROLES = ["system", 'tool'];
 export const AI = (p: Props) => {
   const { conversationID, ...params } = p;
 
@@ -61,7 +58,10 @@ export const AI = (p: Props) => {
       return history
         .filter((c) => {
           const isTempMessage = c.role === "assistant" && c.tempMessage;
-          return !isTempMessage && c.role !== "system";
+          const isToolCall = c.role === 'assistant' &&
+            Array.isArray(c.content) &&
+            c.content.some(c => c.type === 'tool-call');
+          return !isTempMessage && !isToolCall && !HIDDEN_ROLES.includes(c.role);
         })
         .map(({ role, content, componentName, params }) => {
           if (componentName) {

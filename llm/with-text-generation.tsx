@@ -1,4 +1,4 @@
-import { CoreMessage, generateText, LanguageModelV1 } from "ai";
+import { CoreMessage, generateText, LanguageModelV1, streamText } from "ai";
 import { getMutableAIState } from "ai/rsc";
 import { ReactNode } from "react";
 
@@ -40,7 +40,7 @@ const buildMessage = async (
   ];
 
   const currentMessages = state.get() as CoreMessage[];
-  const { text: assistantResponse } = await generateText({
+  const { textStream, text } = await streamText({
     model: openai("gpt-3.5-turbo"),
     temperature: 0.3,
     ...params,
@@ -52,18 +52,19 @@ const buildMessage = async (
       ...currentMessages,
       ...toolMessages,
     ],
+    onFinish: async ({ text }) => {
+      state.done((messages: CoreMessage[]) => [
+        ...messages,
+        ...toolMessages,
+        {
+          role: "assistant",
+          content: text,
+        }
+      ]);
+    }
   });
 
-  state.done((messages: CoreMessage[]) => [
-    ...messages,
-    ...toolMessages,
-    {
-      role: "assistant",
-      content: assistantResponse,
-    }
-  ]);
-
-  return assistantResponse;
+  return { textStream, text };
 };
 
 /**
@@ -92,13 +93,20 @@ export function withTextGeneration<ToolParam = any>(
     const toolReturn = itr.value;
 
     if (toolReturn !== undefined) {
-      const message = await buildMessage(
+      const { text, textStream } = await buildMessage(
         params,
         { toolName, toolCallId, toolArgs: toolParam },
         toolReturn,
         state
       );
-      return message;
+
+      let currentText = '';
+      for await (const textPart of textStream) {
+        currentText += textPart;
+        yield currentText;
+      }
+
+      return text;
     }
 
     return;

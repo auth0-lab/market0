@@ -1,10 +1,6 @@
 "use server";
 
-import {
-  DeleteUserIdentityByUserIdProviderEnum,
-  ManagementClient,
-  PostIdentitiesRequestProviderEnum,
-} from "auth0";
+import { DeleteUserIdentityByUserIdProviderEnum, ManagementClient, PostIdentitiesRequestProviderEnum } from "auth0";
 
 import { getSession } from "@auth0/nextjs-auth0";
 
@@ -77,5 +73,15 @@ export async function unlinkUser(
   return auth0.users.unlink({
     id: userId,
     ...identityToRemove,
+  });
+}
+
+export async function updateUser(
+  userId: string,
+  { givenName, familyName }: { givenName?: string; familyName?: string }
+) {
+  return auth0.users.update({ id: userId }, {
+    given_name: givenName ?? undefined,
+    family_name: familyName ?? undefined,
   });
 }
