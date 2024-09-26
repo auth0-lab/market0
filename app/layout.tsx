@@ -3,7 +3,7 @@ import "./globals.css";
 
 import { Inter } from "next/font/google";
 
-import { Header } from "@/components/header";
+import { Header } from "@/components/chat/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 
