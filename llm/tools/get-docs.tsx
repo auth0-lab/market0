@@ -49,7 +49,7 @@ export default defineTool("get_docs", () => {
         .describe('The original and complete message the user send.')
     }),
     generate: async function* ({ symbol, earnings, forecasts, originalMessage }) {
-      const canEnroll = forecasts && !(await checkEnrollment({ symbol }));
+      const isEnrolledToForecasts = await checkEnrollment({ symbol });
 
       const retriever = await getSymbolRetriever(symbol);
       const messageToRetrieve = `${buildRequiredInfoText({ earnings, forecasts })} for ${symbol}`;
@@ -59,11 +59,15 @@ export default defineTool("get_docs", () => {
 
       const { textStream, text: fullText, usage } = await streamText({
         ...aiParams,
+        temperature: 0.1,
         system: `
           You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
           Summarize the response in no more than 200 words, focusing on key points.
-          ${canEnroll ? 'The user requested forecast but is not currently enrolled to received forecast data. Do not invent a forecast.' : ''}
-          ${forecasts && !canEnroll && !earnings ? 'Be very concise about earnings and focus only on forecast. Be explicit about your sentiment Bullish / Bearish.' : ''}
+          ${isEnrolledToForecasts ?
+              'The user is enrolled to receive forecast data.' :
+              'The user is not currently enrolled to receive forecast data.'
+          }
+          ${forecasts && isEnrolledToForecasts && !earnings ? 'Be very concise about earnings, focus only on forecast. Be explicit about your sentiment Bullish / Bearish.' : ''}
           ${documents.length > 0 ? "Here are the documents you have:" : "Inform the user there is no related information."}
           ${documents
             .map(
@@ -101,7 +105,7 @@ export default defineTool("get_docs", () => {
        history.update({
         role: "assistant",
         content: `${text}
-  ${canEnroll ? 'User requested forecast but was not enrolled at the moment of this message.' : ''}
+  ${forecasts && !isEnrolledToForecasts ? 'User requested forecast but was not enrolled at the moment of this message.' : ''}
 `,
         componentName: serialization.names.get(Documents)!,
         params: params,
