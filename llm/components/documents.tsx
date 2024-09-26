@@ -24,7 +24,7 @@ export const Documents = ({
 }) => {
   const [showEnrollment, setShowEnrollment] = useState(false);
 
-  const { checkEnrollment, enrollToForecasts } = useActions();
+  const { checkEnrollment, enrollToNewsletter } = useActions();
 
   useEffect(() => {
     if (requestedForecasts) {
@@ -37,7 +37,7 @@ export const Documents = ({
   }, [requestedForecasts, symbol]);
 
   const enroll = () => {
-    enrollToForecasts();
+    enrollToNewsletter();
     setShowEnrollment(false);
   };
 

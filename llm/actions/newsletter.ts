@@ -25,7 +25,7 @@ async function getDocs(symbol?: string) {
   return symbol ? await documents.query("forecast", symbol) : await documents.query("forecast");
 }
 
-export async function enrollToForecasts() {
+export async function enrollToNewsletter() {
   const user = await getUser();
   const docs = await getDocs();
   const tuples = generateTuples(user, docs);
@@ -39,7 +39,7 @@ export async function enrollToForecasts() {
   );
 }
 
-export async function unenrollFromForecasts() {
+export async function unenrollFromNewsletter() {
   const user = await getUser();
   const docs = await getDocs();
   const tuples = generateTuples(user, docs);

@@ -6,7 +6,7 @@ import { createAI, getAIState } from "ai/rsc";
 import { saveAIState } from "@/lib/db";
 import { confirmPurchase } from "@/llm/actions/confirm-purchase";
 import { continueConversation } from "@/llm/actions/continue-conversation";
-import { checkEnrollment, enrollToForecasts } from "@/llm/actions/forecast-enrollment";
+import { checkEnrollment, enrollToNewsletter } from "@/llm/actions/newsletter";
 import { createGoogleTask } from "@/llm/actions/reminders";
 import * as serialization from "@/llm/components/serialization";
 import { ClientMessage, ServerMessage } from "@/llm/types";
@@ -28,7 +28,7 @@ export const AI = (p: Props) => {
       confirmPurchase,
       createGoogleTask,
       checkEnrollment,
-      enrollToForecasts,
+      enrollToNewsletter,
     },
     onSetAIState: async ({ state, done }) => {
       "use server";

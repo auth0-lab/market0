@@ -16,7 +16,6 @@ import showStockPrice from "@/llm/tools/show-stock-price";
 import showStockPurchaseUI from "@/llm/tools/show-stock-purchase-ui";
 import { ClientMessage, ServerMessage } from "@/llm/types";
 import { getUser } from "@/sdk/fga";
-import { openai } from "@ai-sdk/openai";
 
 import { aiParams } from "../ai-params";
 import { FormattedText } from "../components/FormattedText";

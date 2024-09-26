@@ -4,7 +4,7 @@ import Loader from "@/components/loader";
 import { defineTool } from "@/llm/ai-helpers";
 
 import stocks from "../../lib/market/stocks.json";
-import { checkEnrollment, enrollToForecasts, unenrollFromForecasts } from "../actions/forecast-enrollment";
+import { checkEnrollment, enrollToNewsletter, unenrollFromNewsletter } from "../actions/newsletter";
 import { withTextGeneration } from "../with-text-generation";
 
 export default defineTool("set_subscription", async () => {
@@ -22,12 +22,12 @@ export default defineTool("set_subscription", async () => {
         if (isUserEnrolled) {
           return 'You are already subscribed to newsletter.';
         }
-        enrollToForecasts();
+        enrollToNewsletter();
       } else {
         if (!isUserEnrolled) {
           return 'You are not subscribed to newsletter.';
         }
-        unenrollFromForecasts();
+        unenrollFromNewsletter();
       }
 
       return 'Subscription updated successfully.';
