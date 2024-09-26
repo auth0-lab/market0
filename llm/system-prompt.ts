@@ -1,6 +1,14 @@
+import { getUser } from "@/sdk/fga";
+
 import stocks from "../lib/market/stocks.json";
 
+const llmUserAttributes = ['email', 'name', 'given_name', 'family_name', 'nickname', 'picture'];
+
 export async function getSystemPrompt() {
+  const user = await getUser();
+  const userData = Object.fromEntries(
+    Object.entries(user).filter(([key]) => llmUserAttributes.includes(key))
+  );
   return `\
 You are a stock trading conversation bot and you can help users buy stocks, step by step.
 
@@ -23,5 +31,7 @@ If the user wants to sell stock, or complete another impossible task, respond th
 
 For your reference, today is ${new Date()}
 
+User data ${JSON.stringify(userData)}
+
 Besides that, you can also chat with users and do some calculations if needed.`;
-}
+};
