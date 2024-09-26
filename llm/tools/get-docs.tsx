@@ -1,4 +1,4 @@
-import { generateText, streamText } from "ai";
+import { streamText } from "ai";
 import toPlainObject from "lodash.toplainobject";
 import { z } from "zod";
 
@@ -10,7 +10,8 @@ import { Documents } from "@/llm/components/documents";
 import * as serialization from "@/llm/components/serialization";
 import { getHistory } from "@/llm/utils";
 import { getUser } from "@/sdk/fga";
-import { openai } from "@ai-sdk/openai";
+
+import { aiParams } from "../ai-params";
 
 const buildRequiredInfoText = ({ earnings, forecasts}: { earnings: boolean, forecasts: boolean }) => {
   const requiredInfo = [];
@@ -57,8 +58,7 @@ export default defineTool("get_docs", () => {
       );
 
       const { textStream, text: fullText, usage } = await streamText({
-        model: openai("gpt-4o"),
-        temperature: 0.3,
+        ...aiParams,
         system: `
           You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
           Summarize the response in no more than 200 words, focusing on key points.

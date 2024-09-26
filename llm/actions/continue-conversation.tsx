@@ -18,6 +18,7 @@ import { ClientMessage, ServerMessage } from "@/llm/types";
 import { getUser } from "@/sdk/fga";
 import { openai } from "@ai-sdk/openai";
 
+import { aiParams } from "../ai-params";
 import { FormattedText } from "../components/FormattedText";
 import addConditionalPurchase from "../tools/add-conditional-purchase";
 import addReminder from "../tools/add-reminder";
@@ -48,8 +49,7 @@ export async function continueConversation(
   const promptMessages = history.get();
 
   const result = await streamUI({
-    model: openai("gpt-4o"),
-    temperature: 0,
+    ...aiParams,
     system: await getSystemPrompt(),
     messages: promptMessages,
     text: ({ content, done }) => {
