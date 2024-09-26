@@ -3,8 +3,8 @@ import toPlainObject from "lodash.toplainobject";
 import { z } from "zod";
 
 import { userUsage } from "@/lib/db";
-import { checkEnrollment } from "@/llm/actions/forecast-enrollment";
 import { getSymbolRetriever } from "@/llm/actions/langchain-helpers";
+import { checkEnrollment } from "@/llm/actions/newsletter";
 import { defineTool } from "@/llm/ai-helpers";
 import { Documents } from "@/llm/components/documents";
 import * as serialization from "@/llm/components/serialization";
@@ -62,8 +62,8 @@ export default defineTool("get_docs", () => {
         system: `
           You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
           Summarize the response in no more than 200 words, focusing on key points.
-          ${canEnroll ? 'The user requested forecast but is not currently enrolled to received forecast data. Do not generate any forecast.' : ''}
-          ${forecasts && !earnings ? 'Be very concise about earnings and focus only on forecast. Be explicit about your sentiment Bullish / Bearish.' : ''}
+          ${canEnroll ? 'The user requested forecast but is not currently enrolled to received forecast data. Do not invent a forecast.' : ''}
+          ${forecasts && !canEnroll && !earnings ? 'Be very concise about earnings and focus only on forecast. Be explicit about your sentiment Bullish / Bearish.' : ''}
           ${documents.length > 0 ? "Here are the documents you have:" : "Inform the user there is no related information."}
           ${documents
             .map(
