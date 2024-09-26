@@ -2,7 +2,7 @@ import { getUser } from "@/sdk/fga";
 
 import { sql } from "./sql";
 
-type Document = {
+export type Document = {
   id: number;
   metadata: {
     id: string;

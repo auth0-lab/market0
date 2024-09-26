@@ -1,44 +1,54 @@
 'use server';
+
 import { documents } from "@/lib/db";
 import { fgaClient, getUser } from "@/sdk/fga";
+import { Claims } from "@auth0/nextjs-auth0";
 
-/**
- * Enrolls the current user to receive forecasts for a list of symbols.
- */
+type Document = documents.Document;
+
+function generateTuples(user: Claims, docs: Document[]) {
+  return docs.map(doc => {
+    return {
+      user: `user:${user.sub}`,
+      object: `doc:${doc.metadata.id}`,
+      relation: "can_view",
+    };
+  });
+}
+
+async function batchCheckTuples(tuples: any[]) {
+  const { responses: batchCheckResult } = await fgaClient.batchCheck(tuples);
+  return batchCheckResult;
+}
+
+async function getDocs(symbol?: string) {
+  return symbol ? await documents.query("forecast", symbol) : await documents.query("forecast");
+}
+
 export async function enrollToForecasts() {
   const user = await getUser();
-  const docs = await documents.query("forecast");
+  const docs = await getDocs();
+  const tuples = generateTuples(user, docs);
+  const batchCheckResult = await batchCheckTuples(tuples);
+  const createTuples = tuples.filter((_tuple, index) => !batchCheckResult[index].allowed);
+
   await fgaClient.write(
     {
-      writes: docs.map(doc => ({
-        user: `user:${user.sub}`,
-        relation: "can_view",
-        object: `doc:${doc.metadata.id}`,
-      })),
+      writes: createTuples,
     }
   );
 }
 
 export async function unenrollFromForecasts() {
   const user = await getUser();
-  const docs = await documents.query("forecast");
-  await fgaClient.deleteTuples(
-    docs.map(doc => ({
-      user: `user:${user.sub}`,
-      relation: "can_view",
-      object: `doc:${doc.metadata.id}`,
-    }))
-  );
+  const docs = await getDocs();
+  const tuples = generateTuples(user, docs);
+  const batchCheckResult = await batchCheckTuples(tuples);
+  const deleteTuples = tuples.filter((_tuple, index) => batchCheckResult[index].allowed);
+
+  await fgaClient.deleteTuples(deleteTuples);
 }
 
-/**
- *
- * Checks if the current user is enrolled to receive forecasts for a given symbol.
- *
- * @param param0
- * @param param0.symbol - The symbol to check enrollment for.
- * @returns A boolean indicating if the user is enrolled to receive forecasts for the given symbol.
- */
 export async function checkEnrollment({ symbol }: { symbol: string }) {
   const user = await getUser();
   const docs = await documents.query("forecast", symbol);
