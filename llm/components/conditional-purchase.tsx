@@ -94,29 +94,14 @@ export function ConditionalPurchase({
     }
 
     setSimulating(true);
-    const { symbol, metric, operator, threshold, user_id } =
-      conditionalPurchase;
-
-    let value = threshold;
-    switch (operator) {
-      case ">":
-      case ">=":
-        value = threshold + 1;
-        break;
-      case "<":
-      case "<=":
-        value = threshold - 1;
-        break;
-    }
+    const { id: conditional_purchase_id, user_id } = conditionalPurchase;
 
     await fetch("/api/hooks", {
       method: "POST",
       body: JSON.stringify({
         type: "metric",
         data: {
-          symbol,
-          metric,
-          value,
+          conditional_purchase_id,
           user_id,
         },
       }),
