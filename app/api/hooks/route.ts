@@ -1,13 +1,9 @@
 import { getMatchingPurchases, update } from "@/lib/db/conditional-purchases";
 import { pollMode } from "@/sdk/auth0/ciba";
-import { getSession } from "@auth0/nextjs-auth0";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const { type, data } = await request.json();
-
-  const session = await getSession();
-  const user = session ? session!.user : {};
 
   // TODO: implement a proper payload validation
   if (type !== "metric") {
@@ -19,7 +15,7 @@ export async function POST(request: NextRequest) {
 
   if (!data || !data.symbol || !data.metric || !data.value) {
     return NextResponse.json(
-      `A 'data' object with 'symbol', 'metric' and 'value' properties is required.`,
+      `A 'data' object with 'symbol', 'metric', 'value' and (optionally) 'user_id' properties is required.`,
       { status: 400 }
     );
   }
@@ -29,7 +25,7 @@ export async function POST(request: NextRequest) {
     data.symbol,
     data.metric,
     data.value,
-    user.sub
+    data.user_id
   );
 
   console.log("matchingPurchases", matchingPurchases);

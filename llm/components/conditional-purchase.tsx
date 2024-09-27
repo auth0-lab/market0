@@ -89,18 +89,39 @@ export function ConditionalPurchase({
   }
 
   async function simulateExecution() {
+    if (!conditionalPurchase) {
+      return;
+    }
+
     setSimulating(true);
+    const { symbol, metric, operator, threshold, user_id } =
+      conditionalPurchase;
+
+    let value = threshold;
+    switch (operator) {
+      case ">":
+      case ">=":
+        value = threshold + 1;
+        break;
+      case "<":
+      case "<=":
+        value = threshold - 1;
+        break;
+    }
+
     await fetch("/api/hooks", {
       method: "POST",
       body: JSON.stringify({
         type: "metric",
         data: {
-          symbol: "ZEKO",
-          metric: "P/E",
-          value: 51.53,
+          symbol,
+          metric,
+          value,
+          user_id,
         },
       }),
     });
+
     await readConditionalPurchase();
     setSimulating(false);
   }
