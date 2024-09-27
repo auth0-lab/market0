@@ -81,12 +81,12 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
                     connection: "Username-Password-Authentication",
                     displayName: "Username + Password",
                   },
-                  {
-                    connection: "box",
-                    displayName: "Box",
-                    api: "box-write",
-                    description: "Upload files to your Box account.",
-                  },
+                  // {
+                  //   connection: "box",
+                  //   displayName: "Box",
+                  //   api: "box-write",
+                  //   description: "Upload files to your Box account.",
+                  // },
                   {
                     connection: "google-oauth2",
                     displayName: "Google",
