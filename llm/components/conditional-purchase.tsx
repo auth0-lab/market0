@@ -78,7 +78,7 @@ export function ConditionalPurchase({
         </div>
         <div>
           <a
-            href={`/api/auth/login?return_to=${window.location.pathname}`}
+            href={`/api/auth/login?returnTo=${window.location.pathname}`}
             className="bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
           >
             Enroll
@@ -89,18 +89,24 @@ export function ConditionalPurchase({
   }
 
   async function simulateExecution() {
+    if (!conditionalPurchase) {
+      return;
+    }
+
     setSimulating(true);
+    const { id: conditional_purchase_id, user_id } = conditionalPurchase;
+
     await fetch("/api/hooks", {
       method: "POST",
       body: JSON.stringify({
         type: "metric",
         data: {
-          symbol: "ZEKO",
-          metric: "P/E",
-          value: 51.53,
+          conditional_purchase_id,
+          user_id,
         },
       }),
     });
+
     await readConditionalPurchase();
     setSimulating(false);
   }
