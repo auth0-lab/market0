@@ -1,23 +1,27 @@
-import { CheckGreenIcon, StockDownIcon, StockUpIcon } from "@/components/icons";
+import { CancelRedIcon, CheckGreenIcon, StockDownIcon, StockUpIcon } from "@/components/icons";
 
 import WarningWrapper from "./warning-wrapper";
 
 export const PurchaseConfirmation = ({
-  amount,
+  quantity,
   price,
   symbol,
   market,
   currency,
   company,
   delta,
+  message,
+  success
 }: {
-  amount: number;
+  quantity: number;
   price: number;
   symbol: string;
   market: string;
   currency: string;
   company: string;
   delta: number;
+  message: string;
+  success: boolean;
 }) => {
   return (
     <WarningWrapper className="max-w-xl">
@@ -52,9 +56,9 @@ export const PurchaseConfirmation = ({
         </div>
 
         <div className="flex flex-row gap-4 pb-2 mt-5 mx-3 border-t border-white/20 pt-5 items-center">
-          <CheckGreenIcon />
+          { success ? <CheckGreenIcon /> : <CancelRedIcon />}
           <div className="text-white text-lg font-light">
-            You have successfully purchased {amount} ${symbol}.
+            {message}
           </div>
         </div>
       </div>

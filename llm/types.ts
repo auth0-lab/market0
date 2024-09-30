@@ -5,6 +5,12 @@ import * as serialization from "@/llm/components/serialization";
 export { Document } from "@langchain/core/documents";
 
 export interface ServerMessage {
+  /**
+   * Optional id for the message.
+   * Make it easier to find the message in the UI and swap history.
+   */
+  id?: string;
+
   role: "user" | "assistant" | "system" | "tool";
   content: string | object;
 

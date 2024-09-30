@@ -2,24 +2,31 @@
 
 import { createStreamableUI, getMutableAIState } from "ai/rsc";
 
-import { CheckGreenIcon } from "@/components/icons";
+import { CancelRedIcon, CheckGreenIcon } from "@/components/icons";
+import { RELATION } from "@/lib/constants";
 import { createTransaction } from "@/lib/db";
 import { runAsyncFnWithoutBlocking } from "@/lib/utils";
 import * as serialization from "@/llm/components/serialization";
-import { getUser } from "@/sdk/fga";
+import { getUser, withFGA } from "@/sdk/fga";
+import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
 
 import { PurchaseConfirmation } from "../components/purchase-confirmation";
 import { ServerMessage } from "../types";
 
-export async function confirmPurchase(
+type confirmPurchaseParams = {
   symbol: string,
   price: number,
-  amount: number,
-  market: string,
-  currency: string,
-  company: string,
-  delta: number
-) {
+  quantity: number,
+
+  /**
+   * The message ID that triggered the component that called this action.
+   */
+  messageID: string,
+};
+
+const confirmPurchaseInternal = async (
+  { symbol, price, quantity, messageID }: confirmPurchaseParams
+) => {
   "use server";
   const user = await getUser();
   const history = getMutableAIState();
@@ -27,12 +34,10 @@ export async function confirmPurchase(
   const purchasing = createStreamableUI(
     <div className="inline-flex items-start gap-1 md:items-center">
       <p>
-        Purchasing {amount} ${symbol}...
+        Purchasing {quantity} ${symbol}...
       </p>
     </div>
   );
-
-  const systemMessage = createStreamableUI(null);
 
   runAsyncFnWithoutBlocking(async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -40,51 +45,81 @@ export async function confirmPurchase(
     purchasing.update(
       <div className="inline-flex items-start gap-1 md:items-center">
         <p>
-          Purchasing {amount} ${symbol}... working on it...
+          Purchasing {quantity} ${symbol}... working on it...
         </p>
       </div>
     );
 
-    await createTransaction(symbol, price, amount, "buy", user.sub);
-
+    await createTransaction(symbol, price, quantity, "buy", user.sub);
+    const message = `You have successfully purchased ${quantity} $${symbol}.`;
     //we could use also PurchaseConfirmation
     purchasing.done(
       <div className="flex flex-row gap-4 items-center">
         <CheckGreenIcon />
-        You have successfully purchased {amount} ${symbol}.
+        {message}
       </div>
     );
 
-    systemMessage.done(
-      <>
-        You have purchased {amount} shares of {symbol} at ${price}.
-      </>
-    );
-
-    history.done((messages: ServerMessage[]) => [
-      ...messages,
-      {
-        role: "assistant",
-        content: `[User has purchased ${amount} shares of ${symbol} at ${price}.`,
-        componentName: serialization.names.get(PurchaseConfirmation)!,
+    history.done((messages: ServerMessage[]) => messages.map(m => {
+      return m.id === messageID ? {
+        ...m,
+        content: `User has successfully purchased ${quantity} stocks of ${symbol} at the price of $ ${price}.`,
+        componentName: serialization.names.get(PurchaseConfirmation),
         params: {
-          amount,
-          price,
+          ...m.params,
+          success: true,
+          quantity,
           symbol,
-          market,
-          currency,
-          company,
-          delta,
-        },
-      },
-    ]);
+          price,
+          message
+        }
+      } : m;
+    }));
   });
 
   return {
     purchasingUI: purchasing.value,
-    newMessage: {
-      id: Date.now(),
-      display: systemMessage.value,
-    },
   };
 }
+
+export const confirmPurchase = withCheckPermission({
+  checker: async (params) => {
+    return withFGA({
+      object: `asset:${params.symbol.toLowerCase()}`,
+      relation: RELATION.CAN_BUY_STOCKS,
+      context: { current_time: new Date().toISOString() },
+    });
+  },
+  onUnauthorized: async (params) => {
+    const purchasing = createStreamableUI(null);
+    const history = getMutableAIState();
+    const message = `You are not authorized to purchase ${params.quantity} stocks of ${params.symbol}.`;
+
+    purchasing.done(
+      <div className="flex flex-row gap-4 items-center">
+        <CancelRedIcon />
+        {message}
+      </div>
+    );
+
+    history.done((messages: ServerMessage[]) => messages.map(m => {
+      return m.id === params.messageID ? {
+        ...m,
+        content: message,
+        componentName: serialization.names.get(PurchaseConfirmation),
+        params: {
+          ...m.params,
+          quantity: params.quantity,
+          price: params.price,
+          symbol: params.symbol,
+          message,
+          success: false,
+        }
+      } : m;
+    }));
+
+    return {
+      purchasingUI: purchasing.value,
+    };
+  }
+}, confirmPurchaseInternal);

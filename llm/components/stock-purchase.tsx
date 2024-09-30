@@ -1,7 +1,7 @@
 "use client";
 
 import { useActions, useUIState } from "ai/rsc";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import { StockDownIcon, StockUpIcon } from "@/components/icons";
 import { formatNumber } from "@/lib/utils";
@@ -9,26 +9,40 @@ import { formatNumber } from "@/lib/utils";
 import { ClientMessage } from "../types";
 import WarningWrapper from "./warning-wrapper";
 
-export function StockPurchase({
-  numberOfShares,
-  symbol,
-  delta,
-  price,
-  market,
-  currency,
-  company,
-}: {
-  numberOfShares?: number;
+type StockPurchaseUIParams = {
+  initialQuantity?: number;
   symbol: string;
   delta: number;
   price: number;
   market: string;
   currency: string;
   company: string;
-}) {
-  const [value, setValue] = useState(numberOfShares || 100);
+
+  /**
+   * The UI result to show after the purchase is confirmed or canceled.
+   */
+  uiResult?: React.ReactNode;
+
+  /**
+   * The message ID that triggered this component.
+   */
+  messageID: string;
+};
+
+export function StockPurchase({
+  initialQuantity,
+  symbol,
+  delta,
+  price,
+  market,
+  currency,
+  company,
+  messageID,
+  uiResult,
+}: StockPurchaseUIParams) {
+  const [quantity, setQuantity] = useState(initialQuantity || 100);
   const [purchasingUI, setPurchasingUI] = useState<null | React.ReactNode>(
-    null
+    uiResult
   );
   const [messages, setMessages] = useUIState();
   const { confirmPurchase } = useActions();
@@ -36,7 +50,7 @@ export function StockPurchase({
 
   function onSliderChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newValue = Number(e.target.value);
-    setValue(newValue);
+    setQuantity(newValue);
 
     const info = {
       role: "system",
@@ -98,7 +112,7 @@ export function StockPurchase({
               <input
                 id="labels-range-input"
                 type="range"
-                value={value}
+                value={quantity}
                 onChange={onSliderChange}
                 min="0"
                 max="1000"
@@ -125,11 +139,11 @@ export function StockPurchase({
                     Total cost
                   </p>
                   <div className="flex flex-row gap-2 text-white text-sm font-light">
-                    {value} shares x ${price} per share
+                    {quantity} shares x ${price} per share
                   </div>
                 </div>
                 <div className="text-xl leading-8 font-semibold">
-                  <span>{formatNumber(value * price)}</span>
+                  <span>{formatNumber(quantity * price)}</span>
                 </div>
               </div>
             </div>
@@ -138,22 +152,13 @@ export function StockPurchase({
               <button
                 className="w-full py-2 mt-6 bg-green-500 rounded-lg text-black text-base font-normal"
                 onClick={async () => {
-                  const response = await confirmPurchase(
+                  const response = await confirmPurchase({
                     symbol,
                     price,
-                    value,
-                    market,
-                    currency,
-                    company,
-                    delta
-                  );
+                    quantity,
+                    messageID,
+                  });
                   setPurchasingUI(response.purchasingUI);
-
-                  // Insert a new system message to the UI.
-                  setMessages((prevMessages: ClientMessage[]) => [
-                    ...prevMessages,
-                    response.newMessage,
-                  ]);
                 }}
               >
                 Purchase

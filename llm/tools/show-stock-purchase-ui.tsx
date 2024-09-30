@@ -1,3 +1,4 @@
+import { generateId } from "ai";
 import { z } from "zod";
 
 import { RELATION } from "@/lib/constants";
@@ -84,30 +85,30 @@ export default defineTool("show_stock_purchase_ui", () => {
         const stockStatus = await getStockPrices({ symbol });
         const price = limit ?? stockStatus.current_price;
 
+        const messageID = generateId();
+
+        const params = {
+          messageID,
+          symbol,
+          price,
+          market,
+          company,
+          currency,
+          initialQuantity: numberOfShares,
+          delta: stockStatus.delta,
+        };
+
         history.update({
+          id: messageID,
           role: "assistant",
           content: `Showing stock purchase UI for ${symbol} at ${price}`,
           componentName: serialization.names.get(StockPurchase)!,
-          params: {
-            symbol,
-            price,
-            market,
-            company,
-            currency,
-            numberOfShares,
-            delta: stockStatus.delta,
-          },
+          params,
         });
 
         return (
           <StockPurchase
-            symbol={symbol}
-            price={price}
-            delta={stockStatus.delta}
-            numberOfShares={numberOfShares}
-            market={market}
-            company={company}
-            currency={currency}
+            {...params}
           />
         );
       }
