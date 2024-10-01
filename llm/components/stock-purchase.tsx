@@ -1,32 +1,62 @@
 "use client";
 
 import { useActions, useUIState } from "ai/rsc";
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 
 import { StockDownIcon, StockUpIcon } from "@/components/icons";
 import { formatNumber } from "@/lib/utils";
 
-import { ClientMessage } from "../types";
+import { StockPurchaseStatus } from "./stock-purchase-status";
 import WarningWrapper from "./warning-wrapper";
 
 type StockPurchaseUIParams = {
+  /**
+   * If specified by the user, the initial quantity to purchase.
+   */
   initialQuantity?: number;
-  symbol: string;
-  delta: number;
-  price: number;
-  market: string;
-  currency: string;
-  company: string;
 
   /**
-   * The UI result to show after the purchase is confirmed or canceled.
+   * The stock symbol to purchase.
    */
-  uiResult?: React.ReactNode;
+  symbol: string;
+
+  /**
+   * The change in price of the stock.
+   */
+  delta: number;
+
+  /**
+   * The price of the stock.
+   */
+  price: number;
+
+  /**
+   * The market of the stock.
+   */
+  market: string;
+
+  /**
+   * The currency of the stock.
+   */
+  currency: string;
+
+  /**
+   * The company name of the stock.
+   */
+  company: string;
 
   /**
    * The message ID that triggered this component.
    */
   messageID: string;
+
+  /**
+   * Holds the result of the user interaction with the component.
+   */
+  result?: {
+    message: string
+    status: "success" | "failure"
+  };
 };
 
 export function StockPurchase({
@@ -38,11 +68,11 @@ export function StockPurchase({
   currency,
   company,
   messageID,
-  uiResult,
+  result,
 }: StockPurchaseUIParams) {
   const [quantity, setQuantity] = useState(initialQuantity || 100);
   const [purchasingUI, setPurchasingUI] = useState<null | React.ReactNode>(
-    uiResult
+    result ? <StockPurchaseStatus {...result} /> : null
   );
   const [messages, setMessages] = useUIState();
   const { confirmPurchase } = useActions();
