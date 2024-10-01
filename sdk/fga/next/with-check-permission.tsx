@@ -1,46 +1,47 @@
-type WithCheckPermissionParams<PageParams> = {
-  checker: (toolParams: PageParams) => Promise<boolean>;
-  onUnauthorized?: (toolParam: PageParams) => Promise<JSX.Element>;
+type WithCheckPermissionParams<Args extends any[], R> = {
+  checker: (...args: Args) => Promise<boolean>;
+  onUnauthorized?: (...args: Args) => any;
 };
 
 const DEFAULT_UNAUTHORIZED_MESSAGE =
   "You are not authorized to perform this action.";
 
-async function defaultOnUnauthorized() {
-  return <div>${DEFAULT_UNAUTHORIZED_MESSAGE}</div>;
+async function defaultOnUnauthorized(): Promise<JSX.Element> {
+  return <div>{DEFAULT_UNAUTHORIZED_MESSAGE}</div>;
 }
 
 /**
- * Wrap a Serverless page with an FGA permission check.
- * @param params
- * @param params.checker - A function that receives the same parameter
- *     than the serverless function and checks
+ * Wrap a Serverless page or action with an FGA permission check.
+ *
+ * @param options
+ * @param params.checker - A function that receives the same parameters
+ *     as the serverless function and checks
  *     if the user has permission to access the page.
  *     This can be `withFGA`.
- * @param params.onUnauthorized - A function that receives the same parameter
- *     than the serverless function and returns a JSX element.
+ * @param params.onUnauthorized - A function that receives the same parameters
+ *     as the serverless function and returns a JSX element.
  *     This can be used to customize the unauthorized message.
  * @param fn - The serverless function to wrap.
  * @returns A new serverless function that checks permissions before executing the original function.
  */
-export function withCheckPermission<PageParams = any>(
-  params: WithCheckPermissionParams<PageParams>,
-  fn: (toolParam: PageParams) => Promise<JSX.Element>
-) {
-  return async function (toolParam: PageParams): Promise<JSX.Element> {
+export function withCheckPermission<Args extends any[], R>(
+  options: WithCheckPermissionParams<Args, R>,
+  fn: (...args: Args) => Promise<R>
+): (...args: Args) => Promise<R | JSX.Element> {
+  return async function (...args: Args): Promise<R | JSX.Element> {
     let allowed = false;
 
     try {
-      allowed = await params.checker(toolParam);
+      allowed = await options.checker(...args);
     } catch (e) {
       console.error(e);
     }
 
     if (allowed) {
-      return fn(toolParam);
+      return fn(...args);
     } else {
-      if (params.onUnauthorized) {
-        return params.onUnauthorized(toolParam);
+      if (options.onUnauthorized) {
+        return options.onUnauthorized(...args);
       }
 
       return defaultOnUnauthorized();
