@@ -3,7 +3,7 @@ import { z, ZodTypeAny } from "zod";
 
 // Copied from vercel/ai because these types are not exported
 type Streamable$1 = ReactNode | Promise<ReactNode>;
-type Renderer$1<T extends Array<any>> = (...args: T) => Streamable$1 | Generator<Streamable$1, Streamable$1, void> | AsyncGenerator<Streamable$1, Streamable$1, void>;
+export type Renderer$1<T extends Array<any>> = (...args: T) => Streamable$1 | Generator<Streamable$1, Streamable$1, void> | AsyncGenerator<Streamable$1, Streamable$1, void>;
 export type RenderTool<T extends ZodTypeAny> = {
   description?: string;
   parameters: T,

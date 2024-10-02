@@ -1,9 +1,8 @@
-import { CoreMessage, generateText, LanguageModelV1, streamText } from "ai";
+import { CoreMessage, generateText, streamText } from "ai";
 import { getMutableAIState } from "ai/rsc";
 import { ReactNode } from "react";
 
-import { openai } from "@ai-sdk/openai";
-
+import { Renderer$1 } from "./ai-helpers";
 import { aiParams } from "./ai-params";
 import { getSystemPrompt } from "./system-prompt";
 
@@ -67,6 +66,13 @@ const buildMessage = async (
   return { textStream, text };
 };
 
+type SimpleRenderer<ToolParam> = Renderer$1<[
+  ToolParam,
+  {
+    toolName: string;
+    toolCallId: string;
+  }
+]>;
 /**
  * Wraps the generate function of a tool to generate text messages.
  *
@@ -75,22 +81,38 @@ const buildMessage = async (
  * @returns - The wrapped function.
  */
 export function withTextGeneration<ToolParam = any>(
-  params: WithTextGenerationParams,
-  fn: (toolParam: ToolParam) => AsyncGenerator<ReactNode, ReactNode, unknown>
+  params: WithTextGenerationParams | SimpleRenderer<ToolParam>,
+  fn?: SimpleRenderer<ToolParam>
 ) {
   const state = getMutableAIState();
-
+  if (typeof params === 'function') {
+    fn = params;
+    params = {};
+  }
+  if (!fn) {
+    throw new Error('fn is required');
+  }
   return async function* (
     toolParam: ToolParam,
     { toolName, toolCallId } : {toolName: string; toolCallId: string}
   ): AsyncGenerator<ReactNode, ReactNode, unknown> {
 
     let itr: IteratorResult<ReactNode, ReactNode>;
-    const it = fn(toolParam);
-    while (!(itr = await it.next()).done) {
-        yield itr.value;
+    const it = fn(toolParam, { toolName, toolCallId });
+    let toolReturn: any;
+
+    if (
+      it && typeof it === 'object' &&
+      (Symbol.iterator in it || Symbol.asyncIterator in it)
+    ) {
+      // @ts-ignore
+      while (!(itr = await it.next()).done) {
+          yield itr.value;
+      }
+      toolReturn = itr.value;
+    } else{
+      toolReturn = await it;
     }
-    const toolReturn = itr.value;
 
     if (toolReturn !== undefined) {
       const { text, textStream } = await buildMessage(
