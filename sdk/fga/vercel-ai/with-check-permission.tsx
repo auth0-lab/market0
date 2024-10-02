@@ -1,15 +1,20 @@
 import { getMutableAIState } from "ai/rsc";
 import { ReactNode } from "react";
 
+import { Renderer$1, RenderTool } from "@/llm/ai-helpers";
 import { ServerMessage } from "@/llm/types";
 
 import Loader from "../../components/loader";
 
 type WithCheckPermissionParams<ToolParams> = {
   checker: (toolParams: ToolParams) => Promise<boolean>;
-  onUnauthorized?: (
-    toolParam: ToolParams
-  ) => AsyncGenerator<ReactNode, ReactNode, unknown>;
+  onUnauthorized?: Renderer$1<[
+    ToolParams,
+    {
+      toolName: string;
+      toolCallId: string;
+    }
+  ]>;
 };
 
 const DEFAULT_UNAUTHORIZED_MESSAGE =
@@ -39,11 +44,24 @@ async function* defaultOnUnauthorized(): AsyncGenerator<
  */
 export function withCheckPermission<ToolParam = any>(
   params: WithCheckPermissionParams<ToolParam>,
-  fn: (toolParam: ToolParam) => AsyncGenerator<ReactNode, ReactNode, unknown>
-) {
+  fn: Renderer$1<[
+    ToolParam,
+    {
+      toolName: string;
+      toolCallId: string;
+    }
+  ]>
+): Renderer$1<[
+  ToolParam,
+  {
+    toolName: string;
+    toolCallId: string;
+  }
+]> {
   const state = getMutableAIState();
   return async function* (
-    toolParam: ToolParam
+    toolParam: ToolParam,
+    toolData: { toolName: string; toolCallId: string }
   ): AsyncGenerator<ReactNode, ReactNode, unknown> {
     yield <Loader />;
 
@@ -56,10 +74,31 @@ export function withCheckPermission<ToolParam = any>(
     }
 
     if (allowed) {
-      return yield* fn(toolParam);
+      const result = fn(toolParam, toolData);
+      if (
+        result && typeof result === 'object' &&
+        (Symbol.iterator in result || Symbol.asyncIterator in result)
+      ) {
+        //TODO: this is a bit tricky and not tested for all cases.
+        // @ts-ignore
+        return yield* result;
+      } else {
+        return result;
+      }
     } else {
       if (params.onUnauthorized) {
-        return yield* params.onUnauthorized(toolParam);
+        const rt = params.onUnauthorized(toolParam, toolData);
+        if (
+          rt && typeof rt === 'object' &&
+          (Symbol.iterator in rt || Symbol.asyncIterator in rt)
+        ) {
+          //TODO: this is a bit tricky and not tested for all cases.
+          // ts fails with `yield* rt`
+          // @ts-ignore
+          return yield* rt;
+        } else {
+          return rt;
+        }
       }
 
       state.done((messages: ServerMessage[]) => [
