@@ -35,39 +35,21 @@ export default defineTool("get_docs", () => {
         .describe(
           "The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD."
         ),
-      earnings: z
-        .boolean()
-        .describe('Whether to include earnings data in the summary.')
-        .optional()
-        .default(false),
-      forecasts: z
-        .boolean()
-        .describe('Whether to include forecasts in the summary.')
-        .optional()
-        .default(false),
       originalMessage: z.string()
         .describe('The original and complete message the user send.')
     }),
-    generate: async function* ({ symbol, earnings, forecasts, originalMessage }) {
-      const isEnrolledToForecasts = await checkEnrollment({ symbol });
-
+    generate: async function* ({ symbol, originalMessage }) {
       const retriever = await getSymbolRetriever(symbol);
-      const messageToRetrieve = `${buildRequiredInfoText({ earnings, forecasts })} for ${symbol}`;
       const documents = await retriever.invoke(
-        messageToRetrieve
+        originalMessage
       );
-
       const { textStream, text: fullText, usage } = await streamText({
         ...aiParams,
         temperature: 0.1,
         system: `
           You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
           Summarize the response in no more than 200 words, focusing on key points.
-          ${isEnrolledToForecasts ?
-              'The user is enrolled to receive forecast data.' :
-              'The user is not currently enrolled to receive forecast data.'
-          }
-          ${forecasts && isEnrolledToForecasts && !earnings ? 'Be very concise about earnings, focus only on forecast. Be explicit about your sentiment Bullish / Bearish.' : ''}
+          If the provided documents contain forecasts, make sure to include them in the response, otherwise focus on the earnings data.
           ${documents.length > 0 ? "Here are the documents you have:" : "Inform the user there is no related information."}
           ${documents
             .map(
@@ -86,7 +68,6 @@ export default defineTool("get_docs", () => {
       const baseParams = {
         symbol,
         documents: documents.map(toPlainObject),
-        requestedForecasts: forecasts
       };
 
       let currentText = '';
@@ -104,9 +85,7 @@ export default defineTool("get_docs", () => {
 
        history.update({
         role: "assistant",
-        content: `${text}
-  ${forecasts && !isEnrolledToForecasts ? 'User requested forecast but was not enrolled at the moment of this message.' : ''}
-`,
+        content: text,
         componentName: serialization.names.get(Documents)!,
         params: params,
       });
