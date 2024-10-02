@@ -27,7 +27,11 @@ export default defineTool("set_profile_attributes", async () => {
       const user = await getUser();
       await updateUser(user.sub, { givenName, familyName });
 
-      return `Noted that your name is ${givenName} ${familyName}.`;
+      return `
+        Your profile has been updated successfully.
+        ${givenName ? `Your first name is now ${givenName}.` : ""}
+        ${familyName ? `Your last name is now ${familyName}.` : ""}
+  `;
     }),
   };
 });

@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import Loader from "@/components/loader";
 import { defineTool } from "@/llm/ai-helpers";
-import { getHistory } from "@/llm/utils";
 import { fgaClient, getUser } from "@/sdk/fga";
 
 import { withTextGeneration } from "../with-text-generation";

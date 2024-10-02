@@ -10,6 +10,7 @@ import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permission";
 import { defineTool } from "../ai-helpers";
 import { StockPurchase } from "../components/stock-purchase";
 import { getHistory } from "../utils";
+import { withTextGeneration } from "../with-text-generation";
 
 type ToolParams = {
   symbol: string;
@@ -66,6 +67,16 @@ export default defineTool("show_stock_purchase_ui", () => {
             relation: RELATION.CAN_BUY_STOCKS,
             context: { current_time: new Date().toISOString() },
           }),
+        onUnauthorized: withTextGeneration(async function*({ symbol }) {
+          return `
+The user requesting the operation is not authorized to purchase ${symbol}.
+Specific restrictions might apply, such as:
+-  working for a financial institution
+-  working at ${symbol}.
+-  having a specific role in the company.
+Please tell the user they should contact the support desk of Market0 to get more information.
+`;
+        }),
       },
       async function* ({
         symbol,
