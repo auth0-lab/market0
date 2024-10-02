@@ -6,7 +6,13 @@ import { documents } from "@/lib/db";
 import { withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
 
-async function Report({ params }: { params: { id: string } }) {
+type ReportParams = {
+  params: {
+    id: string;
+  };
+};
+
+async function Report({ params }: ReportParams) {
   const document = await documents.getByID(params.id);
   return (
     <main
@@ -30,7 +36,7 @@ async function Report({ params }: { params: { id: string } }) {
 
 export default withCheckPermission(
   {
-    checker: ({ params }) =>
+    checker: ({ params }: ReportParams) =>
       withFGA({
         object: `doc:${params.id}`,
         relation: "can_view",

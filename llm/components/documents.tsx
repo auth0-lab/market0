@@ -14,12 +14,10 @@ import WarningWrapper from "./warning-wrapper";
 export const Documents = ({
   documents,
   text,
-  requestedForecasts,
   symbol,
 }: {
-  text: string;
   documents: Document[];
-  requestedForecasts: boolean;
+  text: string;
   symbol: string;
 }) => {
   const [showEnrollment, setShowEnrollment] = useState(false);
@@ -27,14 +25,12 @@ export const Documents = ({
   const { checkEnrollment, enrollToNewsletter } = useActions();
 
   useEffect(() => {
-    if (requestedForecasts) {
-      checkEnrollment({ symbol }).then((isEnrolled?: Boolean) => {
-        setShowEnrollment(!isEnrolled);
-      });
-    }
+    checkEnrollment({ symbol }).then((isEnrolled?: Boolean) => {
+      setShowEnrollment(!isEnrolled);
+    });
     // TODO: verify this. checkEnrollment keeps changing.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestedForecasts, symbol]);
+  }, [symbol]);
 
   const enroll = () => {
     enrollToNewsletter();

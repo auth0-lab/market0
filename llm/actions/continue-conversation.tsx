@@ -21,6 +21,7 @@ import { aiParams } from "../ai-params";
 import { FormattedText } from "../components/FormattedText";
 import addConditionalPurchase from "../tools/add-conditional-purchase";
 import addReminder from "../tools/add-reminder";
+import checkSubscription from "../tools/check-subscription";
 import setEmployeer from "../tools/set-employeer";
 import setProfileAttributes from "../tools/set-profile-attributes";
 import setSubscription from "../tools/set-subscription";
@@ -76,6 +77,7 @@ export async function continueConversation(
       getEvents,
       getDocs,
       setEmployeer,
+      checkSubscription,
       setSubscription,
       setProfileAttributes
     ),
