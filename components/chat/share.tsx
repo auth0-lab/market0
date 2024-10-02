@@ -5,12 +5,24 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
+import {
+  assignChatReader,
+  getChatReaders,
+  revokeChatReader,
+} from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { getAvatarFallback } from "../auth0/user-button";
-import { LinkIcon, ShareIcon } from "../icons";
+import { CaretDownIcon, LinkIcon, LinkIcon2, ShareIcon } from "../icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -23,8 +35,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
+import { Toaster } from "../ui/toaster";
+import { useToast } from "../ui/use-toast";
 import { useChat } from "./context";
 
 import type { Claims } from "@auth0/nextjs-auth0";
@@ -38,6 +58,7 @@ interface PermissionBlockProps {
   name: string;
   email: string;
   role: string;
+  onAccessRemoval?: (email: string) => void;
 }
 
 const PermissionBlock = ({
@@ -46,6 +67,7 @@ const PermissionBlock = ({
   name,
   email,
   role = "Viewer",
+  onAccessRemoval = () => void 0,
 }: PermissionBlockProps) => {
   return (
     <li className="flex items-center justify-between">
@@ -59,38 +81,85 @@ const PermissionBlock = ({
           <span className="text-gray-600 text-sm">{email}</span>
         </div>
       </div>
-      <span className="text-slate-400">{role}</span>
+      {role === "Owner" && (
+        <Button variant="ghost" className="font-normal">
+          <span className="text-slate-400">{role}</span>
+        </Button>
+      )}
+      {role === "Viewer" && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="font-normal">
+              <span className="text-slate-400">{role}</span>
+              <CaretDownIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Button
+                variant="link"
+                className="font-normal"
+                onClick={() => onAccessRemoval(email)}
+              >
+                Remove access
+              </Button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </li>
   );
 };
 
 const formSchema = z.object({
-  value: z.string().min(2).max(200),
+  readerEmail: z.string().email(),
 });
 
 export function ShareConversation({ user }: ShareConversationProps) {
   const { chatId } = useChat();
 
-  // render nothing if we are not in the context of a chat
-  if (!chatId) {
-    return null;
-  }
-
-  const [viewers, setViewers] = useState<string[]>([]);
+  const [viewers, setViewers] = useState<{ email?: string }[]>([]);
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      value: "",
+      readerEmail: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const input = values.value;
-    form.reset();
+    const email = values.readerEmail;
 
-    // manage state and add people to chat
+    try {
+      await assignChatReader(chatId!, [email]);
+      setViewers((prev) => [...prev, { email }]);
+      form.reset();
+    } catch (err) {
+      toast({
+        title: "Error!",
+        description:
+          (err.message as string) ||
+          "There was a problem sharing this chat. Try again later.",
+        variant: "destructive",
+      });
+    }
+  }
+
+  async function handleOnRemove(email: string) {
+    try {
+      await revokeChatReader(chatId!, [email]);
+      setViewers((prev) => prev.filter((viewer) => viewer.email !== email));
+    } catch (err) {
+      toast({
+        title: "Error!",
+        description:
+          (err as Error).message ||
+          "There was a problem removing access to this chat. Try again later.",
+        variant: "destructive",
+      });
+    }
   }
 
   async function copyText(text: string) {
@@ -104,15 +173,28 @@ export function ShareConversation({ user }: ShareConversationProps) {
   useEffect(() => {
     async function retrieveViewers() {
       try {
-        // const newViewers = await getChatViewers(chat);
-        // setViewers(() => [...newViewers]);
-      } catch (error) {
-        console.error(error);
+        const retrievedViewers = await getChatReaders(chatId!);
+        setViewers(() => [...retrievedViewers]);
+      } catch (err) {
+        toast({
+          title: "Error!",
+          description:
+            (err as Error).message ||
+            "There was a problem retrieving chat readers. Try again later.",
+          variant: "destructive",
+        });
       }
     }
 
-    retrieveViewers();
-  }, [viewers]);
+    if (chatId) {
+      retrieveViewers();
+    }
+  }, [chatId]);
+
+  // render nothing if we are not in the context of a chat
+  if (!chatId) {
+    return null;
+  }
 
   return (
     <Dialog>
@@ -128,8 +210,8 @@ export function ShareConversation({ user }: ShareConversationProps) {
           </DialogTitle>
           <DialogDescription>
             All conversations are private by default and only accessible to the
-            owner. You can share your chat with friends or colleges by adding
-            their email and copying the link to this chat
+            owner. You can share your chat with friends or colleges by
+            submitting their email and copying the link of this chat
           </DialogDescription>
         </DialogHeader>
 
@@ -140,7 +222,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
           >
             <FormField
               control={form.control}
-              name="value"
+              name="readerEmail"
               render={({ field }) => (
                 <FormItem className="w-full space-y-0">
                   <FormControl>
@@ -148,10 +230,11 @@ export function ShareConversation({ user }: ShareConversationProps) {
                       autoFocus
                       autoComplete="off"
                       className="bg-white shadow-none focus-visible:ring-0 p-4 placeholder-slate-500/80 text-base font-light"
-                      placeholder="Add people by email"
+                      placeholder="Share by email"
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -159,9 +242,10 @@ export function ShareConversation({ user }: ShareConversationProps) {
             <Button
               disabled={!form.formState.isDirty}
               type="submit"
-              className="px-4 py-4 m-0 bg-indigo-600 hover:bg-indigo-500 text-white text-sm leading-6 font-light"
+              variant="secondary"
+              className="px-4 py-4 m-0 text-sm leading-6 font-light"
             >
-              Add
+              Share
             </Button>
           </form>
         </Form>
@@ -179,41 +263,40 @@ export function ShareConversation({ user }: ShareConversationProps) {
                 email={user.email}
                 role="Owner"
               />
-              {[
-                "damian@auth0.com",
-                "den@auth0.com",
-                "jose@auth0.com",
-                "iaco@auth0.com",
-                "jared@okta.com",
-                "javier.centurion@okta.com",
-              ].map((email) => (
-                <PermissionBlock
-                  key={generateId()}
-                  name={email}
-                  email={email}
-                  fallback={getAvatarFallback({
-                    family_name: email[1],
-                    given_name: email[0],
-                  })}
-                  role="Viewer"
-                />
-              ))}
+              {viewers.map(
+                ({ email }) =>
+                  email && (
+                    <PermissionBlock
+                      key={generateId()}
+                      name={email}
+                      email={email}
+                      fallback={getAvatarFallback({
+                        family_name: email[1],
+                        given_name: email[0],
+                      })}
+                      role="Viewer"
+                      onAccessRemoval={(email) => handleOnRemove(email)}
+                    />
+                  )
+              )}
             </ul>
           </ScrollArea>
         </div>
 
-        <DialogFooter className="sm:justify-between">
+        <DialogFooter className="flex gap-1">
           <Button
-            className="flex gap-2 items-center"
-            variant="secondary"
+            className="flex gap-2 items-center flex-1"
+            variant="outline"
             disabled={isCopied}
             onClick={() => copyText(window.location.href)}
           >
-            <LinkIcon />
+            <LinkIcon2 />
             {isCopied ? "Copied!" : "Copy Link"}
           </Button>
           <DialogClose asChild>
-            <Button type="button">Done</Button>
+            <Button type="button" variant="default" className="flex-1">
+              Done
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

@@ -1,7 +1,8 @@
 "use server";
 
 import { ConsistencyPreference } from "@openfga/sdk";
-import { fgaClient, getUser } from ".";
+
+import { fgaClient, getUser } from "./";
 
 const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS
   ? parseInt(process.env.MAX_CHAT_READERS, 10)
