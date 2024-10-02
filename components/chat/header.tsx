@@ -11,8 +11,6 @@ export async function Header() {
   const session = await getSession();
   const user = session?.user!;
 
-  // const chat = await getChat();
-
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between w-full px-6 py-3 h-14 shrink-0 bg-background backdrop-blur-xl">
       <div className="flex items-center gap-6">
@@ -32,7 +30,7 @@ export async function Header() {
       </div>
       <div className="flex items-center justify-end gap-6">
         <div className="flex items-center justify-end gap-6">
-          <ShareConversation user={user} chat={"123123123"} />
+          <ShareConversation user={user} />
 
           <Link
             href="https://github.com/auth0-lab/market0"

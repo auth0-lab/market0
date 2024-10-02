@@ -3,6 +3,7 @@ import "./globals.css";
 
 import { Inter } from "next/font/google";
 
+import { ChatProvider } from "@/components/chat/context";
 import { Header } from "@/components/chat/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
@@ -29,8 +30,10 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          {children}
+          <ChatProvider>
+            <Header />
+            {children}
+          </ChatProvider>
         </ThemeProvider>
       </body>
     </html>

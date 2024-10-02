@@ -24,11 +24,11 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
+import { useChat } from "./context";
 
 import type { Claims } from "@auth0/nextjs-auth0";
 export interface ShareConversationProps {
   user: Claims;
-  chat: string;
 }
 
 interface PermissionBlockProps {
@@ -67,7 +67,14 @@ const formSchema = z.object({
   value: z.string().min(2).max(200),
 });
 
-export function ShareConversation({ user, chat }: ShareConversationProps) {
+export function ShareConversation({ user }: ShareConversationProps) {
+  const { chatId } = useChat();
+
+  // render nothing if we are not in the context of a chat
+  if (!chatId) {
+    return null;
+  }
+
   const [viewers, setViewers] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -84,11 +91,19 @@ export function ShareConversation({ user, chat }: ShareConversationProps) {
     // manage state and add people to chat
   }
 
+  async function copyText(text: string) {
+    try {
+      await copyToClipboard(text);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     async function retrieveViewers() {
       try {
-        const newViewers = await getChatViewers(chat);
-        setViewers(() => [...newViewers]);
+        // const newViewers = await getChatViewers(chat);
+        // setViewers(() => [...newViewers]);
       } catch (error) {
         console.error(error);
       }
