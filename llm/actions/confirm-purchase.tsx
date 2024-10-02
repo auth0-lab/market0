@@ -2,16 +2,15 @@
 
 import { createStreamableUI, getMutableAIState } from "ai/rsc";
 
-import { CancelRedIcon, CheckGreenIcon } from "@/components/icons";
 import { RELATION } from "@/lib/constants";
 import { createTransaction } from "@/lib/db";
 import { runAsyncFnWithoutBlocking } from "@/lib/utils";
 import * as serialization from "@/llm/components/serialization";
+import { StockPurchase } from "@/llm/components/stock-purchase";
+import { StockPurchaseStatus } from "@/llm/components/stock-purchase-status";
+import { ServerMessage } from "@/llm/types";
 import { getUser, withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
-
-import { PurchaseConfirmation } from "../components/purchase-confirmation";
-import { ServerMessage } from "../types";
 
 type confirmPurchaseParams = {
   symbol: string,
@@ -32,46 +31,37 @@ const confirmPurchaseInternal = async (
   const history = getMutableAIState();
 
   const purchasing = createStreamableUI(
-    <div className="inline-flex items-start gap-1 md:items-center">
-      <p>
-        Purchasing {quantity} ${symbol}...
-      </p>
-    </div>
+    <StockPurchaseStatus message={`Purchasing ${quantity} ${symbol}...`} status="in-progress" />
   );
 
   runAsyncFnWithoutBlocking(async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     purchasing.update(
-      <div className="inline-flex items-start gap-1 md:items-center">
-        <p>
-          Purchasing {quantity} ${symbol}... working on it...
-        </p>
-      </div>
+      <StockPurchaseStatus
+        message={`Purchasing ${quantity} ${symbol}... working on it...`}
+        status="in-progress" />
     );
 
     await createTransaction(symbol, price, quantity, "buy", user.sub);
     const message = `You have successfully purchased ${quantity} $${symbol}.`;
-    //we could use also PurchaseConfirmation
     purchasing.done(
-      <div className="flex flex-row gap-4 items-center">
-        <CheckGreenIcon />
-        {message}
-      </div>
+      <StockPurchaseStatus
+        message={message}
+        status="success" />
     );
 
     history.done((messages: ServerMessage[]) => messages.map(m => {
       return m.id === messageID ? {
         ...m,
         content: `User has successfully purchased ${quantity} stocks of ${symbol} at the price of $ ${price}.`,
-        componentName: serialization.names.get(PurchaseConfirmation),
+        componentName: serialization.names.get(StockPurchase),
         params: {
           ...m.params,
-          success: true,
-          quantity,
-          symbol,
-          price,
-          message
+          result: {
+            message,
+            status: "success",
+          }
         }
       } : m;
     }));
@@ -96,24 +86,20 @@ export const confirmPurchase = withCheckPermission({
     const message = `You are not authorized to purchase ${params.quantity} stocks of ${params.symbol}.`;
 
     purchasing.done(
-      <div className="flex flex-row gap-4 items-center">
-        <CancelRedIcon />
-        {message}
-      </div>
+      <StockPurchaseStatus message={message} status="failure" />
     );
 
     history.done((messages: ServerMessage[]) => messages.map(m => {
       return m.id === params.messageID ? {
         ...m,
         content: message,
-        componentName: serialization.names.get(PurchaseConfirmation),
+        componentName: serialization.names.get(StockPurchase),
         params: {
           ...m.params,
-          quantity: params.quantity,
-          price: params.price,
-          symbol: params.symbol,
-          message,
-          success: false,
+          result: {
+            status: "failure",
+            message,
+          }
         }
       } : m;
     }));
