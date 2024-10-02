@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { getAvatarFallback } from "../auth0/user-button";
@@ -76,6 +77,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
   }
 
   const [viewers, setViewers] = useState<string[]>([]);
+  const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -201,9 +203,14 @@ export function ShareConversation({ user }: ShareConversationProps) {
         </div>
 
         <DialogFooter className="sm:justify-between">
-          <Button className="flex gap-2 items-center" variant="secondary">
+          <Button
+            className="flex gap-2 items-center"
+            variant="secondary"
+            disabled={isCopied}
+            onClick={() => copyText(window.location.href)}
+          >
             <LinkIcon />
-            Copy Link
+            {isCopied ? "Copied!" : "Copy Link"}
           </Button>
           <DialogClose asChild>
             <Button type="button">Done</Button>
