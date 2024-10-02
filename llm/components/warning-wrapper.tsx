@@ -17,8 +17,7 @@ export default function WarningWrapper({
           message
         ) : (
           <span className="text-slate-500 text-sm leading-6">
-            Data is simulated for illustrative purposes and should not be
-            considered as financial advice.
+            Data was randomly generated for illustrative purposes.
           </span>
         )}
       </div>
