@@ -15,10 +15,12 @@ export const Documents = ({
   documents,
   text,
   symbol,
+  finished,
 }: {
   documents: Document[];
   text: string;
   symbol: string;
+  finished: boolean;
 }) => {
   const [showEnrollment, setShowEnrollment] = useState(false);
 
@@ -41,7 +43,7 @@ export const Documents = ({
     <WarningWrapper>
       <div className="p-8 rounded-2xl bg-white">
         <FormattedText content={text} />
-        {documents.length > 0 && (
+        {documents.length > 0 && finished && (
           <div className="flex flex-row gap-2 mt-4">
             {documents.map((document: Document) => (
               <Badge
@@ -62,7 +64,7 @@ export const Documents = ({
             ))}
           </div>
         )}
-        {showEnrollment && (
+        {showEnrollment && finished && (
           <p>
             <button
               onClick={() => enroll()}

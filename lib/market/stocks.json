@@ -16,7 +16,8 @@
     "fulltime_employees": 48000,
     "long_business_summary": "Atko Technologies Corporation designs, manufactures, and sells advanced semiconductor solutions for a variety of industries worldwide. The company provides microprocessors, graphic processing units, and integrated chipsets for consumer electronics, mobile devices, automotive systems, and industrial applications. Atko's cutting-edge products power everything from smartphones to electric vehicles, driving innovation in artificial intelligence, gaming, and machine learning. The company also invests heavily in research and development to maintain a competitive edge in nanotechnology and quantum computing. Atko is a global leader in semiconductor manufacturing, with facilities in Asia, Europe, and the Americas. The company was founded in 1992 and is headquartered in San Francisco, California.",
     "weight": 0.0487261923487291,
-    "delta": -3.14
+    "delta": 3.14,
+    "situation": "growing well every quarter - market reacted"
   },
   {
     "exchange": "CSB",
@@ -35,7 +36,8 @@
     "fulltime_employees": 34000,
     "long_business_summary": "ACME Global Enterprises is a leading manufacturer and supplier of industrial products, specializing in mechanical and electrical systems used in construction, transportation, and energy sectors. The company is widely known for its innovative solutions in automation, safety equipment, and high-performance machinery. ACME also provides services for large-scale infrastructure projects, focusing on sustainability and energy efficiency. Its products are used by governments, contractors, and manufacturers across the globe. ACME is a pioneer in research and development, constantly improving its technological offerings for the modern industrial age. Founded in 1950, ACME is headquartered in Phoenix, Arizona.",
     "weight": 0.021487381927184,
-    "delta": 1.27
+    "delta": -1.27,
+    "situation": "loosing market share, headwinds ahead"
   },
   {
     "exchange": "NMS",
@@ -54,6 +56,7 @@
     "fulltime_employees": 12000,
     "long_business_summary": "Zeko Advanced Systems Inc. is a global leader in the design, development, and distribution of cutting-edge medical devices and healthcare technologies. The company's products range from surgical robotics to diagnostic imaging systems, catering to hospitals and clinics worldwide. Zeko is known for its innovations in minimally invasive surgery, digital health solutions, and AI-driven patient monitoring devices. With a focus on improving patient outcomes and healthcare efficiency, Zeko continuously invests in research and collaborates with leading medical institutions. Founded in 1998, the company is based in Austin, Texas.",
     "weight": 0.032586473271648,
-    "delta": 4.78
+    "delta": 4.78,
+    "situation": "consolidated business, doing well, not growing as fast as expected"
   }
 ]

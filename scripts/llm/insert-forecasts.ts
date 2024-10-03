@@ -19,10 +19,12 @@ import { generateId, generateText } from "ai";
 
 const generateForecast = async ({
   symbol,
+  name,
   summary,
   lastEarning
 }: {
   symbol: string,
+  name: string,
   summary: string,
   lastEarning: string
 }) => {
@@ -30,14 +32,22 @@ const generateForecast = async ({
   const marketTrend = sentiment === 'bullish' ? 'outperform' : 'underperform';
   const { text } = await generateText({
     model: openai("gpt-4o"),
-    temperature: 1,
+    temperature: 0.5,
     system: `You are a ficticious financial analyst.
-    You are writing a report on ${symbol} a ficticious company for the next quarter.
-    The ficticious company summary is: ${summary}.
-    The last earning report was ${lastEarning}.
+
+    You are writing a report on a ficticious company called ${name} (ticker: ${symbol}) for the next fiscal year.
+
+    The ficticious company summary is:
+    ${summary}
+
     You are ${sentiment} on the stock and believe it will ${marketTrend} the market.
-    You are writing a report on the company's financial performance and future prospects.`,
-    prompt: `Generate a forecast for ${symbol} for the next quarter.`,
+
+    You are writing a report on the company's financial performance and future prospects.
+
+    The last earning report was:
+    ${lastEarning}
+  `,
+    prompt: `Generate a solid and convincing forecast for ${symbol} for the next fiscal year.`,
   });
   return text;
 }
@@ -49,20 +59,19 @@ async function main() {
   await deleteDocuments('forecast');
   const docs = [];
   for (const stock of stocks) {
-    const { symbol } = stock;
+    const { symbol, longname: name } = stock;
     const lastEarnings = await documents.getLatestEarningReport(symbol);
     const forecast = await generateForecast({
       symbol,
+      name,
       summary: stock.long_business_summary,
       lastEarning: lastEarnings.content
     });
-    console.log(forecast);
     const document: Document = {
       metadata: {
         id: generateId(),
         title: `Forecast for ${symbol}`,
         symbol,
-        link: `https://example.com/forecast/${symbol}`,
         type: 'forecast',
       },
       pageContent: forecast,
