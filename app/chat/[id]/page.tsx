@@ -7,7 +7,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getAvatarFallback } from "@/components/auth0/user-button";
-import { ArrowUpIcon, ChevronRightIcon, CircleIcon, Market0Icon } from "@/components/icons";
+import {
+  ArrowUpIcon,
+  ChevronRightIcon,
+  CircleIcon,
+  Market0Icon,
+} from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useScrollAnchor } from "@/hooks/chat/use-scroll-anchor";
 import { examples, menuItems } from "@/lib/examples";
 import { cn } from "@/lib/utils";
 import { ClientMessage } from "@/llm/types";
@@ -36,6 +42,7 @@ export default function Chat({ params }: { params: { id: string } }) {
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
   const { user } = useUser();
+  const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,8 +87,14 @@ export default function Chat({ params }: { params: { id: string } }) {
       style={{ maxHeight: "calc(100vh - 56px)" }}
     >
       <div className="h-full w-full overflow-hidden rounded-md">
-        <div className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none">
-          <div className="flex-1 min-w-0 max-w-4xl mx-auto w-full">
+        <div
+          ref={scrollRef}
+          className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none"
+        >
+          <div
+            ref={messagesRef}
+            className="flex-1 min-w-0 max-w-4xl mx-auto w-full pb-[100px]"
+          >
             {conversation.map((message: ClientMessage) =>
               message.role === "user" ? (
                 <div
@@ -110,6 +123,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                 </div>
               ) : null
             )}
+            <div ref={visibilityRef} className="w-full h-px" />
           </div>
 
           {conversation.length === 0 && (
