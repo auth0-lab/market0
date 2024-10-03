@@ -79,5 +79,8 @@
     "ts-node": "^10.9.2",
     "turndown": "^7.2.0",
     "typescript": "^5"
+  },
+  "prettier": {
+    "printWidth": 120
   }
 }

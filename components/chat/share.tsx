@@ -5,24 +5,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
-import {
-  assignChatReader,
-  getChatReaders,
-  revokeChatReader,
-} from "@/sdk/fga/chats";
+import { assignChatReader, getChatReaders, revokeChatReader } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { getAvatarFallback } from "../auth0/user-button";
-import { CaretDownIcon, LinkIcon, LinkIcon2, ShareIcon } from "../icons";
+import { CaretDownIcon, LinkIcon2, ShareIcon } from "../icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -35,15 +24,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
-import { Toaster } from "../ui/toaster";
 import { useToast } from "../ui/use-toast";
 import { useChat } from "./context";
 
@@ -96,11 +79,7 @@ const PermissionBlock = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
-              <Button
-                variant="link"
-                className="font-normal"
-                onClick={() => onAccessRemoval(email)}
-              >
+              <Button variant="link" className="font-normal" onClick={() => onAccessRemoval(email)}>
                 Remove access
               </Button>
             </DropdownMenuItem>
@@ -139,9 +118,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
     } catch (err) {
       toast({
         title: "Error!",
-        description:
-          (err.message as string) ||
-          "There was a problem sharing this chat. Try again later.",
+        description: (err as Error).message || "There was a problem sharing this chat. Try again later.",
         variant: "destructive",
       });
     }
@@ -154,9 +131,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
     } catch (err) {
       toast({
         title: "Error!",
-        description:
-          (err as Error).message ||
-          "There was a problem removing access to this chat. Try again later.",
+        description: (err as Error).message || "There was a problem removing access to this chat. Try again later.",
         variant: "destructive",
       });
     }
@@ -178,9 +153,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
       } catch (err) {
         toast({
           title: "Error!",
-          description:
-            (err as Error).message ||
-            "There was a problem retrieving chat readers. Try again later.",
+          description: (err as Error).message || "There was a problem retrieving chat readers. Try again later.",
           variant: "destructive",
         });
       }
@@ -209,9 +182,8 @@ export function ShareConversation({ user }: ShareConversationProps) {
             Share this conversation with a friend
           </DialogTitle>
           <DialogDescription>
-            All conversations are private by default and only accessible to the
-            owner. You can share your chat with friends or colleges by
-            submitting their email and copying the link of this chat
+            All conversations are private by default and only accessible to the owner. You can share your chat with
+            friends or colleges by submitting their email and copying the link of this chat
           </DialogDescription>
         </DialogHeader>
 
@@ -228,6 +200,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
                   <FormControl>
                     <Input
                       autoFocus
+                      data-1p-ignore
                       autoComplete="off"
                       className="bg-white shadow-none focus-visible:ring-0 p-4 placeholder-slate-500/80 text-base font-light"
                       placeholder="Share by email"
@@ -251,10 +224,8 @@ export function ShareConversation({ user }: ShareConversationProps) {
         </Form>
 
         <div className="py-2">
-          <h2 className="text-md font-semibold text-gray-900 leading-6 mb-2">
-            People with access
-          </h2>
-          <ScrollArea className={`h-[300px] rounded-md border-y p-4`}>
+          <h2 className="text-md font-semibold text-gray-900 leading-6 mb-2">Who has access</h2>
+          <ScrollArea className={`h-[150px] rounded-md p-4`}>
             <ul className="space-y-2">
               <PermissionBlock
                 picture={user.picture}

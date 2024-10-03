@@ -41,7 +41,7 @@ export async function assignChatReader(chatId: string, emails: string[]) {
     (email) => !readers.some((reader) => reader.email === email.toLowerCase())
   );
 
-  if (readers.length + filteredEmails.length >= MAX_CHAT_READERS) {
+  if (readers.length + filteredEmails.length > MAX_CHAT_READERS) {
     throw new Error(
       `You have reached the limit (${MAX_CHAT_READERS}) on the number of users that can access to this chat.`
     );
