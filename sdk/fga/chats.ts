@@ -1,5 +1,6 @@
 "use server";
 
+import { ConsistencyPreference } from "@openfga/sdk";
 import { fgaClient, getUser } from ".";
 
 const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS
@@ -18,21 +19,18 @@ export async function assignChatOwner(chatId: string) {
 }
 
 export async function getChatReaders(chatId: string) {
-  const { $response } = await fgaClient.listUsers({
-    object: {
-      type: "chat",
-      id: chatId,
+  const { $response } = await fgaClient.read(
+    {
+      object: `chat:${chatId}`,
+      relation: "can_view",
     },
-    user_filters: [
-      {
-        type: "user",
-      },
-    ],
-    relation: "can_view",
-  });
+    {
+      consistency: ConsistencyPreference.HigherConsistency,
+    }
+  );
 
-  return $response.data.users.map((u) => ({
-    email: u.object?.id,
+  return $response.data.tuples.map((t) => ({
+    email: t.key.user.replace("user:", ""),
   }));
 }
 
