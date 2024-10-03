@@ -20,15 +20,26 @@ const generateEarningsReport = async ({
   symbol,
   name,
   summary,
-  quarter
-}: { summary: string, name: string, symbol: string, quarter: string }) => {
+  quarter,
+  previousReports,
+  situation
+}: { summary: string, name: string, symbol: string, quarter: string, previousReports: string[], situation: string }) => {
   const { text } = await generateText({
     model: openai("gpt-4o"),
-    temperature: 1,
+    temperature: 0.2,
     system: `
-      You are the board of directors of a fictitious company called ${name} with ticker ${symbol}.
+      You represent the board of directors of a fictitious company called ${name} with ticker ${symbol}.
+
       The company summary is: ${summary}.
-      You can write a report on the company's financial performance for the ${quarter} quarter.
+
+      You are writing the earning report - SEC filling for the ${quarter}.
+
+      The overall situation is ${situation}.
+
+      ${previousReports.length > 0 ?
+        'The previous earnings reports were:' : ''}
+
+      ${previousReports.join('\n')}
     `,
     prompt: `Generate the earnings report for quarter ${quarter} for ${name}.`,
   });
@@ -42,28 +53,38 @@ async function main() {
   await deleteDocuments('earning');
 
   const documents = [];
-  const last4Quarters = ['1st Quarter 2025', '4th Quarter 2024', '3rd Quarter 2024', '2nd Quarter 2024'];
+
+  const last4Quarters = [
+    '4th Quarter 2023',
+    '1st Quarter 2024',
+    '2nd Quarter 2024',
+    '3rd Quarter 2024',
+  ];
 
   for (const stock of stocks) {
     const { symbol } = stock;
+    const previousReports: string[] = [];
     for (const quarter of last4Quarters) {
       const earningReport = await generateEarningsReport({
         ...stock,
         name: stock.longname,
         summary: stock.long_business_summary,
-        quarter
+        quarter,
+        previousReports
       });
-      console.log(earningReport);
+
+      previousReports.push(earningReport);
+
       const document: Document = {
         metadata: {
           id: generateId(),
           title: `${quarter} earnings report for ${symbol}`,
           symbol: symbol,
-          link: `https://example.com/earnings/${symbol}?quarter=${quarter}`,
           type: 'earning',
         },
         pageContent: earningReport,
       };
+
       documents.push(document);
     }
   }

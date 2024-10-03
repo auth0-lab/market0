@@ -4,13 +4,13 @@ import { z } from "zod";
 
 import { userUsage } from "@/lib/db";
 import { getSymbolRetriever } from "@/llm/actions/langchain-helpers";
-import { checkEnrollment } from "@/llm/actions/newsletter";
 import { defineTool } from "@/llm/ai-helpers";
 import { Documents } from "@/llm/components/documents";
 import * as serialization from "@/llm/components/serialization";
 import { getHistory } from "@/llm/utils";
 import { getUser } from "@/sdk/fga";
 
+import stocks from "../../lib/market/stocks.json";
 import { aiParams } from "../ai-params";
 
 const buildRequiredInfoText = ({ earnings, forecasts}: { earnings: boolean, forecasts: boolean }) => {
@@ -43,21 +43,40 @@ export default defineTool("get_docs", () => {
       const documents = await retriever.invoke(
         originalMessage
       );
+      const stock = stocks.find((stock) => stock.symbol === symbol);
+      if (!stock) {
+        return `I'm sorry, I couldn't find any information for the stock ${symbol}.`;
+      }
+
       const { textStream, text: fullText, usage } = await streamText({
         ...aiParams,
-        temperature: 0.1,
+        temperature: 0.2,
         system: `
-          You are a financial analyst. You are analyzing the earnings data and forecasts for ${symbol}.
-          Summarize the response in no more than 200 words, focusing on key points.
-          If the provided documents contain forecasts, make sure to include them in the response, otherwise focus on the earnings data.
-          ${documents.length > 0 ? "Here are the documents you have:" : "Inform the user there is no related information."}
-          ${documents
-            .map(
-              (document) =>
-                `\nTitle: ${document.metadata.title}\nContent: ${document.pageContent}\n\n`
-            )
-            .join("")}
-          `,
+You are a stock trading conversation bot.
+
+You have access to financial reports and documents for the fictional company ${stock}, with the ticker symbol ${symbol}.
+
+Company Summary: ${stock.long_business_summary}
+
+Summarize your responses in no more than 200 words, focusing on key points.
+
+${documents.length > 0 ? "The following documents are available to the user:" : "Inform the user that no relevant information is available."}
+
+${documents
+  .map(
+    (document) =>
+      `\nTitle: ${document.metadata.title}\nContent: ${document.pageContent}\n\n`
+  )
+  .join("")}
+
+Refer to the documents as "the documents available to you."
+
+Only mention the source of the information (i.e., the documents available to you) if it's strictly necessary for context; otherwise, omit it.
+
+If the documents available to the user do not include analyst forecasts:
+- Provide relevant information based on earnings reports.
+- Suggest that the user subscribe to the Market0 newsletter to gain access to these reports in the database.
+`,
         prompt: originalMessage,
         onFinish: async ({usage}) => {
           const user = await getUser();
@@ -73,13 +92,14 @@ export default defineTool("get_docs", () => {
       let currentText = '';
       for await (const textPart of textStream) {
         currentText += textPart;
-        yield <Documents {...baseParams} text={currentText} documents={[]} />
+        yield <Documents finished={false} {...baseParams} text={currentText} />
       }
 
       //once finished:
       const text = await fullText;
       const params = {
         ...baseParams,
+        finished: true,
         text,
       };
 

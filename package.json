@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "fga:migrate:create": "ts-node ./scripts/fga/generate.ts",
+    "fga:sync-docs": "ts-node ./scripts/fga/syncDocs.ts",
     "llm:earnings:insert": "ts-node ./scripts/llm/insert-earnings.ts",
     "llm:forecasts:insert": "ts-node ./scripts/llm/insert-forecasts.ts",
     "db:up": "docker compose --env-file .env.local up pg schemas -d",
