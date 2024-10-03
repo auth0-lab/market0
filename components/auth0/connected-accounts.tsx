@@ -148,7 +148,9 @@ export default function ConnectedAccounts({
       <Card>
         <CardHeader className="p-4 md:p-6">
           <CardTitle className="text-lg font-normal"></CardTitle>
-          <CardDescription></CardDescription>
+          <CardDescription>
+            Connect your social accounts to access their information.
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="grid gap-6 p-4 pt-0 md:p-6 md:pt-0">
@@ -185,6 +187,9 @@ export default function ConnectedAccounts({
                   (cca) => cca.connection === connection
                 );
 
+                const isMainConnection =
+                  connection === currentConnectedAccounts[0]?.connection;
+
                 return (
                   <div
                     key={`connection-${idx}-${connection}`}
@@ -206,12 +211,15 @@ export default function ConnectedAccounts({
                       <div className="flex space-x-24 items-center justify-end md:min-w-24">
                         {isConnected ? (
                           <>
-                            {idx > 0 && onUnlink && (
+                            {onUnlink && (
                               <Button
                                 className="h-fit min-w-24"
                                 variant="outline"
                                 onClick={handleUnlinkAccount(connection)}
-                                disabled={isUnlinkingAccount === connection}
+                                disabled={
+                                  isUnlinkingAccount === connection ||
+                                  isMainConnection
+                                }
                               >
                                 {isUnlinkingAccount === connection && (
                                   <Spinner />
