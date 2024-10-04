@@ -17,21 +17,21 @@ export function Events({ events }: { events: Event[] }) {
     <div className="flex flex-col gap-4">
       <WarningWrapper>
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col sm:flex-row gap-2 overflow-scroll pb-4">
+          <div className="grid grid-cols-3 gap-3">
             {events.map((event) => (
               <div
                 key={event.date}
-                className="flex flex-col p-9 bg-zinc-900 rounded-2xl flex-shrink-0 max-w-80"
+                className="flex flex-col p-6 bg-zinc-900 rounded-2xl"
               >
-                <div className="border-b border-gray-500 pb-6 mb-6 flex flex-col gap-2">
-                  <div className="text-zinc-400 text-sm">
+                <div className="border-b border-[#535257] pb-4 mb-4 flex flex-col gap-3">
+                  <div className="text-zinc-500 text-xs font-medium">
                     {format(parseISO(event.date), "dd LLL, yyyy")}
                   </div>
-                  <div className="text-xl text-white">
+                  <div className="text-xl text-white font-semibold leading-6">
                     {event.headline.slice(0, 30)}
                   </div>
                 </div>
-                <div className="text-white/80 text-sm font-light tracking-wide">
+                <div className="text-white/80 text-xs font-light tracking-wide">
                   {event.description.slice(0, 70)}...
                 </div>
               </div>
