@@ -68,11 +68,11 @@ export async function continueConversation(
       return <FormattedText content={content} />;
     },
     tools: await composeTools(
+      showStockPurchaseUI,
       addReminder,
       addConditionalPurchase,
       showStockPrice,
       showCurrentPositions,
-      showStockPurchaseUI,
       listStocks,
       getEvents,
       getDocs,

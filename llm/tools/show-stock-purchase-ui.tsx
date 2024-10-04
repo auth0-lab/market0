@@ -26,12 +26,12 @@ export default defineTool("show_stock_purchase_ui", () => {
 
   return {
     description:
-      "Show price and the UI to purchase a stock or currency. Use this if the user wants to purchase a stock or currency.",
+      "Shows the current price of the stock and allow the user to buy it. Prefer this when there is a clear intention of buying a stock.",
     parameters: z.object({
       symbol: z
         .string()
         .describe(
-          "The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD."
+          "The name or symbol of the stock. e.g. DOGE/AAPL/USD."
         ),
       limit: z
         .number()
@@ -42,13 +42,13 @@ export default defineTool("show_stock_purchase_ui", () => {
       numberOfShares: z
         .number()
         .describe(
-          "The **number of shares** for a stock or currency to purchase. Defaults to 100."
+          "The **number of shares** for a stock to purchase. Defaults to 100."
         )
         .default(100),
       market: z
         .string()
         .describe(
-          "The market of the stock or currency. e.g. ITMX/CSB. This is provided by the model."
+          "The market of the stock. e.g. ITMX/CSB. This is provided by the model."
         ),
       company: z
         .string()
