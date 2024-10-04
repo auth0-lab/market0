@@ -1,18 +1,21 @@
 "use client";
 
 import { generateId } from "ai";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
 import { cn } from "@/lib/utils";
 import { assignChatReader, getChatReaders, revokeChatReader } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 
 import { getAvatarFallback } from "../auth0/user-button";
 import { CaretDownIcon, CircleCheckBigIcon, LinkIcon2, ShareIcon } from "../icons";
+import Loader from "../loader";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -25,9 +28,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useToast } from "../ui/use-toast";
 import { useChat } from "./context";
 
@@ -78,11 +88,35 @@ const PermissionBlock = ({
               <CaretDownIcon />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="text-sm">
             <DropdownMenuItem>
-              <Button variant="link" className="font-normal" onClick={() => onAccessRemoval(email)}>
+              <Link href="#" className="flex justify-start items-center gap-1 font-normal" onClick={() => void 0}>
+                <CheckIcon /> Viewer
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className={cn("flex justify-start items-center gap-1 font-normal", {
+                  "ps-5 disabled text-slate-400 cursor-not-allowed": true,
+                })}
+                onClick={() => void 0}
+              >
+                Editor
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="flex justify-start items-center gap-1 font-normal text-destructive"
+                onClick={() => onAccessRemoval(email)}
+              >
+                <TrashIcon />
                 Remove access
-              </Button>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -92,7 +126,8 @@ const PermissionBlock = ({
 };
 
 const formSchema = z.object({
-  readerEmail: z.string().email(),
+  user: z.string().email(),
+  role: z.enum(["Viewer", "Editor"]),
 });
 
 export function ShareConversation({ user }: ShareConversationProps) {
@@ -100,19 +135,23 @@ export function ShareConversation({ user }: ShareConversationProps) {
 
   const [viewers, setViewers] = useState<{ email?: string }[]>([]);
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isWorking, setIsWorking] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      readerEmail: "",
+      user: "",
+      role: "Viewer",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const email = values.readerEmail;
+    const email = values.user;
 
     try {
+      setIsWorking(true);
       await assignChatReader(chatId!, [email]);
       setViewers((prev) => [...prev, { email }]);
       form.reset();
@@ -122,11 +161,14 @@ export function ShareConversation({ user }: ShareConversationProps) {
         description: (err as Error).message || "There was a problem sharing this chat. Try again later.",
         variant: "destructive",
       });
+    } finally {
+      setIsWorking(false);
     }
   }
 
   async function handleOnRemove(email: string) {
     try {
+      setIsWorking(true);
       await revokeChatReader(chatId!, [email]);
       setViewers((prev) => prev.filter((viewer) => viewer.email !== email));
     } catch (err) {
@@ -135,6 +177,8 @@ export function ShareConversation({ user }: ShareConversationProps) {
         description: (err as Error).message || "There was a problem removing access to this chat. Try again later.",
         variant: "destructive",
       });
+    } finally {
+      setIsWorking(false);
     }
   }
 
@@ -146,6 +190,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
     }
   }
 
+  // initial load of viewers
   useEffect(() => {
     async function retrieveViewers() {
       try {
@@ -157,6 +202,8 @@ export function ShareConversation({ user }: ShareConversationProps) {
           description: (err as Error).message || "There was a problem retrieving chat readers. Try again later.",
           variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -171,7 +218,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
   }
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => form.reset()}>
       <DialogTrigger asChild={true}>
         <Button className="bg-gray-100 text-slate-800 flex gap-2 items-center px-3 py-2 rounded-md text-sm hover:bg-gray-100 hover:text-black transition-colors duration-300">
           <ShareIcon /> Share chat
@@ -189,68 +236,99 @@ export function ShareConversation({ user }: ShareConversationProps) {
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-row justify-between gap-2 items-center py-2"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row justify-between gap-2 items-start py-2">
             <FormField
               control={form.control}
-              name="readerEmail"
+              name="user"
+              disabled={isWorking}
               render={({ field }) => (
                 <FormItem className="w-full space-y-0">
-                  <FormControl>
-                    <Input
-                      autoFocus
-                      data-1p-ignore
-                      autoComplete="off"
-                      className="bg-white shadow-none focus-visible:ring-0 p-4 placeholder-slate-500/80 text-base font-light"
-                      placeholder="Share by email"
-                      {...field}
+                  <h2 className="flex text-sm font-normal mb-3" color="none">
+                    Add people to this chat
+                  </h2>
+
+                  <div className="flex justify-between items-center flex-1 p-0 bg-white border border-gray-200 rounded-lg">
+                    <FormControl>
+                      <Input
+                        autoFocus
+                        data-1p-ignore
+                        autoComplete="off"
+                        className="bg-white shadow-none p-0 px-3 border-0 focus-visible:ring-0 placeholder-slate-500/80 text-base font-light h-6"
+                        placeholder="Share by email"
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="font-normal py-0 px-2 leading-3 border-none ring-0 focus:ring-0 shadow-none hover:bg-slate-100">
+                                <SelectValue placeholder="Select role to for the user to share" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Viewer">can view</SelectItem>
+                              <SelectItem value="Editor" disabled>
+                                can edit
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
+                  </div>
+                  <FormMessage className="ps-3 pt-2" />
                 </FormItem>
               )}
             />
 
-            <Button
-              disabled={!form.formState.isDirty}
-              type="submit"
-              variant="secondary"
-              className="px-4 py-4 m-0 text-sm leading-6 font-light"
-            >
+            <Button type="submit" variant="secondary" className="p-4 m-0 mt-8 text-sm leading-6">
               Share
             </Button>
           </form>
         </Form>
 
-        <div className="py-2">
-          <h2 className="text-md font-semibold text-gray-900 leading-6 mb-2">Who has access</h2>
-          <ScrollArea className="min-h-[150px] max-h-[240px] h-full rounded-md p-4">
+        <div className="py-2 pt-5 border-t border-slate-200">
+          <h2 className="text-sm font-normal mb-3">Who has access</h2>
+          <ScrollArea className="min-h-[150px] max-h-[240px] h-full rounded-md">
             <ul className="space-y-2">
-              <PermissionBlock
-                picture={user.picture}
-                fallback={getAvatarFallback(user)}
-                name={user.name}
-                email={user.email}
-                role="Owner"
-              />
-              {viewers.map(
-                ({ email }) =>
-                  email && (
-                    <PermissionBlock
-                      key={generateId()}
-                      name={email}
-                      email={email}
-                      fallback={getAvatarFallback({
-                        family_name: email[1],
-                        given_name: email[0],
-                      })}
-                      role="Viewer"
-                      onAccessRemoval={(email) => handleOnRemove(email)}
-                    />
-                  )
+              {isLoading && (
+                <div className="mx-auto">
+                  <Loader />
+                </div>
               )}
+
+              {!isLoading && (
+                <PermissionBlock
+                  picture={user.picture}
+                  fallback={getAvatarFallback(user)}
+                  name={user.name}
+                  email={user.email}
+                  role="Owner"
+                />
+              )}
+
+              {!isLoading &&
+                viewers.map(
+                  ({ email }) =>
+                    email && (
+                      <PermissionBlock
+                        key={generateId()}
+                        name={email}
+                        email={email}
+                        fallback={getAvatarFallback({
+                          family_name: email[1],
+                          given_name: email[0],
+                        })}
+                        role="Viewer"
+                        onAccessRemoval={(email) => handleOnRemove(email)}
+                      />
+                    )
+                )}
             </ul>
           </ScrollArea>
         </div>
