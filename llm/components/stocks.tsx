@@ -20,7 +20,7 @@ export function Stocks({ stocks }: { stocks: any[] }) {
             key={stock.symbol}
             onClick={async () => {
               const response = await continueConversation(
-                `View ${stock.symbol}`
+                { message: `View ${stock.symbol}`, hidden: true }
               );
               setMessages((prevMessages: ClientMessage[]) => [
                 ...prevMessages,

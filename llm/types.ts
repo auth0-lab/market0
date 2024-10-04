@@ -27,9 +27,9 @@ export interface ServerMessage {
   params?: object;
 
   /**
-   * If true, this message should not be restored when recreating the UI
+   * If true, this message should not be shown in the UI.
    */
-  tempMessage?: boolean;
+  hidden?: boolean;
 }
 
 export interface ClientMessage {
