@@ -91,45 +91,43 @@ export default function Chat({ params }: { params: { id: string } }) {
           ref={scrollRef}
           className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none"
         >
-          {conversation.length > 0 && (
-            <div
-              ref={messagesRef}
-              className="flex-1 min-w-0 max-w-4xl mx-auto w-full pb-[100px]"
-            >
-              {conversation.map((message: ClientMessage) =>
-                message.role === "user" ? (
-                  <div
-                    key={message.id}
-                    className="flex flex-row gap-4 py-3 items-center"
-                  >
-                    <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
-                      <Avatar className="h-full w-full rounded-md">
-                        <AvatarImage
-                          src={user?.picture!}
-                          alt={user?.nickname!}
-                        />
-                        <AvatarFallback>U</AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <div className="relative max-w-[70%] text-base text-stone-600 font-light">
-                      {message.display}
-                    </div>
+          <div
+            ref={messagesRef}
+            className={cn(
+              "flex-1 min-w-0 max-w-4xl mx-auto w-full pb-[100px]",
+              { hidden: conversation.length === 0 }
+            )}
+          >
+            {conversation.map((message: ClientMessage) =>
+              message.role === "user" ? (
+                <div
+                  key={message.id}
+                  className="flex flex-row gap-4 py-3 items-center"
+                >
+                  <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
+                    <Avatar className="h-full w-full rounded-md">
+                      <AvatarImage src={user?.picture!} alt={user?.nickname!} />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
                   </div>
-                ) : message.role === "assistant" ||
-                  message.role === "function" ? (
-                  <div key={message.id} className="flex flex-row gap-4 py-3">
-                    <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
-                      <Market0Icon />
-                    </div>
-                    <div className="w-full font-light text-stone-600 flex items-center">
-                      {message.display}
-                    </div>
+                  <div className="relative max-w-[70%] text-base text-stone-600 font-light">
+                    {message.display}
                   </div>
-                ) : null
-              )}
-              <div ref={visibilityRef} className="w-full h-px" />
-            </div>
-          )}
+                </div>
+              ) : message.role === "assistant" ||
+                message.role === "function" ? (
+                <div key={message.id} className="flex flex-row gap-4 py-3">
+                  <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
+                    <Market0Icon />
+                  </div>
+                  <div className="w-full font-light text-stone-600 flex items-center">
+                    {message.display}
+                  </div>
+                </div>
+              ) : null
+            )}
+            <div ref={visibilityRef} className="w-full h-px" />
+          </div>
 
           {conversation.length === 0 && (
             <div className="flex flex-col gap-80 max-w-4xl mx-auto w-full mb-5">
@@ -170,7 +168,6 @@ export default function Chat({ params }: { params: { id: string } }) {
               </div>
             </div>
           )}
-
           <div className="sticky bottom-0 flex-shrink-0 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full">
             <div className="p-4 bg-white border border-gray-200 rounded-xl">
               <Form {...form}>
