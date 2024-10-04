@@ -1,12 +1,12 @@
 "use client";
 
-import { useActions } from "ai/rsc";
+import { useActions, useUIState } from "ai/rsc";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { ExternalLink } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
-import { Document } from "@/llm/types";
+import { ClientMessage, Document } from "@/llm/types";
 
 import { FormattedText } from "./FormattedText";
 import WarningWrapper from "./warning-wrapper";
@@ -25,6 +25,8 @@ export const Documents = ({
   const [showEnrollment, setShowEnrollment] = useState(false);
 
   const { checkEnrollment, enrollToNewsletter } = useActions();
+  const { continueConversation }= useActions();
+  const [, setMessages] = useUIState();
 
   useEffect(() => {
     checkEnrollment({ symbol }).then((isEnrolled?: Boolean) => {
@@ -37,6 +39,18 @@ export const Documents = ({
   const enroll = () => {
     enrollToNewsletter();
     setShowEnrollment(false);
+    (async () => {
+      const response = await continueConversation(
+        {
+          message: `Thank me for subscribing to the newsletter and ask me if I would like to see the forecast for ${symbol} now.`,
+          hidden: true
+        }
+      );
+      setMessages((prevMessages: ClientMessage[]) => [
+        ...prevMessages,
+        response,
+      ]);
+    })();
   };
 
   return (
