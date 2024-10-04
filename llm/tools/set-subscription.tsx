@@ -22,14 +22,17 @@ export default defineTool("set_subscription", async () => {
         if (isUserEnrolled) {
           return 'You are already subscribed to newsletter.';
         }
-        enrollToNewsletter();
+        await enrollToNewsletter();
+        return `You have successfully subscribed to newsletter.
+          As part of this subscription you get access to analyst forecasts.
+          Would you like to get some forecast analysis?
+        `;
       } else {
         if (!isUserEnrolled) {
           return 'You are not subscribed to newsletter.';
         }
-        unenrollFromNewsletter();
+        await unenrollFromNewsletter();
       }
-
       return 'Subscription updated successfully.';
     }),
   };

@@ -26,12 +26,30 @@ import setEmployeer from "../tools/set-employeer";
 import setProfileAttributes from "../tools/set-profile-attributes";
 import setSubscription from "../tools/set-subscription";
 
+type ContinueConversationParams = {
+  /**
+   * The message to continue the conversation with.
+   */
+  message: string;
+
+  /**
+   * whether to hide this message in the ui.
+   */
+  hidden: boolean;
+};
+
 export async function continueConversation(
-  input: string
+  input: string | ContinueConversationParams
 ): Promise<ClientMessage> {
   "use server";
   const user = await getUser();
   const history = getMutableAIState();
+
+  let hidden = false;
+  if (typeof input === 'object') {
+    hidden = input.hidden;
+    input = input.message;
+  }
 
   if (!(await userUsage.hasAvailableTokens(user.sub, user.email))) {
     return {
@@ -43,7 +61,7 @@ export async function continueConversation(
 
   history.update((messages: ServerMessage[]) => [
     ...messages,
-    { role: "user", content: input },
+    { role: "user", content: input, hidden },
   ]);
 
   const promptMessages = history.get();

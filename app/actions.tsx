@@ -57,11 +57,11 @@ export const AI = (p: Props) => {
 
       return history
         .filter((c) => {
-          const isTempMessage = c.role === "assistant" && c.tempMessage;
+          const isHidden = c.hidden;
           const isToolCall = c.role === 'assistant' &&
             Array.isArray(c.content) &&
             c.content.some(c => c.type === 'tool-call');
-          return !isTempMessage && !isToolCall && !HIDDEN_ROLES.includes(c.role);
+          return !isHidden && !isToolCall && !HIDDEN_ROLES.includes(c.role);
         })
         .map(({ role, content, componentName, params }) => {
           if (componentName) {
