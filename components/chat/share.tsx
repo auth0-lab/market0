@@ -225,7 +225,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
 
         <div className="py-2">
           <h2 className="text-md font-semibold text-gray-900 leading-6 mb-2">Who has access</h2>
-          <ScrollArea className={`h-[150px] rounded-md p-4`}>
+          <ScrollArea className="min-h-[150px] max-h-[240px] h-full rounded-md p-4">
             <ul className="space-y-2">
               <PermissionBlock
                 picture={user.picture}
