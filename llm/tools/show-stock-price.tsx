@@ -12,12 +12,12 @@ export default defineTool("show_stock_price", () => {
 
   return {
     description:
-      "Get the market price of a given stock or currency. Use this to show the price of a publicly traded stock to the user.",
+      "Check price of an stock. Prefer this when there is not clear intention of buying.",
     parameters: z.object({
       symbol: z
         .string()
         .describe(
-          "The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD."
+          "The name or symbol of the stock. e.g. DOGE/AAPL/USD."
         ),
     }),
     generate: async function* ({ symbol }) {
