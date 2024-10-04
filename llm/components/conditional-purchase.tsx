@@ -3,7 +3,7 @@
 import { format, formatRelative } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 
-import { CancelRedIcon, CheckGreenIcon } from "@/components/icons";
+import { CancelRedIcon, CheckGreenIcon, TaskIcon } from "@/components/icons";
 import Loader from "@/components/loader";
 import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditional-purchases";
 import { getConditionalPurchaseById } from "@/llm/actions/conditional-purchases";
@@ -66,14 +66,15 @@ export function ConditionalPurchase({
 
   if (!isEnrolled) {
     return (
-      <div className="border border-gray-300 rounded-lg p-6 flex items-center w-full justify-between">
+      <div className="border border-gray-300 rounded-xl p-6 flex items-center w-full justify-between">
         <div className="flex flex-col gap-2">
           <h2 className="text-base leading-6 font-semibold">
-            Multi-factor authentication
+            Action Required: Setup Async Authentication
           </h2>
           <p className="text-sm leading-5 font-light text-gray-500">
-            Auth0 Guardian Enrollment is required before proceeding to schedule
-            the task.
+            Please enroll to Auth0 Guardian so we can notify you when the
+            condition is met. This is necessary to secure your future
+            transaction.
           </p>
         </div>
         <div>
@@ -138,18 +139,40 @@ export function ConditionalPurchase({
             </>
           }
         >
-          <div className="p-8 rounded-2xl bg-zinc-950 text-white text-base">
-            Noted. I will proceed with purchasing {conditionalPurchase.quantity}{" "}
-            shares of{" "}
-            <span className="text-green-400">
-              ${conditionalPurchase.symbol}
-            </span>{" "}
-            once its{" "}
-            <span className="text-green-400">
-              {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
-              {conditionalPurchase.threshold}
-            </span>
-            .
+          <div className="p-5 rounded-2xl bg-zinc-950 text-white">
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-col gap-2">
+                <div className="text-base font-semibold text-white">
+                  Buy {conditionalPurchase.symbol}
+                </div>
+                <div className="text-sm text text-white/40 leading-6">
+                  Created{" "}
+                  {formatRelative(conditionalPurchase.created_at, new Date())}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="text-base font-semibold text-green-400 text-right">
+                  If {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
+                  {conditionalPurchase.threshold}
+                </div>
+                <div className="text-sm text text-white/40 leading-6 uppercase">
+                  Condition
+                </div>
+              </div>
+            </div>
+            <div className="border-t border-white/20 mt-5 pt-5">
+              <div className="flex flex-row gap-3 items-start">
+                <div className="w-[25px]">
+                  <TaskIcon />
+                </div>
+                <div className="text-white font-light">
+                  Task: Buy {conditionalPurchase.quantity} $
+                  {conditionalPurchase.symbol} shares if{" "}
+                  {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
+                  {conditionalPurchase.threshold}
+                </div>
+              </div>
+            </div>
           </div>
         </WarningWrapper>
       );

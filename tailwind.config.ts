@@ -84,19 +84,19 @@ const config = {
         },
         "dots-loader": {
           "0%": {
-            "box-shadow": "15px 0 rgb(87 83 78), -15px 0 #0002",
+            "box-shadow": "9px 0 rgb(87 83 78), -9px 0 #0002",
             background: "rgb(87 83 78)",
           },
           "33%": {
-            "box-shadow": "15px 0 rgb(87 83 78), -15px 0 #0002",
+            "box-shadow": "9px 0 rgb(87 83 78), -9px 0 #0002",
             background: "#0002",
           },
           "66%": {
-            "box-shadow": "15px 0 #0002, -15px 0 rgb(87 83 78)",
+            "box-shadow": "9px 0 #0002, -9px 0 rgb(87 83 78)",
             background: "#0002",
           },
           "100%": {
-            "box-shadow": "15px 0 #0002, -15px 0 rgb(87 83 78)",
+            "box-shadow": "9px 0 #0002, -9px 0 rgb(87 83 78)",
             background: "rgb(87 83 78)",
           },
         },

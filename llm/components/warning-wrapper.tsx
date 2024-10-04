@@ -17,7 +17,7 @@ export default function WarningWrapper({
           message
         ) : (
           <span className="text-slate-500 text-sm leading-6">
-            Data was randomly generated for illustrative purposes.
+            Data was randomly generated for illustrative purposes
           </span>
         )}
       </div>

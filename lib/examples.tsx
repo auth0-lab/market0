@@ -3,7 +3,6 @@ import { generateId } from "ai";
 import {
   CartIcon,
   EarningsIcon,
-  PositionsIcon,
   PurchaseStockIcon,
   ReminderIcon,
   ShowEventsIcon,
@@ -14,7 +13,7 @@ import {
 export const examples = [
   {
     id: generateId(),
-    title: "ZEKO price",
+    title: "Show ZEKO’s stock price",
     message: "Show the stock price of ZEKO",
   },
   {
@@ -47,7 +46,7 @@ export const menuItems = [
   },
   {
     id: generateId(),
-    message: "Show ZEKO's key events for this year",
+    message: "Show me ZEKO upcoming events",
     icon: <ShowEventsIcon />,
   },
   {
