@@ -1,17 +1,18 @@
 "use client";
 
 import { generateId } from "ai";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
+import { cn } from "@/lib/utils";
 import { assignChatReader, getChatReaders, revokeChatReader } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { getAvatarFallback } from "../auth0/user-button";
-import { CaretDownIcon, LinkIcon2, ShareIcon } from "../icons";
+import { CaretDownIcon, CircleCheckBigIcon, LinkIcon2, ShareIcon } from "../icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -256,13 +257,24 @@ export function ShareConversation({ user }: ShareConversationProps) {
 
         <DialogFooter className="flex gap-1">
           <Button
-            className="flex gap-2 items-center flex-1"
+            className={cn("flex gap-2 items-center flex-1", {
+              "text-teal-600": isCopied,
+            })}
             variant="outline"
             disabled={isCopied}
             onClick={() => copyText(window.location.href)}
           >
-            <LinkIcon2 />
-            {isCopied ? "Copied!" : "Copy Link"}
+            {isCopied && (
+              <>
+                <CircleCheckBigIcon /> Copied
+              </>
+            )}
+            {!isCopied && (
+              <>
+                <LinkIcon2 />
+                Copy Link
+              </>
+            )}
           </Button>
           <DialogClose asChild>
             <Button type="button" variant="default" className="flex-1">
