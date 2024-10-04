@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getAvatarFallback } from "@/components/auth0/user-button";
 import {
   ArrowUpIcon,
   ChevronRightIcon,
@@ -102,21 +101,21 @@ export default function Chat({ params }: { params: { id: string } }) {
               message.role === "user" ? (
                 <div
                   key={message.id}
-                  className="flex flex-row gap-4 py-3 items-center"
+                  className="flex flex-row gap-3 py-3 items-center justify-end"
                 >
+                  <div className="relative max-w-[70%] text-base text-stone-600 font-light bg-[#F4F4F4] rounded-full px-5 py-2.5">
+                    {message.display}
+                  </div>
                   <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
-                    <Avatar className="h-full w-full rounded-md">
+                    <Avatar className="h-full w-full rounded-full">
                       <AvatarImage src={user?.picture!} alt={user?.nickname!} />
                       <AvatarFallback>U</AvatarFallback>
                     </Avatar>
                   </div>
-                  <div className="relative max-w-[70%] text-base text-stone-600 font-light">
-                    {message.display}
-                  </div>
                 </div>
               ) : message.role === "assistant" ||
                 message.role === "function" ? (
-                <div key={message.id} className="flex flex-row gap-4 py-3">
+                <div key={message.id} className="flex flex-row gap-3 py-3">
                   <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
                     <Market0Icon />
                   </div>
@@ -130,7 +129,7 @@ export default function Chat({ params }: { params: { id: string } }) {
           </div>
 
           {conversation.length === 0 && (
-            <div className="flex flex-col gap-80 max-w-4xl mx-auto w-full mb-5">
+            <div className="flex flex-col gap-80 max-w-4xl mx-auto w-full mb-5 mt-auto">
               <div className="min-w-0 min-h-0 w-full flex flex-col items-center gap-6">
                 <Market0Icon />
                 <h1 className="text-6xl tracking-tight leading-[72px]">
@@ -150,7 +149,7 @@ export default function Chat({ params }: { params: { id: string } }) {
               <div className="w-full">
                 <div className="flex flex-col gap-5 items-center mb-5">
                   <CircleIcon />
-                  <span className="text-slate-500 text-xl font-light">
+                  <span className="text-slate-500 text-base font-light">
                     Get started with these examples
                   </span>
                 </div>
@@ -169,7 +168,7 @@ export default function Chat({ params }: { params: { id: string } }) {
             </div>
           )}
           <div className="sticky bottom-0 flex-shrink-0 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full">
-            <div className="p-4 bg-white border border-gray-200 rounded-xl">
+            <div className="p-4 py-3 bg-white border border-gray-200 rounded-lg focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
@@ -185,53 +184,53 @@ export default function Chat({ params }: { params: { id: string } }) {
                             autoFocus
                             autoComplete="off"
                             className="bg-white shadow-none border-0 focus-visible:ring-0 py-2 px-0 placeholder-slate-500/80 text-base font-light"
-                            placeholder="Message Market0"
+                            placeholder="Start Typing..."
                             {...field}
                           />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-                  {conversation.length > 0 && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="flex flex-row gap-2 text-black text-sm leading-6 bg-gray-100 border-none px-3 py-2 focus-visible:ring-0 hover:bg-gray-200/90 transition-all duration-300 shadow-none font-light"
-                        >
-                          Examples
-                          <ChevronRightIcon />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="w-96 p-0"
-                        align="end"
-                        sideOffset={8}
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="flex flex-row gap-2 text-black text-sm leading-6 bg-gray-100 border-none px-3 py-2 focus-visible:ring-0 hover:bg-gray-200/90 transition-all duration-300 shadow-none font-light"
                       >
-                        <DropdownMenuGroup>
-                          {menuItems.map((menuItem, idx) => (
-                            <DropdownMenuItem
-                              key={menuItem.id}
-                              onClick={onExampleClick(menuItem.message)}
-                              className={cn(
-                                "cursor-pointer px-4 py-3 focus:bg-gray-50 rounded-none",
-                                idx < menuItems.length - 1 &&
-                                  "border-b border-gray-900/5"
-                              )}
-                            >
-                              <div className="flex flex-row items-center w-full gap-4">
-                                {menuItem.icon}
-                                <span className="text-sm text-gray-900 leading-6">
-                                  {menuItem.message}
-                                </span>
-                              </div>
-                              <ArrowUpIcon />
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                        Examples
+                        <ChevronRightIcon />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-96 p-0"
+                      align="end"
+                      sideOffset={8}
+                    >
+                      <DropdownMenuGroup>
+                        {menuItems.map((menuItem, idx) => (
+                          <DropdownMenuItem
+                            key={menuItem.id}
+                            onClick={onExampleClick(menuItem.message)}
+                            className={cn(
+                              "cursor-pointer px-4 py-3 focus:bg-gray-50 rounded-none",
+                              idx < menuItems.length - 1 &&
+                                "border-b border-gray-900/5"
+                            )}
+                          >
+                            <div className="flex flex-row items-center w-full gap-4">
+                              {menuItem.icon}
+                              <span className="text-sm text-gray-900 leading-6">
+                                {menuItem.message}
+                              </span>
+                            </div>
+                            <ArrowUpIcon />
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
                   <Button
                     disabled={!form.formState.isDirty}
                     type="submit"

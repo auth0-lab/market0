@@ -524,39 +524,70 @@ function CancelRedIcon() {
 function Market0Icon() {
   return (
     <svg
-      width="60"
-      height="60"
-      viewBox="0 0 60 60"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <rect
-        width="60"
-        height="60"
-        rx="13.6119"
-        fill="url(#paint0_linear_665_18953)"
+        width="32"
+        height="32"
+        rx="16"
+        fill="url(#paint0_linear_1431_7624)"
       />
-      <path
-        d="M47.8804 21.0598L32.6821 36.2582L23.7418 27.318L12.1196 38.9402"
-        stroke="white"
-        strokeWidth="3.57609"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M37.1522 21.0598H47.8804V31.7881"
-        stroke="white"
-        strokeWidth="3.57609"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <g filter="url(#filter0_d_1431_7624)">
+        <path
+          d="M24.5 12L16.5 19.5L12 15L6.5 20M24.5 12H19M24.5 12V17.5"
+          stroke="white"
+          strokeWidth="1.78804"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          shapeRendering="crispEdges"
+        />
+      </g>
       <defs>
+        <filter
+          id="filter0_d_1431_7624"
+          x="5.10596"
+          y="10.606"
+          width="21.7881"
+          height="11.7881"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dx="0.5" dy="0.5" />
+          <feGaussianBlur stdDeviation="0.5" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.16 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_1431_7624"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_dropShadow_1431_7624"
+            result="shape"
+          />
+        </filter>
         <linearGradient
-          id="paint0_linear_665_18953"
-          x1="-6"
-          y1="7.05197e-07"
-          x2="79"
-          y2="73.5"
+          id="paint0_linear_1431_7624"
+          x1="-3.2"
+          y1="3.76105e-07"
+          x2="42.1333"
+          y2="39.2"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="#6152E4" />
@@ -660,7 +691,35 @@ function CartIcon() {
   );
 }
 
+function TaskIcon() {
+  return (
+    <svg
+      width="24"
+      height="25"
+      viewBox="0 0 24 25"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15.5 3.43115H5C4.46957 3.43115 3.96086 3.64187 3.58579 4.01694C3.21071 4.39201 3 4.90072 3 5.43115V19.4312C3 20.5312 3.9 21.4312 5 21.4312H19C19.5304 21.4312 20.0391 21.2204 20.4142 20.8454C20.7893 20.4703 21 19.9616 21 19.4312V8.93115L15.5 3.43115Z"
+        stroke="#36D47E"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 3.43115V9.43115H21"
+        stroke="#36D47E"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export {
+  TaskIcon,
   CancelRedIcon,
   EarningsIcon,
   CartIcon,
