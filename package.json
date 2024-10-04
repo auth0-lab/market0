@@ -19,7 +19,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@ai-sdk/amazon-bedrock": "^0.0.27",
+    "@ai-sdk/amazon-bedrock": "^0.0.29",
     "@ai-sdk/mistral": "^0.0.41",
     "@ai-sdk/openai": "^0.0.50",
     "@auth0/nextjs-auth0": "^3.5.0",

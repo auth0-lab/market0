@@ -77,10 +77,6 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
             {currentItem === "connected-accounts" && (
               <ConnectedAccounts
                 availableAccounts={[
-                  {
-                    connection: "Username-Password-Authentication",
-                    displayName: "Username + Password",
-                  },
                   // {
                   //   connection: "box",
                   //   displayName: "Box",
@@ -92,7 +88,7 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
                     displayName: "Google",
                     api: "google-all",
                     description:
-                      "Create and manage events and tasks in your Google Calendar and upload files to your Google Drive.",
+                      "Create and manage events and tasks in your Google Calendar.",
                   },
                 ]}
                 allowLink={true}

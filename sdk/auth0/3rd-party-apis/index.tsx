@@ -16,16 +16,10 @@ const PROVIDERS_APIS = [
   },
   {
     name: "google",
-    api: "google-drive",
-    requiredScopes: ["https://www.googleapis.com/auth/drive.file"],
-  },
-  {
-    name: "google",
     api: "google-all",
     requiredScopes: [
       "https://www.googleapis.com/auth/calendar.events",
       "https://www.googleapis.com/auth/tasks",
-      "https://www.googleapis.com/auth/drive.file",
     ],
   },
   {
