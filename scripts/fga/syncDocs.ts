@@ -1,9 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
-import { CredentialsMethod, OpenFgaClient, TypeName } from "@openfga/sdk";
+import { CredentialsMethod, OpenFgaClient } from "@openfga/sdk";
 import { documents } from "../..//lib/db";
-
 
 const fgaClient = new OpenFgaClient({
   apiUrl: process.env.FGA_API_URL,
@@ -21,22 +20,19 @@ const fgaClient = new OpenFgaClient({
 });
 
 (async function main() {
-  const earningsReports = await documents.query("earning");
-  // 03. WRITE TUPLES
-  await fgaClient.write(
-    {
-      writes: [
-        ...(
-          earningsReports.map((report) => ({
-            user: "user:*",
-            relation: "can_view",
-            object: `doc:${report.metadata.id}`,
-          }))
-        ),
+  console.log("Configuring earning reports tuples...");
 
-      ],
-    }
-  );
+  const earningsReports = await documents.query("earning");
+
+  await fgaClient.write({
+    writes: [
+      ...earningsReports.map((report) => ({
+        user: "user:*",
+        relation: "can_view",
+        object: `doc:${report.metadata.id}`,
+      })),
+    ],
+  });
 
   process.exit(0);
 })();
