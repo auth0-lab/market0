@@ -4,12 +4,7 @@ import { useActions, useUIState } from "ai/rsc";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ClientMessage, Document } from "@/llm/types";
 
 import { FormattedText } from "./FormattedText";
@@ -28,7 +23,7 @@ export const Documents = ({
 }) => {
   const [showEnrollment, setShowEnrollment] = useState(false);
 
-  const { checkEnrollment, enrollToNewsletter } = useActions();
+  const { checkEnrollment } = useActions();
   const { continueConversation } = useActions();
   const [, setMessages] = useUIState();
 
@@ -36,16 +31,13 @@ export const Documents = ({
     checkEnrollment({ symbol }).then((isEnrolled?: Boolean) => {
       setShowEnrollment(!isEnrolled);
     });
-    // TODO: verify this. checkEnrollment keeps changing.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbol]);
 
   const enroll = () => {
-    enrollToNewsletter();
     setShowEnrollment(false);
     (async () => {
       const response = await continueConversation({
-        message: `Thank me for subscribing to the newsletter and ask me if I would like to see the forecast for ${symbol} now.`,
+        message: `Subscribe me to the newsletter. Once done ASK me if I want to read the forecast analysis for ${symbol}.`,
         hidden: true,
       });
       setMessages((prevMessages: ClientMessage[]) => [

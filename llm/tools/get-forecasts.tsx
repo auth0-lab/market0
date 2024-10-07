@@ -13,22 +13,13 @@ import { getUser } from "@/sdk/fga";
 import stocks from "../../lib/market/stocks.json";
 import { aiParams } from "../ai-params";
 
-const buildRequiredInfoText = ({ earnings, forecasts}: { earnings: boolean, forecasts: boolean }) => {
-  const requiredInfo = [];
-  if (earnings) {
-    requiredInfo.push('earnings');
-  }
-  if (forecasts) {
-    requiredInfo.push('forecasts');
-  }
-  return requiredInfo.join(' and ');
-}
-
-export default defineTool("get_docs", () => {
+export default defineTool("get_forecasts", () => {
   const history = getHistory();
 
   return {
-    description: `Summarize earnings data and forecasts for a given stock.`,
+    description: `Summarize earnings data and forecasts for a given stock.
+If the user request a forecast analysis always run this.
+Do not use previously shared forecasts in the conversation.`,
     parameters: z.object({
       symbol: z
         .string()
@@ -48,7 +39,7 @@ export default defineTool("get_docs", () => {
         return `I'm sorry, I couldn't find any information for the stock ${symbol}.`;
       }
 
-      const { textStream, text: fullText, usage } = await streamText({
+      const { textStream, text: fullText } = await streamText({
         ...aiParams,
         temperature: 0.2,
         system: `
