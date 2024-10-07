@@ -23,10 +23,10 @@ export default defineTool("set_subscription", async () => {
           return 'You are already subscribed to newsletter.';
         }
         await enrollToNewsletter();
-        return `You have successfully subscribed to newsletter.
-          As part of this subscription you get access to analyst forecasts.
-          Would you like to get some forecast analysis?
-        `;
+        return `The user has successfully subscribed to the newsletter.
+        Be sure to thank them for subscribing.
+        Optionally, offer them a forecast analysis.
+      `;
       } else {
         if (!isUserEnrolled) {
           return 'You are not subscribed to newsletter.';

@@ -1,6 +1,6 @@
 import { Document, DocumentInterface } from "@langchain/core/documents";
 import { BaseRetriever, BaseRetrieverInput } from "@langchain/core/retrievers";
-import { ClientCheckRequest, OpenFgaClient } from "@openfga/sdk";
+import { ClientCheckRequest, ConsistencyPreference, OpenFgaClient } from "@openfga/sdk";
 
 import type { CallbackManagerForRetrieverRun } from "@langchain/core/callbacks/manager";
 type FGARetrieverArgsWithoutCheckFromDocument<T extends CheckRequest> = {
@@ -56,7 +56,9 @@ export class FGARetriever<T extends CheckRequest> extends BaseRetriever {
     const accessByDocument = async function accessByDocument(
       checks: ClientCheckRequest[]
     ): Promise<Map<string, boolean>> {
-      const results = await fgaClient.batchCheck(checks);
+      const results = await fgaClient.batchCheck(checks, {
+        consistency: ConsistencyPreference.HigherConsistency
+      });
       return results.responses.reduce((c: Map<string, boolean>, v) => {
         c.set(v._request.object, v.allowed || false);
         return c;

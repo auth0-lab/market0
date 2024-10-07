@@ -8,8 +8,8 @@ import { userUsage } from "@/lib/db";
 import { composeTools } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
 import { getSystemPrompt } from "@/llm/system-prompt";
-import getDocs from "@/llm/tools/get-docs";
 import getEvents from "@/llm/tools/get-events";
+import getForecasts from "@/llm/tools/get-forecasts";
 import listStocks from "@/llm/tools/list-stocks";
 import showCurrentPositions from "@/llm/tools/show-current-positions";
 import showStockPrice from "@/llm/tools/show-stock-price";
@@ -93,7 +93,7 @@ export async function continueConversation(
       showCurrentPositions,
       listStocks,
       getEvents,
-      getDocs,
+      getForecasts,
       setEmployeer,
       checkSubscription,
       setSubscription,

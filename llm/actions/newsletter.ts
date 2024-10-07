@@ -3,6 +3,7 @@
 import { documents } from "@/lib/db";
 import { fgaClient, getUser } from "@/sdk/fga";
 import { Claims } from "@auth0/nextjs-auth0";
+import { ConsistencyPreference } from "@openfga/sdk";
 
 type Document = documents.Document;
 
@@ -59,6 +60,8 @@ export async function checkEnrollment({ symbol }: { symbol: string }) {
     user: `user:${user.sub}`,
     object: `doc:${docs[0].metadata.id}`,
     relation: "can_view",
+  }, {
+    consistency: ConsistencyPreference.HigherConsistency
   });
 
   return allowed;
