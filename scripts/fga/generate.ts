@@ -1,9 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
-import { CredentialsMethod, OpenFgaClient, TypeName } from "@openfga/sdk";
+import {
+  ConsistencyPreference,
+  CredentialsMethod,
+  OpenFgaClient,
+  TypeName,
+} from "@openfga/sdk";
 import stocks from "../../lib/market/stocks.json";
-import { documents } from "../..//lib/db";
 
 const fgaClient = new OpenFgaClient({
   apiUrl: process.env.FGA_API_URL,
@@ -20,8 +24,17 @@ const fgaClient = new OpenFgaClient({
   },
 });
 
+async function asyncFilter<T>(
+  arr: T[],
+  predicate: (value: T) => Promise<boolean>
+): Promise<T[]> {
+  const results = await Promise.all(arr.map(predicate));
+  return arr.filter((_, index) => results[index]);
+}
+
 (async function main() {
   // 01. WRITE MODEL
+  console.log("Creating authorization model...");
   const model = await fgaClient.writeAuthorizationModel({
     schema_version: "1.1",
     type_definitions: [
@@ -151,69 +164,78 @@ const fgaClient = new OpenFgaClient({
 
   console.log("NEW MODEL ID: ", model.authorization_model_id);
 
-  // 02. REMOVE EXISTING TUPLES
-  const readTuples = await fgaClient.read({});
+  // 02. CONFIGURE PRE-DEFINED TUPLES
+  console.log("Configuring pre-defined tuples...");
 
-  if (readTuples.tuples.length > 0) {
-    await fgaClient.deleteTuples(readTuples.tuples.map((tuple) => tuple.key));
-  }
-  const earningsReports = await documents.query("earning");
-  // 03. WRITE TUPLES
-  await fgaClient.write(
+  const assetsTuples = stocks
+    .map((stock) => [
+      {
+        user: "user:*",
+        relation: "can_buy",
+        object: `asset:${stock.symbol.toLowerCase()}`,
+      },
+      {
+        user: "user:*",
+        relation: "can_sell",
+        object: `asset:${stock.symbol.toLowerCase()}`,
+      },
+      {
+        user: "user:*",
+        relation: "can_view",
+        object: `asset:${stock.symbol.toLowerCase()}`,
+      },
+    ])
+    .flat();
+
+  // Company Stock Restriction
+  const restictedAssetsTuples = [
     {
-      writes: [
-        ...earningsReports.map((report) => ({
-          user: "user:*",
-          relation: "can_view",
-          object: `doc:${report.metadata.id}`,
-        })),
-
-        ...stocks
-          .map((stock) => [
-            {
-              user: "user:*",
-              relation: "can_buy",
-              object: `asset:${stock.symbol.toLowerCase()}`,
-            },
-            {
-              user: "user:*",
-              relation: "can_sell",
-              object: `asset:${stock.symbol.toLowerCase()}`,
-            },
-            {
-              user: "user:*",
-              relation: "can_view",
-              object: `asset:${stock.symbol.toLowerCase()}`,
-            },
-          ])
-          .flat(),
-
-        // Company Stock Restriction
-        {
-          user: "company:atko#employee",
-          relation: "_restricted_employee",
-          object: "asset:atko",
-          condition: {
-            name: "is_trading_window_closed",
-            context: {
-              from: "2023-01-01T00:00:00Z",
-              to: "2023-02-01T00:00:00Z",
-            },
-          },
+      user: "company:atko#employee",
+      relation: "_restricted_employee",
+      object: "asset:atko",
+      condition: {
+        name: "is_trading_window_closed",
+        context: {
+          from: "2023-01-01T00:00:00Z",
+          to: "2023-02-01T00:00:00Z",
         },
-
-        // ATKO employee
-        {
-          user: `user:${process.env.RESTRICTED_USER_ID_EXAMPLE}`,
-          relation: "employee",
-          object: "company:atko",
-        },
-      ],
+      },
     },
+  ];
+
+  // ATKO employee
+  const restrictedEmployeesTuples = [
     {
-      authorizationModelId: model.authorization_model_id,
-    }
+      user: `user:${process.env.RESTRICTED_USER_ID_EXAMPLE}`,
+      relation: "employee",
+      object: "company:atko",
+    },
+  ];
+
+  // exclude existing tuples because FGA will fail when tuple already exists
+  const tuplesToWrite = await asyncFilter(
+    [...assetsTuples, ...restictedAssetsTuples, ...restrictedEmployeesTuples],
+    async (t) =>
+      (
+        await fgaClient.read(t, {
+          consistency: ConsistencyPreference.HigherConsistency,
+        })
+      ).tuples.length === 0
   );
+
+  if (tuplesToWrite.length) {
+    await fgaClient.write(
+      {
+        writes: tuplesToWrite,
+      },
+      {
+        authorizationModelId: model.authorization_model_id,
+      }
+    );
+  }
+
+  // 03. CONFIGURE EARNING REPORTS TUPLES
+  require("./syncDocs");
 
   process.exit(0);
 })();
