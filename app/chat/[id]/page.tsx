@@ -3,9 +3,11 @@
 import { generateId } from "ai";
 import { useActions, useUIState } from "ai/rsc";
 import Link from "next/link";
+import { use, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { useChat } from "@/components/chat/context";
 import {
   ArrowUpIcon,
   ChevronRightIcon,
@@ -42,6 +44,7 @@ export default function Chat({ params }: { params: { id: string } }) {
   const { continueConversation } = useActions();
   const { user } = useUser();
   const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
+  const { setChatId } = useChat();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,6 +82,11 @@ export default function Chat({ params }: { params: { id: string } }) {
       message,
     ]);
   };
+
+  useEffect(() => {
+    setChatId(params.id);
+    return () => setChatId();
+  }, [params.id, setChatId]);
 
   return (
     <main
@@ -127,7 +135,6 @@ export default function Chat({ params }: { params: { id: string } }) {
             )}
             <div ref={visibilityRef} className="w-full h-px" />
           </div>
-
           {conversation.length === 0 && (
             <div className="flex flex-col gap-80 max-w-4xl mx-auto w-full mb-5 mt-auto">
               <div className="min-w-0 min-h-0 w-full flex flex-col items-center gap-6">

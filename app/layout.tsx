@@ -3,8 +3,10 @@ import "./globals.css";
 
 import { Inter } from "next/font/google";
 
-import { Header } from "@/components/header";
+import { ChatProvider } from "@/components/chat/context";
+import { Header } from "@/components/chat/header";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -29,8 +31,11 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          {children}
+          <Toaster />
+          <ChatProvider>
+            <Header />
+            {children}
+          </ChatProvider>
         </ThemeProvider>
       </body>
     </html>
