@@ -5,7 +5,6 @@ import { CredentialsMethod, OpenFgaClient, TypeName } from "@openfga/sdk";
 import stocks from "../../lib/market/stocks.json";
 import { documents } from "../..//lib/db";
 
-
 const fgaClient = new OpenFgaClient({
   apiUrl: process.env.FGA_API_URL,
   storeId: process.env.FGA_STORE_ID,
@@ -118,15 +117,20 @@ const fgaClient = new OpenFgaClient({
       },
       {
         type: "chat",
-        relations: { can_view: { this: {} }, owner: { this: {} } },
-        metadata: {
-          relations: {
-            can_view: {
-              directly_related_user_types: [
-                { type: "user" },
-                { type: "user", wildcard: {} },
+        relations: {
+          can_view: {
+            union: {
+              child: [
+                { this: {} },
+                { computedUserset: { object: "", relation: "owner" } },
               ],
             },
+          },
+          owner: { this: {} },
+        },
+        metadata: {
+          relations: {
+            can_view: { directly_related_user_types: [{ type: "user" }] },
             owner: { directly_related_user_types: [{ type: "user" }] },
           },
         },
@@ -158,16 +162,14 @@ const fgaClient = new OpenFgaClient({
   await fgaClient.write(
     {
       writes: [
-        ...(
-          earningsReports.map((report) => ({
-            user: "user:*",
-            relation: "can_view",
-            object: `doc:${report.metadata.id}`,
-          }))
-        ),
+        ...earningsReports.map((report) => ({
+          user: "user:*",
+          relation: "can_view",
+          object: `doc:${report.metadata.id}`,
+        })),
 
-        ...(
-          stocks.map((stock) => [
+        ...stocks
+          .map((stock) => [
             {
               user: "user:*",
               relation: "can_buy",
@@ -183,8 +185,8 @@ const fgaClient = new OpenFgaClient({
               relation: "can_view",
               object: `asset:${stock.symbol.toLowerCase()}`,
             },
-          ]).flat()
-        ),
+          ])
+          .flat(),
 
         // Company Stock Restriction
         {

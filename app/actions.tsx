@@ -11,14 +11,13 @@ import { createGoogleTask } from "@/llm/actions/reminders";
 import * as serialization from "@/llm/components/serialization";
 import { ClientMessage, ServerMessage } from "@/llm/types";
 import { getUser } from "@/sdk/fga";
-import { assignChatOwner } from "@/sdk/fga/chats";
 
 type Props = Parameters<
   ReturnType<typeof createAI<ServerMessage[], ClientMessage[]>>
 >[0] & {
   conversationID: string;
 };
-const HIDDEN_ROLES = ["system", 'tool'];
+const HIDDEN_ROLES = ["system", "tool"];
 export const AI = (p: Props) => {
   const { conversationID, ...params } = p;
 
@@ -40,12 +39,6 @@ export const AI = (p: Props) => {
           messages: state,
           userID: user.sub,
         });
-
-        // TODO: find a better way to detect chat creation
-        const isNewConversation = state.length <= 2;
-        if (isNewConversation) {
-          await assignChatOwner(conversationID);
-        }
       }
     },
     // @ts-ignore
@@ -58,9 +51,10 @@ export const AI = (p: Props) => {
       return history
         .filter((c) => {
           const isHidden = c.hidden;
-          const isToolCall = c.role === 'assistant' &&
+          const isToolCall =
+            c.role === "assistant" &&
             Array.isArray(c.content) &&
-            c.content.some(c => c.type === 'tool-call');
+            c.content.some((c) => c.type === "tool-call");
           return !isHidden && !isToolCall && !HIDDEN_ROLES.includes(c.role);
         })
         .map(({ role, content, componentName, params }) => {
