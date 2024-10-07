@@ -22,6 +22,7 @@ const fgaClient = new OpenFgaClient({
 
 (async function main() {
   // 01. WRITE MODEL
+  console.log("Creating authorization model...");
   const model = await fgaClient.writeAuthorizationModel({
     schema_version: "1.1",
     type_definitions: [
@@ -152,13 +153,26 @@ const fgaClient = new OpenFgaClient({
   console.log("NEW MODEL ID: ", model.authorization_model_id);
 
   // 02. REMOVE EXISTING TUPLES
-  const readTuples = await fgaClient.read({});
+  console.log("Removing existing tuples...");
+  const { tuples } = await fgaClient.read({});
 
-  if (readTuples.tuples.length > 0) {
-    await fgaClient.deleteTuples(readTuples.tuples.map((tuple) => tuple.key));
+  if (tuples.length > 0) {
+    const chunks = [];
+    const chunkSize = 40; // The number of write operations must be <= 40
+    for (let i = 0; i < tuples.length; i += chunkSize) {
+      chunks.push(tuples.slice(i, i + chunkSize));
+    }
+
+    await Promise.all(
+      chunks.map((chunk) =>
+        fgaClient.deleteTuples(chunk.map((tuple) => tuple.key))
+      )
+    );
   }
-  const earningsReports = await documents.query("earning");
+
   // 03. WRITE TUPLES
+  console.log("Creating new tuples...");
+  const earningsReports = await documents.query("earning");
   await fgaClient.write(
     {
       writes: [
