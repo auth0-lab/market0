@@ -23,7 +23,7 @@ export const StockSkeleton = () => {
           </div>
         </div>
 
-        <div className="-mx-4 relative cursor-col-resize">
+        <div className="mx-4 relative cursor-col-resize">
           <div style={{ height: 50 }}></div>
         </div>
       </div>

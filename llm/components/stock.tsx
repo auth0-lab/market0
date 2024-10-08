@@ -32,10 +32,20 @@ export function Stock({
   });
 
   const chartRef = useRef<HTMLDivElement>(null);
-  const { width = 0 } = useResizeObserver({
-    ref: chartRef,
-    box: "device-pixel-content-box",
-  });
+
+  let width = 0;
+  const resizeObserverResult =
+    useResizeObserver({
+      ref: chartRef,
+      box: "content-box",
+      //TODO: This fails on safari 17. Need to investigate
+      //      returns twice the value of content-box.
+      // box: "device-pixel-content-box",
+    });
+
+  //TODO remove this when the issue is fixed
+  // width = resizeObserverResult?.width ? resizeObserverResult?.width : 0;
+  width = resizeObserverResult?.width ? resizeObserverResult?.width * 2 : 0;
 
   const xToValue = scaleLinear([0, width], [price - price / 2, price]);
 
@@ -87,7 +97,7 @@ export function Stock({
         </div>
 
         <div
-          className="relative -mx-4 cursor-default mt-5"
+          className="relative mx-4 cursor-default mt-5"
           onPointerMove={(event) => {
             if (chartRef.current) {
               const { clientX } = event;
