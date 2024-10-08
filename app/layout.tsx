@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { generateId } from "ai";
 import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -20,6 +21,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log("root layout redraw", generateId());
   return (
     <html lang="en">
       <body className={cn(inter.className, "h-screen")}>

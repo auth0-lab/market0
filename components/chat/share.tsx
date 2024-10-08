@@ -6,10 +6,12 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { fetchUserById } from "@/app/actions";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
+import { ChatUser } from "@/lib/db/chat-users";
 import { cn } from "@/lib/utils";
-import { assignChatReader, getChatReaders, revokeChatReader } from "@/sdk/fga/chats";
+import { addChatUsers, getChatUsers, removeChatUser } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 
@@ -41,34 +43,58 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useToast } from "../ui/use-toast";
 
 import type { Claims } from "@auth0/nextjs-auth0";
+import type { GetUsers200ResponseOneOfInner } from "auth0";
 export interface ShareConversationProps {
   user: Claims;
   chatId: string | undefined;
 }
 
 interface PermissionBlockProps {
-  picture?: string;
-  fallback: string;
-  name: string;
-  email: string;
-  role: string;
-  onAccessRemoval?: (email: string) => void;
+  user: ChatUser;
+  onAccessRemoval: (user_id: string) => void;
 }
 
-const PermissionBlock = ({
-  picture,
-  fallback,
-  name,
-  email,
-  role = "Viewer",
-  onAccessRemoval = () => void 0,
-}: PermissionBlockProps) => {
+const PermissionBlock = ({ user, onAccessRemoval }: PermissionBlockProps) => {
+  console.log("redraw permission", generateId());
+  const [loading, setIsLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState<GetUsers200ResponseOneOfInner>();
+
+  const { id, email } = user;
+  const picture = userInfo?.picture;
+  const name = userInfo?.name || email;
+  const given_name = userInfo?.given_name || email.split("")[0];
+  const family_name = userInfo?.family_name || email.split("")[1];
+  const role = user.access === "can_view" ? "Viewer" : "Owner";
+
+  useEffect(() => {
+    if (!user.user_id) {
+      return;
+    }
+
+    async function retrieveUserInfo() {
+      try {
+        const data = await fetchUserById(user.user_id!);
+        setUserInfo(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    retrieveUserInfo();
+  }, [user]);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <li className="flex items-center justify-between">
       <div className="flex items-center justify-start gap-3">
         <Avatar className="h-8 w-8">
           <AvatarImage src={picture} alt={picture} />
-          <AvatarFallback>{fallback}</AvatarFallback>
+          <AvatarFallback>{getAvatarFallback({ family_name, given_name })}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col items-left justify-between flex-grow">
           <span className=" text-slate-800 font-medium">{name}</span>
@@ -112,7 +138,7 @@ const PermissionBlock = ({
               <Link
                 href="#"
                 className="flex justify-start items-center gap-1 font-normal text-destructive"
-                onClick={() => onAccessRemoval(email)}
+                onClick={() => onAccessRemoval(id)}
               >
                 <TrashIcon />
                 Remove access
@@ -131,7 +157,7 @@ const formSchema = z.object({
 });
 
 export function ShareConversation({ user, chatId }: ShareConversationProps) {
-  const [viewers, setViewers] = useState<{ email?: string }[]>([]);
+  const [viewers, setViewers] = useState<ChatUser[]>([]);
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
   const [isLoading, setIsLoading] = useState(true);
   const [isWorking, setIsWorking] = useState(false);
@@ -150,8 +176,8 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
 
     try {
       setIsWorking(true);
-      await assignChatReader(chatId!, [email]);
-      setViewers((prev) => [...prev, { email }]);
+      const [invitedUser] = await addChatUsers(chatId!, [email]);
+      setViewers((prev) => [...prev, invitedUser]);
       form.reset();
     } catch (err) {
       toast({
@@ -164,11 +190,11 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
     }
   }
 
-  async function handleOnRemove(email: string) {
+  async function handleOnRemove(id: string) {
     try {
       setIsWorking(true);
-      await revokeChatReader(chatId!, [email]);
-      setViewers((prev) => prev.filter((viewer) => viewer.email !== email));
+      await removeChatUser(id);
+      setViewers((prev) => prev.filter((viewer) => viewer.id !== id));
     } catch (err) {
       toast({
         title: "Error!",
@@ -188,11 +214,15 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
     }
   }
 
+  useEffect(() => {
+    console.log("redraw", generateId());
+  }, []);
+
   // initial load of viewers
   useEffect(() => {
     async function retrieveViewers() {
       try {
-        const retrievedViewers = await getChatReaders(chatId!);
+        const retrievedViewers = await getChatUsers(chatId!);
         setViewers(() => [...retrievedViewers]);
       } catch (err) {
         toast({
@@ -300,33 +330,9 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
                 </div>
               )}
 
-              {!isLoading && (
-                <PermissionBlock
-                  picture={user.picture}
-                  fallback={getAvatarFallback(user)}
-                  name={user.name}
-                  email={user.email}
-                  role="Owner"
-                />
-              )}
-
-              {!isLoading &&
-                viewers.map(
-                  ({ email }) =>
-                    email && (
-                      <PermissionBlock
-                        key={generateId()}
-                        name={email}
-                        email={email}
-                        fallback={getAvatarFallback({
-                          family_name: email[1],
-                          given_name: email[0],
-                        })}
-                        role="Viewer"
-                        onAccessRemoval={(email) => handleOnRemove(email)}
-                      />
-                    )
-                )}
+              {viewers.map((user) => (
+                <PermissionBlock key={generateId()} user={user} onAccessRemoval={handleOnRemove} />
+              ))}
             </ul>
           </ScrollArea>
         </div>
