@@ -4,15 +4,13 @@ import { ConsistencyPreference } from "@openfga/sdk";
 
 import { fgaClient, getUser } from "./";
 
-const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS
-  ? parseInt(process.env.MAX_CHAT_READERS, 10)
-  : 5;
+const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS ? parseInt(process.env.MAX_CHAT_READERS, 10) : 5;
 
 export async function assignChatOwner(chatId: string) {
   const user = await getUser();
   await fgaClient.writeTuples([
     {
-      user: `user:${user.sub}`,
+      user: `user:${user.email}`,
       relation: "owner",
       object: `chat:${chatId}`,
     },
@@ -37,9 +35,7 @@ export async function getChatReaders(chatId: string) {
 
 export async function assignChatReader(chatId: string, emails: string[]) {
   const readers = await getChatReaders(chatId);
-  const filteredEmails = emails.filter(
-    (email) => !readers.some((reader) => reader.email === email.toLowerCase())
-  );
+  const filteredEmails = emails.filter((email) => !readers.some((reader) => reader.email === email.toLowerCase()));
 
   if (readers.length + filteredEmails.length > MAX_CHAT_READERS) {
     throw new Error(
