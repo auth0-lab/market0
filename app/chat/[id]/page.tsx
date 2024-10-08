@@ -39,7 +39,6 @@ export default function Chat({ params }: { params: { id: string } }) {
   const { continueConversation } = useActions();
   const { user } = useUser();
   const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
-  const { setChatId } = useChat();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,11 +70,6 @@ export default function Chat({ params }: { params: { id: string } }) {
     const message = await continueConversation(input);
     setConversation((currentConversation: ClientMessage[]) => [...currentConversation, message]);
   };
-
-  useEffect(() => {
-    setChatId(params.id);
-    return () => setChatId();
-  }, [params.id, setChatId]);
 
   return (
     <main className="flex overflow-hidden h-full  mx-auto pt-4" style={{ maxHeight: "calc(100vh - 56px)" }}>

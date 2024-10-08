@@ -22,7 +22,7 @@ async function RootLayout({ children, params }: RootChatParams) {
   return (
     <ChatProvider chatId={params.id}>
       <Header>
-        <ShareConversation user={user} />
+        <ShareConversation user={user} chatId={params.id} />
       </Header>
 
       <AI initialAIState={messages} conversationID={params.id}>
@@ -57,8 +57,12 @@ export default withCheckPermission(
       // if any of the checks pass, allow access
       return checks.some((allowed) => allowed);
     },
-    onUnauthorized: () => (
-      <UnauthorizedError>The conversation does not exist or you are not authorized to access it.</UnauthorizedError>
+    onUnauthorized: ({ params }) => (
+      <ChatProvider chatId={params.id}>
+        <Header />
+
+        <UnauthorizedError>The conversation does not exist or you are not authorized to access it.</UnauthorizedError>
+      </ChatProvider>
     ),
   },
   RootLayout
