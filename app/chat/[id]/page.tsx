@@ -202,7 +202,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                   )}
 
                   <Button
-                    disabled={!form.formState.isDirty || !form.formState.disabled}
+                    disabled={!form.formState.isDirty || form.formState.disabled}
                     type="submit"
                     className="px-3 py-2 m-0 bg-black hover:bg-black text-white text-sm leading-6 font-light"
                   >
