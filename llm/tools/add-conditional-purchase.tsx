@@ -8,10 +8,7 @@ import { defineTool } from "@/llm/ai-helpers";
 import { ConditionalPurchase } from "@/llm/components/conditional-purchase";
 import * as serialization from "@/llm/components/serialization";
 import { getHistory } from "@/llm/utils";
-import {
-  isGuardianEnrolled,
-  requireGuardianEnrollment,
-} from "@/sdk/auth0/mgmt";
+import { isGuardianEnrolled } from "@/sdk/auth0/mgmt";
 import { getUser, withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permission";
 
@@ -36,23 +33,11 @@ export default defineTool("add_conditional_purchase", () => {
         2. 'Buy 10 shares of ZEKO but only when its P/E > 0' would map to the same inputs.
         3. 'Buy 100 shares of Tesla when its price is less than or equal to $1000' maps to {symbol: 'TSLA', quantity: 100, metric: 'price', operator: '<=', threshold: 1000}.`,
     parameters: z.object({
-      symbol: z
-        .string()
-        .describe(
-          "The name or ticker symbol of the stock (e.g., 'Zeko Technologies' or ZEKO)."
-        ),
+      symbol: z.string().describe("The name or ticker symbol of the stock (e.g., 'Zeko Technologies' or ZEKO)."),
       quantity: z.number().describe("Number of shares to buy."),
-      metric: z
-        .enum(["P/E", "EPS", "P/B", "D/E", "ROE", "RSI", "price"])
-        .describe("The financial metric to monitor."),
-      operator: z
-        .enum(["=", "<", "<=", ">", ">="])
-        .describe("The comparison operator to evaluate the condition."),
-      threshold: z
-        .number()
-        .describe(
-          "The threshold value of the financial variable that triggers the buy action."
-        ),
+      metric: z.enum(["P/E", "EPS", "P/B", "D/E", "ROE", "RSI", "price"]).describe("The financial metric to monitor."),
+      operator: z.enum(["=", "<", "<=", ">", ">="]).describe("The comparison operator to evaluate the condition."),
+      threshold: z.number().describe("The threshold value of the financial variable that triggers the buy action."),
     }),
     generate: withCheckPermission<ToolParams>(
       {
@@ -69,10 +54,6 @@ export default defineTool("add_conditional_purchase", () => {
         const user = await getUser();
         const hs = headers();
         const isEnrolled = await isGuardianEnrolled();
-
-        if (!isEnrolled) {
-          await requireGuardianEnrollment();
-        }
 
         // Store the conditional purchase in Market0 db
         let conditionalPurchase = await conditionalPurchases.create({
@@ -93,12 +74,7 @@ export default defineTool("add_conditional_purchase", () => {
           params: { id: conditionalPurchase.id },
         });
 
-        return (
-          <ConditionalPurchase
-            id={conditionalPurchase.id}
-            isMFAEnrolled={isEnrolled}
-          />
-        );
+        return <ConditionalPurchase id={conditionalPurchase.id} isMFAEnrolled={isEnrolled} />;
       }
     ),
   };
