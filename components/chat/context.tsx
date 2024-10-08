@@ -9,20 +9,10 @@ interface ChatContextProps {
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
-export const ChatProvider = ({
-  chatId: initialChatId,
-  children,
-}: {
-  chatId?: string;
-  children: ReactNode;
-}) => {
+export const ChatProvider = ({ chatId: initialChatId, children }: { chatId?: string; children: ReactNode }) => {
   const [chatId, setChatId] = useState(initialChatId);
 
-  return (
-    <ChatContext.Provider value={{ chatId, setChatId }}>
-      {children}
-    </ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={{ chatId, setChatId }}>{children}</ChatContext.Provider>;
 };
 
 export const useChat = () => {

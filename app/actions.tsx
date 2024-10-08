@@ -3,7 +3,7 @@
 import { generateId } from "ai";
 import { createAI, getAIState } from "ai/rsc";
 
-import { saveAIState } from "@/lib/db";
+import { saveAIStateToStore } from "@/lib/db";
 import { confirmPurchase } from "@/llm/actions/confirm-purchase";
 import { continueConversation } from "@/llm/actions/continue-conversation";
 import { checkEnrollment } from "@/llm/actions/newsletter";
@@ -33,7 +33,7 @@ export const AI = (p: Props) => {
 
       if (done) {
         const user = await getUser();
-        await saveAIState({
+        await saveAIStateToStore({
           conversationID,
           messages: state,
           userID: user.sub,
@@ -44,16 +44,13 @@ export const AI = (p: Props) => {
     onGetUIState: async () => {
       "use server";
 
-      const history: readonly ServerMessage[] =
-        getAIState() as readonly ServerMessage[];
+      const history: readonly ServerMessage[] = getAIState() as readonly ServerMessage[];
 
       return history
         .filter((c) => {
           const isHidden = c.hidden;
           const isToolCall =
-            c.role === "assistant" &&
-            Array.isArray(c.content) &&
-            c.content.some((c) => c.type === "tool-call");
+            c.role === "assistant" && Array.isArray(c.content) && c.content.some((c) => c.type === "tool-call");
           return !isHidden && !isToolCall && !HIDDEN_ROLES.includes(c.role);
         })
         .map(({ role, content, componentName, params }) => {

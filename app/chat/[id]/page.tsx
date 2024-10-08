@@ -167,40 +167,42 @@ export default function Chat({ params }: { params: { id: string } }) {
                     )}
                   />
 
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="flex flex-row gap-2 text-black text-sm leading-6 bg-gray-100 border-none px-3 py-2 focus-visible:ring-0 hover:bg-gray-200/90 transition-all duration-300 shadow-none font-light"
-                      >
-                        Examples
-                        <ChevronRightIcon />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-96 p-0" align="end" sideOffset={8}>
-                      <DropdownMenuGroup>
-                        {menuItems.map((menuItem, idx) => (
-                          <DropdownMenuItem
-                            key={menuItem.id}
-                            onClick={onExampleClick(menuItem.message)}
-                            className={cn(
-                              "cursor-pointer px-4 py-3 focus:bg-gray-50 rounded-none",
-                              idx < menuItems.length - 1 && "border-b border-gray-900/5"
-                            )}
-                          >
-                            <div className="flex flex-row items-center w-full gap-4">
-                              {menuItem.icon}
-                              <span className="text-sm text-gray-900 leading-6">{menuItem.message}</span>
-                            </div>
-                            <ArrowUpIcon />
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  {!form.formState.disabled && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="flex flex-row gap-2 text-black text-sm leading-6 bg-gray-100 border-none px-3 py-2 focus-visible:ring-0 hover:bg-gray-200/90 transition-all duration-300 shadow-none font-light"
+                        >
+                          Examples
+                          <ChevronRightIcon />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-96 p-0" align="end" sideOffset={8}>
+                        <DropdownMenuGroup>
+                          {menuItems.map((menuItem, idx) => (
+                            <DropdownMenuItem
+                              key={menuItem.id}
+                              onClick={onExampleClick(menuItem.message)}
+                              className={cn(
+                                "cursor-pointer px-4 py-3 focus:bg-gray-50 rounded-none",
+                                idx < menuItems.length - 1 && "border-b border-gray-900/5"
+                              )}
+                            >
+                              <div className="flex flex-row items-center w-full gap-4">
+                                {menuItem.icon}
+                                <span className="text-sm text-gray-900 leading-6">{menuItem.message}</span>
+                              </div>
+                              <ArrowUpIcon />
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
 
                   <Button
-                    disabled={!form.formState.isDirty}
+                    disabled={!form.formState.isDirty || !form.formState.disabled}
                     type="submit"
                     className="px-3 py-2 m-0 bg-black hover:bg-black text-white text-sm leading-6 font-light"
                   >

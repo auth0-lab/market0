@@ -32,6 +32,11 @@ export interface ServerMessage {
   hidden?: boolean;
 }
 
+export interface Conversation {
+  messages: ServerMessage[];
+  ownerID: string;
+}
+
 export interface ClientMessage {
   id: string;
   role: "user" | "assistant" | "function";

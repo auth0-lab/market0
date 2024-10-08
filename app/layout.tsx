@@ -13,8 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Auth0 AI | Market0",
-  description:
-    "Market0 is a demo app that showcases secure auth patterns for GenAI apps",
+  description: "Market0 is a demo app that showcases secure auth patterns for GenAI apps",
 };
 
 export default async function RootLayout({
@@ -25,12 +24,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, "h-screen")}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Toaster />
           <ChatProvider>
             <Header />
