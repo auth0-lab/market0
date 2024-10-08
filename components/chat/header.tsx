@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ArrowRightIcon, GHIcon, IconAuth0 } from "@/components/icons";
+import { ArrowRightIcon, DiscordIcon, GHIcon, IconAuth0 } from "@/components/icons";
 import { getSession } from "@auth0/nextjs-auth0";
 
 import UserButton from "../auth0/user-button";
@@ -29,16 +29,25 @@ export async function Header() {
         </Link>
       </div>
       <div className="flex items-center justify-end gap-6">
-        <div className="flex items-center justify-end gap-6">
+        <div className="flex items-center justify-end gap-4">
           <ShareConversation user={user} />
+
+          <Link
+            href="https://discord.gg/QGHxwDsbQQ"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="min-w-12 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
+          >
+            <DiscordIcon />
+          </Link>
 
           <Link
             href="https://github.com/auth0-lab/market0"
             rel="noopener noreferrer"
             target="_blank"
-            className="bg-white text-slate-500 border border-slate-500 flex gap-2 items-center px-3 py-2 rounded-md text-sm hover:bg-gray-100 hover:text-black transition-colors duration-300"
+            className="min-w-12 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
           >
-            <GHIcon /> GitHub
+            <GHIcon />
           </Link>
           <UserButton user={user}>
             <DropdownMenu>
