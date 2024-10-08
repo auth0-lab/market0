@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
 import { cn } from "@/lib/utils";
 import { assignChatReader, getChatReaders, revokeChatReader } from "@/sdk/fga/chats";
@@ -220,7 +220,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
   return (
     <Dialog onOpenChange={() => form.reset()}>
       <DialogTrigger asChild={true}>
-        <Button className="bg-gray-100 text-slate-800 flex gap-2 items-center px-3 py-2 rounded-md text-sm hover:bg-gray-100 hover:text-black transition-colors duration-300">
+        <Button className="bg-gray-100 text-slate-800 flex gap-2 items-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] border-gray-100 text-sm hover:bg-gray-100 hover:text-black transition-all duration-300">
           <ShareIcon /> Share chat
         </Button>
       </DialogTrigger>
@@ -229,9 +229,9 @@ export function ShareConversation({ user }: ShareConversationProps) {
           <DialogTitle className="text-lg font-semibold text-gray-900">
             Share this conversation with a friend
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm text-black/60">
             All conversations are private by default and only accessible to the owner. You can share your chat with
-            friends or colleges by submitting their email and copying the link of this chat
+            friends or colleges by submitting their email and copying the link of this chat.
           </DialogDescription>
         </DialogHeader>
 
@@ -266,7 +266,7 @@ export function ShareConversation({ user }: ShareConversationProps) {
                         <FormItem>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="font-normal py-0 px-2 leading-3 border-none ring-0 focus:ring-0 shadow-none hover:bg-slate-100">
+                              <SelectTrigger className="font-normal py-0 px-2 leading-3 border-none ring-0 focus:ring-0 shadow-none hover:bg-slate-100 rounded-l-none">
                                 <SelectValue placeholder="Select role to for the user to share" />
                               </SelectTrigger>
                             </FormControl>

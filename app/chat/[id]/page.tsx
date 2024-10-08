@@ -8,12 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useChat } from "@/components/chat/context";
-import {
-  ArrowUpIcon,
-  ChevronRightIcon,
-  CircleIcon,
-  Market0Icon,
-} from "@/components/icons";
+import { ArrowUpIcon, ChevronRightIcon, CircleIcon, Market0Icon } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,10 +59,7 @@ export default function Chat({ params }: { params: { id: string } }) {
 
     const message = await continueConversation(input);
 
-    setConversation((currentConversation: ClientMessage[]) => [
-      ...currentConversation,
-      message,
-    ]);
+    setConversation((currentConversation: ClientMessage[]) => [...currentConversation, message]);
   }
 
   const onExampleClick = (input: string) => async () => {
@@ -77,10 +69,7 @@ export default function Chat({ params }: { params: { id: string } }) {
     ]);
 
     const message = await continueConversation(input);
-    setConversation((currentConversation: ClientMessage[]) => [
-      ...currentConversation,
-      message,
-    ]);
+    setConversation((currentConversation: ClientMessage[]) => [...currentConversation, message]);
   };
 
   useEffect(() => {
@@ -89,28 +78,16 @@ export default function Chat({ params }: { params: { id: string } }) {
   }, [params.id, setChatId]);
 
   return (
-    <main
-      className="flex overflow-hidden h-full  mx-auto pt-4"
-      style={{ maxHeight: "calc(100vh - 56px)" }}
-    >
+    <main className="flex overflow-hidden h-full  mx-auto pt-4" style={{ maxHeight: "calc(100vh - 56px)" }}>
       <div className="h-full w-full overflow-hidden rounded-md">
-        <div
-          ref={scrollRef}
-          className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none"
-        >
+        <div ref={scrollRef} className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none">
           <div
             ref={messagesRef}
-            className={cn(
-              "flex-1 min-w-0 max-w-4xl mx-auto w-full pb-[100px]",
-              { hidden: conversation.length === 0 }
-            )}
+            className={cn("flex-1 min-w-0 max-w-4xl mx-auto w-full pb-[100px]", { hidden: conversation.length === 0 })}
           >
             {conversation.map((message: ClientMessage) =>
               message.role === "user" ? (
-                <div
-                  key={message.id}
-                  className="flex flex-row gap-3 py-3 items-center justify-end"
-                >
+                <div key={message.id} className="flex flex-row gap-3 py-3 items-center justify-end">
                   <div className="relative max-w-[70%] text-base text-stone-600 font-light bg-[#F4F4F4] rounded-full px-5 py-2.5">
                     {message.display}
                   </div>
@@ -121,15 +98,12 @@ export default function Chat({ params }: { params: { id: string } }) {
                     </Avatar>
                   </div>
                 </div>
-              ) : message.role === "assistant" ||
-                message.role === "function" ? (
+              ) : message.role === "assistant" || message.role === "function" ? (
                 <div key={message.id} className="flex flex-row gap-3 py-3">
                   <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
                     <Market0Icon />
                   </div>
-                  <div className="w-full font-light text-stone-600 flex items-center">
-                    {message.display}
-                  </div>
+                  <div className="w-full font-light text-stone-600 flex items-center">{message.display}</div>
                 </div>
               ) : null
             )}
@@ -141,24 +115,18 @@ export default function Chat({ params }: { params: { id: string } }) {
                 <Market0Icon />
                 <h1 className="text-6xl tracking-tight leading-[72px]">
                   Welcome to{" "}
-                  <span
-                    className="bg-text-gradient bg-clip-text"
-                    style={{ WebkitTextFillColor: "transparent" }}
-                  >
+                  <span className="bg-text-gradient bg-clip-text" style={{ WebkitTextFillColor: "transparent" }}>
                     Market0
                   </span>
                 </h1>
                 <p className="text-base tracking-wide text-slate-500 font-light leading-6">
-                  Market0 is a demo app that showcases secure auth patterns for
-                  GenAI apps
+                  Market0 is a demo app that showcases secure auth patterns for GenAI apps
                 </p>
               </div>
               <div className="w-full">
                 <div className="flex flex-col gap-5 items-center mb-5">
                   <CircleIcon />
-                  <span className="text-slate-500 text-base font-light">
-                    Get started with these examples
-                  </span>
+                  <span className="text-slate-500 text-sm font-light">Get started with these examples</span>
                 </div>
                 <div className="grid grid-cols-3 gap-4 w-full">
                   {examples.map((example) => (
@@ -209,11 +177,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                         <ChevronRightIcon />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-96 p-0"
-                      align="end"
-                      sideOffset={8}
-                    >
+                    <DropdownMenuContent className="w-96 p-0" align="end" sideOffset={8}>
                       <DropdownMenuGroup>
                         {menuItems.map((menuItem, idx) => (
                           <DropdownMenuItem
@@ -221,15 +185,12 @@ export default function Chat({ params }: { params: { id: string } }) {
                             onClick={onExampleClick(menuItem.message)}
                             className={cn(
                               "cursor-pointer px-4 py-3 focus:bg-gray-50 rounded-none",
-                              idx < menuItems.length - 1 &&
-                                "border-b border-gray-900/5"
+                              idx < menuItems.length - 1 && "border-b border-gray-900/5"
                             )}
                           >
                             <div className="flex flex-row items-center w-full gap-4">
                               {menuItem.icon}
-                              <span className="text-sm text-gray-900 leading-6">
-                                {menuItem.message}
-                              </span>
+                              <span className="text-sm text-gray-900 leading-6">{menuItem.message}</span>
                             </div>
                             <ArrowUpIcon />
                           </DropdownMenuItem>
@@ -250,10 +211,7 @@ export default function Chat({ params }: { params: { id: string } }) {
             </div>
             {conversation.length > 0 && (
               <div className="relative px-2 py-2 text-center text-xs font-light text-slate-500 md:px-[60px]">
-                <span>
-                  Market0 is a demo app that showcases secure auth patterns for
-                  GenAI apps
-                </span>
+                <span>Market0 is a demo app that showcases secure auth patterns for GenAI apps</span>
               </div>
             )}
             {conversation.length === 0 && (
