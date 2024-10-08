@@ -91,3 +91,4 @@ export * as reminders from "./reminders";
 export * as conditionalPurchases from "./conditional-purchases";
 export * as userUsage from "./userUsage";
 export * as documents from "./documents";
+export * as chatUsers from "./chat-users";
