@@ -39,11 +39,11 @@ import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useToast } from "../ui/use-toast";
-import { useChat } from "./context";
 
 import type { Claims } from "@auth0/nextjs-auth0";
 export interface ShareConversationProps {
   user: Claims;
+  chatId: string | undefined;
 }
 
 interface PermissionBlockProps {
@@ -130,9 +130,7 @@ const formSchema = z.object({
   role: z.enum(["Viewer", "Editor"]),
 });
 
-export function ShareConversation({ user }: ShareConversationProps) {
-  const { chatId } = useChat();
-
+export function ShareConversation({ user, chatId }: ShareConversationProps) {
   const [viewers, setViewers] = useState<{ email?: string }[]>([]);
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
   const [isLoading, setIsLoading] = useState(true);

@@ -3,11 +3,10 @@ import "./globals.css";
 
 import { Inter } from "next/font/google";
 
-import { ChatProvider } from "@/components/chat/context";
-import { Header } from "@/components/chat/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,10 +25,7 @@ export default async function RootLayout({
       <body className={cn(inter.className, "h-screen")}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Toaster />
-          <ChatProvider>
-            <Header />
-            {children}
-          </ChatProvider>
+          <UserProvider>{children}</UserProvider>
         </ThemeProvider>
       </body>
     </html>

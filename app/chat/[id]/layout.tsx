@@ -1,9 +1,11 @@
 import { AI } from "@/app/actions";
+import { ChatProvider } from "@/components/chat/context";
+import { Header } from "@/components/chat/header";
+import { ShareConversation } from "@/components/chat/share";
 import { UnauthorizedError } from "@/components/fga/unauthorized";
 import { getHistoryFromStore } from "@/llm/actions/history";
 import { getUser, withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 type RootChatParams = Readonly<{
   children: React.ReactNode;
@@ -18,9 +20,15 @@ async function RootLayout({ children, params }: RootChatParams) {
   const user = await getUser();
 
   return (
-    <AI initialAIState={messages} conversationID={params.id}>
-      <UserProvider>{children}</UserProvider>
-    </AI>
+    <ChatProvider chatId={params.id}>
+      <Header>
+        <ShareConversation user={user} chatId={params.id} />
+      </Header>
+
+      <AI initialAIState={messages} conversationID={params.id}>
+        {children}
+      </AI>
+    </ChatProvider>
   );
 }
 
@@ -49,8 +57,12 @@ export default withCheckPermission(
       // if any of the checks pass, allow access
       return checks.some((allowed) => allowed);
     },
-    onUnauthorized: () => (
-      <UnauthorizedError>The conversation does not exist or you are not authorized to access it.</UnauthorizedError>
+    onUnauthorized: ({ params }) => (
+      <ChatProvider chatId={params.id}>
+        <Header />
+
+        <UnauthorizedError>The conversation does not exist or you are not authorized to access it.</UnauthorizedError>
+      </ChatProvider>
     ),
   },
   RootLayout
