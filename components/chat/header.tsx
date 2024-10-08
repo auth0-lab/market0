@@ -5,9 +5,8 @@ import { getSession } from "@auth0/nextjs-auth0";
 
 import UserButton from "../auth0/user-button";
 import { DropdownMenu, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut } from "../ui/dropdown-menu";
-import { ShareConversation } from "./share";
 
-export async function Header() {
+export async function Header({ children }: { children?: React.ReactNode }) {
   const session = await getSession();
   const user = session?.user!;
 
@@ -30,7 +29,7 @@ export async function Header() {
       </div>
       <div className="flex items-center justify-end gap-6">
         <div className="flex items-center justify-end gap-4">
-          <ShareConversation user={user} />
+          {children}
 
           <Link
             href="https://discord.gg/QGHxwDsbQQ"
