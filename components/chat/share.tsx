@@ -71,35 +71,38 @@ const PermissionBlock = ({
           <AvatarFallback>{fallback}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col items-left justify-between flex-grow">
-          <span className=" text-slate-800 font-medium">{name}</span>
-          <span className="text-gray-600 text-sm">{email}</span>
+          <span className=" text-black font-normal text-sm">{name}</span>
+          <span className="text-gray-500 font-light text-sm">{email}</span>
         </div>
       </div>
       {role === "Owner" && (
-        <Button variant="ghost" className="font-normal">
-          <span className="text-slate-400">{role}</span>
+        <Button variant="ghost" className="font-normal px-3 pointer-events-none">
+          <span className="text-gray-600 font-light text-sm">{role}</span>
         </Button>
       )}
       {role === "Viewer" && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="font-normal">
-              <span className="text-slate-400">{role}</span>
+            <Button
+              variant="ghost"
+              className="font-normal px-3 text-gray-600 hover:text-black flex gap-2 items-baseline"
+            >
+              <span className="font-light text-sm">{role}</span>
               <CaretDownIcon />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="text-sm">
+          <DropdownMenuContent className="text-sm" align="end">
             <DropdownMenuItem>
               <Link href="#" className="flex justify-start items-center gap-1 font-normal" onClick={() => void 0}>
                 <CheckIcon /> Viewer
               </Link>
             </DropdownMenuItem>
 
-            <DropdownMenuItem>
+            <DropdownMenuItem className="pointer-events-none">
               <Link
                 href="#"
                 className={cn("flex justify-start items-center gap-1 font-normal", {
-                  "ps-5 disabled text-slate-400 cursor-not-allowed": true,
+                  "ps-5 disabled text-gray-400 cursor-not-allowed": true,
                 })}
                 onClick={() => void 0}
               >
@@ -245,13 +248,13 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
                     Add people to this chat
                   </h2>
 
-                  <div className="flex justify-between items-center flex-1 p-0 bg-white border border-gray-200 rounded-lg">
+                  <div className="flex justify-between items-center flex-1 p-0 bg-white border border-gray-200 rounded-md focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
                     <FormControl>
                       <Input
                         autoFocus
                         data-1p-ignore
                         autoComplete="off"
-                        className="bg-white shadow-none p-0 px-3 border-0 focus-visible:ring-0 placeholder-slate-500/80 text-base font-light h-6"
+                        className="bg-white shadow-none p-0 px-3 border-0 focus-visible:ring-0 placeholder-slate-500/80 text-base font-light h-6 placeholder:text-sm"
                         placeholder="Share by email"
                         {...field}
                       />
@@ -264,7 +267,7 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
                         <FormItem>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="font-normal py-0 px-2 leading-3 border-none ring-0 focus:ring-0 shadow-none hover:bg-slate-100 rounded-l-none">
+                              <SelectTrigger className="font-normal py-0 px-2 leading-3 border-none ring-0 focus:ring-0 shadow-none hover:bg-slate-100 rounded-l-none max-h-[34px]">
                                 <SelectValue placeholder="Select role to for the user to share" />
                               </SelectTrigger>
                             </FormControl>
@@ -284,14 +287,18 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
               )}
             />
 
-            <Button type="submit" variant="secondary" className="p-4 m-0 mt-8 text-sm leading-6">
-              Share
+            <Button
+              type="submit"
+              variant="secondary"
+              className="p-4 m-0 mt-8 text-sm leading-6 hover:ring-2 ring-[#CFD1D4] border-gray-100 hover:bg-gray-100 hover:text-black transition-all duration-300 min-w-[72px] flex items-center"
+            >
+              {isWorking ? <Loader className="ml-4 mt-1" /> : "Share"}
             </Button>
           </form>
         </Form>
 
         <div className="py-2 pt-5 border-t border-slate-200">
-          <h2 className="text-sm font-normal mb-3">Who has access</h2>
+          <h2 className="text-sm font-normal mb-3 leading-5">Who has access</h2>
           <ScrollArea className="min-h-[150px] max-h-[240px] h-full rounded-md">
             <ul className="space-y-2">
               {isLoading && (
@@ -331,9 +338,9 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
           </ScrollArea>
         </div>
 
-        <DialogFooter className="flex gap-1">
+        <DialogFooter className="flex gap-1 h-10">
           <Button
-            className={cn("flex gap-2 items-center flex-1", {
+            className={cn("flex gap-2 items-center flex-1 h-full disabled:opacity-100", {
               "text-teal-600": isCopied,
             })}
             variant="outline"
@@ -353,7 +360,7 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
             )}
           </Button>
           <DialogClose asChild>
-            <Button type="button" variant="default" className="flex-1">
+            <Button type="button" variant="default" className="flex-1 h-full">
               Done
             </Button>
           </DialogClose>
