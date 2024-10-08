@@ -2,13 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { handle3rdPartyParams } from "@/sdk/auth0/3rd-party-apis";
 import { linkUser } from "@/sdk/auth0/mgmt";
-import {
-  getSession,
-  handleAuth,
-  handleCallback,
-  handleLogin,
-  LoginOptions,
-} from "@auth0/nextjs-auth0";
+import { getSession, handleAuth, handleCallback, handleLogin, LoginOptions } from "@auth0/nextjs-auth0";
 
 export const GET = handleAuth({
   login: async (req: NextApiRequest, res: NextApiResponse) => {
@@ -18,8 +12,10 @@ export const GET = handleAuth({
     const url = new URL(req.url!);
     const thirdPartyApi = url.searchParams.get("3rdPartyApi") || "";
     const linkWith = url.searchParams.get("linkWith");
+    const screenHint = url.searchParams.get("screenHint");
 
     const authorizationParams = {
+      ...(screenHint && { screen_hint: screenHint }),
       ...(thirdPartyApi && (await handle3rdPartyParams(thirdPartyApi))),
       ...(linkWith && {
         connection: linkWith,
@@ -32,9 +28,7 @@ export const GET = handleAuth({
       async getLoginState(_req: any, options: LoginOptions) {
         if (linkWith) {
           // store user id to be used during linking account from next login callback
-          return (
-            user && { primaryUserId: user.sub, secondaryProvider: linkWith }
-          );
+          return user && { primaryUserId: user.sub, secondaryProvider: linkWith };
         }
 
         return {};
@@ -42,11 +36,7 @@ export const GET = handleAuth({
     });
   },
   callback: handleCallback({
-    afterCallback: async (
-      _req: any,
-      session: any,
-      state: { [key: string]: any }
-    ) => {
+    afterCallback: async (_req: any, session: any, state: { [key: string]: any }) => {
       const { primaryUserId, secondaryProvider } = state;
       const { user } = session;
 
@@ -60,9 +50,7 @@ export const GET = handleAuth({
         });
 
         // force a silent login to get a fresh session for the updated user profile
-        state.returnTo = `/api/auth/login?returnTo=${encodeURI(
-          state.returnTo
-        )}`;
+        state.returnTo = `/api/auth/login?returnTo=${encodeURI(state.returnTo)}`;
       }
 
       return session;

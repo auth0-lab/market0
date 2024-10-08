@@ -27,22 +27,6 @@ export async function isGuardianEnrolled() {
   }
 }
 
-export async function requireGuardianEnrollment() {
-  try {
-    const session = await getSession();
-    const user_id = session?.user.sub;
-
-    const user = await auth0.users.get({ id: user_id });
-    const app_metadata = user.data.app_metadata || {};
-
-    app_metadata.requires_mfa = true;
-
-    await auth0.users.update({ id: user_id }, { app_metadata });
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 export async function getUser(userId: string) {
   return auth0.users.get({ id: userId });
 }
@@ -80,8 +64,11 @@ export async function updateUser(
   userId: string,
   { givenName, familyName }: { givenName?: string; familyName?: string }
 ) {
-  return auth0.users.update({ id: userId }, {
-    given_name: givenName ?? undefined,
-    family_name: familyName ?? undefined,
-  });
+  return auth0.users.update(
+    { id: userId },
+    {
+      given_name: givenName ?? undefined,
+      family_name: familyName ?? undefined,
+    }
+  );
 }

@@ -7,33 +7,18 @@ import { CancelRedIcon, CheckGreenIcon, TaskIcon } from "@/components/icons";
 import Loader from "@/components/loader";
 import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditional-purchases";
 import { getConditionalPurchaseById } from "@/llm/actions/conditional-purchases";
-import {
-  isGuardianEnrolled,
-  requireGuardianEnrollment,
-} from "@/sdk/auth0/mgmt";
+import { isGuardianEnrolled } from "@/sdk/auth0/mgmt";
 
 import WarningWrapper from "./warning-wrapper";
 
-export function ConditionalPurchase({
-  id,
-  isMFAEnrolled,
-}: {
-  id: string;
-  isMFAEnrolled: boolean;
-}) {
+export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEnrolled: boolean }) {
   const [isWorking, setIsWorking] = useState(true);
   const [simulating, setSimulating] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(isMFAEnrolled);
-  const [conditionalPurchase, setConditionalPurchase] =
-    useState<ConditionalPurchaseType | null>(null);
+  const [conditionalPurchase, setConditionalPurchase] = useState<ConditionalPurchaseType | null>(null);
 
   const checkGuardianEnrollment = useCallback(async () => {
     const isEnrolled = await isGuardianEnrolled();
-
-    if (!isEnrolled) {
-      await requireGuardianEnrollment();
-    }
-
     setIsEnrolled(isEnrolled);
   }, []);
 
@@ -68,18 +53,15 @@ export function ConditionalPurchase({
     return (
       <div className="border border-gray-300 rounded-xl p-6 flex items-center w-full justify-between">
         <div className="flex flex-col gap-2">
-          <h2 className="text-base leading-6 font-semibold">
-            Action Required: Setup Async Authentication
-          </h2>
+          <h2 className="text-base leading-6 font-semibold">Action Required: Setup Async Authentication</h2>
           <p className="text-sm leading-5 font-light text-gray-500">
-            Please enroll to Auth0 Guardian so we can notify you when the
-            condition is met. This is necessary to secure your future
-            transaction.
+            Please enroll to Auth0 Guardian so we can notify you when the condition is met. This is necessary to secure
+            your future transaction.
           </p>
         </div>
         <div>
           <a
-            href={`/api/auth/login?returnTo=${window.location.pathname}`}
+            href={`/api/auth/login?returnTo=${window.location.pathname}&screenHint=mfa`}
             className="bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
           >
             Enroll
@@ -122,10 +104,7 @@ export function ConditionalPurchase({
               {!simulating && (
                 <div className="text-slate-500 text-sm leading-6">
                   To simulate the agent executing the task, please click{" "}
-                  <button
-                    className="border-b border-slate-500 leading-none"
-                    onClick={simulateExecution}
-                  >
+                  <button className="border-b border-slate-500 leading-none" onClick={simulateExecution}>
                     here
                   </button>
                   .
@@ -142,22 +121,16 @@ export function ConditionalPurchase({
           <div className="p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
-                <div className="text-base font-semibold text-white">
-                  Buy {conditionalPurchase.symbol}
-                </div>
+                <div className="text-base font-semibold text-white">Buy {conditionalPurchase.symbol}</div>
                 <div className="text-sm text text-white/40 leading-6">
-                  Created{" "}
-                  {formatRelative(conditionalPurchase.created_at, new Date())}
+                  Created {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-green-400 text-right">
-                  If {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
-                  {conditionalPurchase.threshold}
+                  If {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
-                <div className="text-sm text text-white/40 leading-6 uppercase">
-                  Condition
-                </div>
+                <div className="text-sm text text-white/40 leading-6 uppercase">Condition</div>
               </div>
             </div>
             <div className="border-t border-white/20 mt-5 pt-5">
@@ -166,10 +139,8 @@ export function ConditionalPurchase({
                   <TaskIcon />
                 </div>
                 <div className="text-white font-light">
-                  Task: Buy {conditionalPurchase.quantity} $
-                  {conditionalPurchase.symbol} shares if{" "}
-                  {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
-                  {conditionalPurchase.threshold}
+                  Task: Buy {conditionalPurchase.quantity} ${conditionalPurchase.symbol} shares if{" "}
+                  {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
               </div>
             </div>
@@ -183,22 +154,17 @@ export function ConditionalPurchase({
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-white">
-                  Buy {conditionalPurchase.quantity} shares of{" "}
-                  {conditionalPurchase.symbol}
+                  Buy {conditionalPurchase.quantity} shares of {conditionalPurchase.symbol}
                 </div>
                 <div className="text-sm text text-white/40 leading-6">
-                  Created{" "}
-                  {formatRelative(conditionalPurchase.created_at, new Date())}
+                  Created {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-green-400">
-                  If {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
-                  {conditionalPurchase.threshold}
+                  If {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
-                <div className="text-sm text text-white/40 leading-6 uppercase">
-                  Condition
-                </div>
+                <div className="text-sm text text-white/40 leading-6 uppercase">Condition</div>
               </div>
             </div>
             <div className="border-t border-white/20 mt-5 pt-5">
@@ -207,8 +173,7 @@ export function ConditionalPurchase({
                   <CancelRedIcon />
                 </div>
                 <div className="text-white font-light">
-                  The purchase was{" "}
-                  <strong className="text-red-400">CANCELED</strong> on{" "}
+                  The purchase was <strong className="text-red-400">CANCELED</strong> on{" "}
                   {format(conditionalPurchase.updated_at, "PPPP p")}.
                 </div>
               </div>
@@ -223,22 +188,17 @@ export function ConditionalPurchase({
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-white">
-                  Buy {conditionalPurchase.quantity} shares of{" "}
-                  {conditionalPurchase.symbol}
+                  Buy {conditionalPurchase.quantity} shares of {conditionalPurchase.symbol}
                 </div>
                 <div className="text-sm text text-white/40 leading-6">
-                  Created{" "}
-                  {formatRelative(conditionalPurchase.created_at, new Date())}
+                  Created {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-green-400">
-                  If {conditionalPurchase.metric} {conditionalPurchase.operator}{" "}
-                  {conditionalPurchase.threshold}
+                  If {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
-                <div className="text-sm text text-white/40 leading-6 uppercase">
-                  Condition
-                </div>
+                <div className="text-sm text text-white/40 leading-6 uppercase">Condition</div>
               </div>
             </div>
             <div className="border-t border-white/20 mt-5 pt-5">
@@ -247,8 +207,7 @@ export function ConditionalPurchase({
                   <CheckGreenIcon />
                 </div>
                 <div className="text-white font-light">
-                  The purchase was{" "}
-                  <strong className="text-green-400">COMPLETED</strong> on{" "}
+                  The purchase was <strong className="text-green-400">COMPLETED</strong> on{" "}
                   {format(conditionalPurchase.updated_at, "PPPP p")}.
                 </div>
               </div>
