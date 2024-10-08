@@ -1,6 +1,4 @@
-import { useAIState } from "ai/rsc";
-
-import { ServerMessage } from "@/llm/types";
+import { Conversation, ServerMessage } from "@/llm/types";
 
 import { sql } from "./sql";
 
@@ -64,7 +62,7 @@ export type SaveAIState = {
   messages: ServerMessage[];
 };
 
-export const saveAIState = async ({ conversationID, userID, messages }: SaveAIState): Promise<void> => {
+export const saveAIStateToStore = async ({ conversationID, userID, messages }: SaveAIState): Promise<void> => {
   const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
   await sql`
     INSERT INTO chat_histories (conversation_id, user_id, messages, updated_at)
@@ -79,13 +77,14 @@ export const saveAIState = async ({ conversationID, userID, messages }: SaveAISt
   `;
 };
 
-export const getAIState = async ({ conversationID }: { conversationID: string }): Promise<ServerMessage[]> => {
+export const getAIStateFromStore = async ({ conversationID }: { conversationID: string }): Promise<Conversation> => {
   const result = await sql`
-    SELECT messages
+    SELECT messages, user_id as ownerID
     FROM chat_histories
     WHERE conversation_id = ${conversationID}
   `;
-  return result[0] ? (result[0].messages as ServerMessage[]) : [];
+
+  return result[0] ? (result[0] as Conversation) : { messages: [], ownerID: "" };
 };
 
 export * as reminders from "./reminders";

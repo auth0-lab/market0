@@ -1,6 +1,6 @@
 import { AI } from "@/app/actions";
 import { UnauthorizedError } from "@/components/fga/unauthorized";
-import { getHistory } from "@/llm/actions/history";
+import { getHistoryFromStore } from "@/llm/actions/history";
 import { getUser, withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
@@ -13,7 +13,10 @@ type RootChatParams = Readonly<{
 }>;
 
 async function RootLayout({ children, params }: RootChatParams) {
-  const messages = await getHistory(params.id);
+  const conversation = await getHistoryFromStore(params.id);
+  const { messages, ownerID } = conversation;
+  const user = await getUser();
+
   return (
     <AI initialAIState={messages} conversationID={params.id}>
       <UserProvider>{children}</UserProvider>
