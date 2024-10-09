@@ -1,5 +1,6 @@
 import { createTransaction } from "@/lib/db";
 import { getByID, getMatchingPurchases, update } from "@/lib/db/conditional-purchases";
+import { getStockPrices } from "@/lib/market/stocks";
 import { pollMode } from "@/sdk/auth0/ciba";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -32,7 +33,8 @@ export async function POST(request: NextRequest) {
   await Promise.all(
     matchingPurchases.map(async (purchase) => {
       try {
-        const price = data.metric === "price" ? data.value : getRandomPrice(10, 100);
+        const price =
+          data.metric === "price" ? data.value : (await getStockPrices({ symbol: purchase.symbol })).current_price;
 
         // wait for user's approval
         const { accessToken } = await pollMode(purchase.user_id);
