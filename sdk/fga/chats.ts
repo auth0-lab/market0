@@ -1,12 +1,55 @@
 "use server";
 
-import { ConsistencyPreference } from "@openfga/sdk";
+import { chatUsers } from "@/lib/db";
+import { ChatUserAccess } from "@/lib/db/chat-users";
 
 import { fgaClient, getUser } from "./";
 
-const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS
-  ? parseInt(process.env.MAX_CHAT_READERS, 10)
-  : 5;
+const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS ? parseInt(process.env.MAX_CHAT_READERS, 10) : 5;
+
+export async function getChatUsers(chatId: string, { access }: { access?: ChatUserAccess } = {}) {
+  return await chatUsers.list(chatId, { access });
+}
+
+export async function addChatUsers(chatId: string, emails: string[]) {
+  const readers = await getChatUsers(chatId, { access: "can_view" });
+  const filteredEmails = emails.filter((email) => !readers.some((reader) => reader.email === email.toLowerCase()));
+
+  if (readers.length + filteredEmails.length > MAX_CHAT_READERS) {
+    throw new Error(
+      `You have reached the limit (${MAX_CHAT_READERS}) on the number of users that can access to this chat.`
+    );
+  }
+
+  return await Promise.all(
+    filteredEmails.map((email) => chatUsers.add({ chat_id: chatId, email, access: "can_view" }))
+  );
+}
+
+export async function removeChatUser(id: string) {
+  const chatUser = await chatUsers.get(id);
+  if (!chatUser) {
+    return;
+  }
+
+  await chatUsers.remove(id);
+
+  if (chatUser.user_id) {
+    await fgaClient.deleteTuples([
+      {
+        user: `user:${chatUser.user_id}`,
+        relation: "can_view",
+        object: `chat:${chatUser.chat_id}`,
+      },
+    ]);
+  }
+}
+
+export async function isChatUser(chatId: string) {
+  const user = await getUser();
+  const chatUser = await chatUsers.getByUserEmail(chatId, user.email);
+  return !!chatUser;
+}
 
 export async function assignChatOwner(chatId: string) {
   const user = await getUser();
@@ -17,51 +60,23 @@ export async function assignChatOwner(chatId: string) {
       object: `chat:${chatId}`,
     },
   ]);
+  await chatUsers.add({
+    chat_id: chatId,
+    user_id: user.sub,
+    email: user.email,
+    access: "owner",
+    status: "provisioned",
+  });
 }
 
-export async function getChatReaders(chatId: string) {
-  const { $response } = await fgaClient.read(
+export async function assignChatReader(chatId: string) {
+  const user = await getUser();
+  await fgaClient.writeTuples([
     {
-      object: `chat:${chatId}`,
+      user: `user:${user.sub}`,
       relation: "can_view",
+      object: `chat:${chatId}`,
     },
-    {
-      consistency: ConsistencyPreference.HigherConsistency,
-    }
-  );
-
-  return $response.data.tuples.map((t) => ({
-    email: t.key.user.replace("user:", ""),
-  }));
-}
-
-export async function assignChatReader(chatId: string, emails: string[]) {
-  const readers = await getChatReaders(chatId);
-  const filteredEmails = emails.filter(
-    (email) => !readers.some((reader) => reader.email === email.toLowerCase())
-  );
-
-  if (readers.length + filteredEmails.length > MAX_CHAT_READERS) {
-    throw new Error(
-      `You have reached the limit (${MAX_CHAT_READERS}) on the number of users that can access to this chat.`
-    );
-  }
-
-  await fgaClient.writeTuples(
-    filteredEmails.map((email) => ({
-      user: `user:${email.toLowerCase()}`,
-      relation: "can_view",
-      object: `chat:${chatId}`,
-    }))
-  );
-}
-
-export async function revokeChatReader(chatId: string, emails: string[]) {
-  await fgaClient.deleteTuples(
-    emails.map((email) => ({
-      user: `user:${email.toLowerCase()}`,
-      relation: "can_view",
-      object: `chat:${chatId}`,
-    }))
-  );
+  ]);
+  await chatUsers.updateByUserEmail(chatId, user.email, { user_id: user.sub, status: "provisioned" });
 }

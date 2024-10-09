@@ -10,11 +10,10 @@ import { checkEnrollment } from "@/llm/actions/newsletter";
 import { createGoogleTask } from "@/llm/actions/reminders";
 import * as serialization from "@/llm/components/serialization";
 import { ClientMessage, ServerMessage } from "@/llm/types";
+import { getUser as fetchUser } from "@/sdk/auth0/mgmt";
 import { getUser } from "@/sdk/fga";
 
-type Props = Parameters<
-  ReturnType<typeof createAI<ServerMessage[], ClientMessage[]>>
->[0] & {
+type Props = Parameters<ReturnType<typeof createAI<ServerMessage[], ClientMessage[]>>>[0] & {
   conversationID: string;
 };
 const HIDDEN_ROLES = ["system", "tool"];
@@ -79,4 +78,9 @@ export const AI = (p: Props) => {
   });
 
   return <C {...params} />;
+};
+
+export const fetchUserById = async (user_id: string) => {
+  const { data: user } = await fetchUser(user_id);
+  return user;
 };
