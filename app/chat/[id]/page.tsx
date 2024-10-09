@@ -3,25 +3,17 @@
 import { generateId } from "ai";
 import { useActions, useUIState } from "ai/rsc";
 import Link from "next/link";
-import { use, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useChat } from "@/components/chat/context";
-import { ArrowUpIcon, ChevronRightIcon, CircleIcon, Market0Icon } from "@/components/icons";
+import { Examples } from "@/components/chat/examples";
+import { ArrowUpIcon, CircleIcon, Market0Icon } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useScrollAnchor } from "@/hooks/chat/use-scroll-anchor";
-import { examples, menuItems } from "@/lib/examples";
+import { examples } from "@/lib/examples";
 import { cn } from "@/lib/utils";
 import { ClientMessage } from "@/llm/types";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -77,7 +69,9 @@ export default function Chat({ params }: { params: { id: string } }) {
         <div ref={scrollRef} className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none">
           <div
             ref={messagesRef}
-            className={cn("flex-1 min-w-0 max-w-4xl mx-auto w-full pb-[100px]", { hidden: conversation.length === 0 })}
+            className={cn("flex-1 min-w-0 max-w-4xl mx-auto w-full pb-[100px] px-3 sm:px-0", {
+              hidden: conversation.length === 0,
+            })}
           >
             {conversation.map((message: ClientMessage) =>
               message.role === "user" ? (
@@ -105,15 +99,15 @@ export default function Chat({ params }: { params: { id: string } }) {
           </div>
           {conversation.length === 0 && (
             <div className="flex flex-col gap-80 max-w-4xl mx-auto w-full mb-5 mt-auto">
-              <div className="min-w-0 min-h-0 w-full flex flex-col items-center gap-6">
+              <div className="min-w-0 min-h-0 w-full flex flex-col items-center gap-2 sm:gap-6">
                 <Market0Icon />
-                <h1 className="text-6xl tracking-tight leading-[72px]">
+                <h1 className="text-4xl sm:text-6xl tracking-tight leading-[72px]">
                   Welcome to{" "}
                   <span className="bg-text-gradient bg-clip-text" style={{ WebkitTextFillColor: "transparent" }}>
                     Market0
                   </span>
                 </h1>
-                <p className="text-base tracking-wide text-slate-500 font-light leading-6">
+                <p className="text-base tracking-wide text-slate-500 font-light leading-6 text-center px-10 sm:px-0">
                   Market0 is a demo app that showcases secure auth patterns for GenAI apps
                 </p>
               </div>
@@ -122,7 +116,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                   <CircleIcon />
                   <span className="text-slate-500 text-sm font-light">Get started with these examples</span>
                 </div>
-                <div className="grid grid-cols-3 gap-4 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 w-full px-3 sm:px-0">
                   {examples.map((example) => (
                     <button
                       key={example.id}
@@ -136,8 +130,8 @@ export default function Chat({ params }: { params: { id: string } }) {
               </div>
             </div>
           )}
-          <div className="sticky bottom-0 flex-shrink-0 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full">
-            <div className="p-4 py-3 bg-white border border-gray-200 rounded-lg focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
+          <div className="sticky bottom-0 flex-shrink-0 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-0">
+            <div className="p-3 bg-white border border-gray-200 rounded-lg focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
@@ -161,39 +155,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                     )}
                   />
 
-                  {!form.formState.disabled && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="flex flex-row gap-2 text-black text-sm leading-6 bg-gray-100 border-none px-3 py-2 focus-visible:ring-0 hover:bg-gray-200/90 transition-all duration-300 shadow-none font-light"
-                        >
-                          Examples
-                          <ChevronRightIcon />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-96 p-0" align="end" sideOffset={8}>
-                        <DropdownMenuGroup>
-                          {menuItems.map((menuItem, idx) => (
-                            <DropdownMenuItem
-                              key={menuItem.id}
-                              onClick={onExampleClick(menuItem.message)}
-                              className={cn(
-                                "cursor-pointer px-4 py-3 focus:bg-gray-50 rounded-none",
-                                idx < menuItems.length - 1 && "border-b border-gray-900/5"
-                              )}
-                            >
-                              <div className="flex flex-row items-center w-full gap-4">
-                                {menuItem.icon}
-                                <span className="text-sm text-gray-900 leading-6">{menuItem.message}</span>
-                              </div>
-                              <ArrowUpIcon />
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                  {!form.formState.disabled && <Examples onExampleClick={onExampleClick} />}
 
                   <Button
                     disabled={!form.formState.isDirty || form.formState.disabled}
@@ -206,7 +168,7 @@ export default function Chat({ params }: { params: { id: string } }) {
               </Form>
             </div>
             {conversation.length > 0 && (
-              <div className="relative px-2 py-2 text-center text-xs font-light text-slate-500 md:px-[60px]">
+              <div className="relative px-2 py-2 text-center text-[11px] sm:text-xs font-light text-slate-500 md:px-[60px]">
                 <span>Market0 is a demo app that showcases secure auth patterns for GenAI apps</span>
               </div>
             )}
