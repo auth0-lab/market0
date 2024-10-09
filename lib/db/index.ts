@@ -79,7 +79,7 @@ export const saveAIStateToStore = async ({ conversationID, userID, messages }: S
 
 export const getAIStateFromStore = async ({ conversationID }: { conversationID: string }): Promise<Conversation> => {
   const result = await sql`
-    SELECT messages, user_id as ownerID
+    SELECT messages, user_id as "ownerID"
     FROM chat_histories
     WHERE conversation_id = ${conversationID}
   `;
