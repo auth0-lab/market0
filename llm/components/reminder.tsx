@@ -50,28 +50,25 @@ export function Reminder({ reminderID }: { reminderID: string }) {
       }}
       connectWidget={{
         title: "Connect to Google Tasks",
-        description:
-          "To create reminders in Google Tasks, you’ll first need to connect to your Google Account.",
+        description: "To create reminders in Google Tasks, you’ll first need to connect to your Google Account.",
       }}
       shouldCheckAuthorization={shouldCheckAuthorization}
       onUserAuthorized={onUserAuthorized}
     >
       {reminder && (
-        <div className="border border-gray-300 rounded-lg p-6 flex items-center w-full justify-between">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-base leading-6 font-semibold">
-              {reminder.title}
-            </h2>
-            <p className="text-sm leading-5 font-light text-gray-500">
+        <div className="border border-gray-300 rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0 items-center w-full justify-between">
+          <div className="flex flex-col gap-1 sm:gap-1.5 w-full">
+            <h3 className="font-semibold text-sm sm:text-base leading-6 text-stone-700">{reminder.title}</h3>
+            <p className="text-xs sm:text-sm font-normal leading-5">
               Google Task created at {format(reminder.due, "dd LLL, yyyy")}.
             </p>
           </div>
-          <div>
+          <div className="w-full sm:w-fit">
             <a
               href="https://tasks.google.com"
               rel="noopener noreferrer"
               target="_blank"
-              className="flex gap-2 items-center bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
+              className="w-full sm:w-fit flex items-center justify-center gap-3 bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
             >
               View Task <ExternalLink />
             </a>

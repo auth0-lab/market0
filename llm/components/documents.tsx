@@ -40,10 +40,7 @@ export const Documents = ({
         message: `Subscribe me to the newsletter. Once done ASK me if I want to read the forecast analysis for ${symbol}.`,
         hidden: true,
       });
-      setMessages((prevMessages: ClientMessage[]) => [
-        ...prevMessages,
-        response,
-      ]);
+      setMessages((prevMessages: ClientMessage[]) => [...prevMessages, response]);
     })();
   };
 
@@ -59,17 +56,12 @@ export const Documents = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        href={
-                          document.metadata.link ??
-                          `/report/${document.metadata.id}`
-                        }
+                        href={document.metadata.link ?? `/report/${document.metadata.id}`}
                         target="_black"
                         rel="noopener noreferrer"
                         className="cursor-pointer"
                       >
-                        <span className="font-mono text-gray-500 text-[0.65rem]">
-                          [{index + 1}]
-                        </span>
+                        <span className="font-mono text-gray-500 text-[0.65rem]">[{index + 1}]</span>
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -82,19 +74,17 @@ export const Documents = ({
           </div>
         )}
         {showEnrollment && finished && (
-          <div className="border border-gray-300 rounded-xl p-6 flex items-center w-full justify-between mt-5">
-            <div className="flex flex-col gap-1.5">
-              <h3 className="font-semibold text-base leading-6 text-stone-700">
-                Join Market0 Newsletter
-              </h3>
-              <p className="text-sm font-normal leading-5">
+          <div className="border border-gray-300 rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0 items-center w-full justify-between mt-5">
+            <div className="flex flex-col gap-1 sm:gap-1.5">
+              <h3 className="font-semibold text-sm sm:text-base leading-6 text-stone-700">Join Market0 Newsletter</h3>
+              <p className="text-xs sm:text-sm font-normal leading-5">
                 To get access to analyst forecasts join the newsletter.
               </p>
             </div>
-            <div>
+            <div className="w-full sm:w-fit">
               <button
                 onClick={() => enroll()}
-                className="bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4 transition-all duration-300"
+                className="w-full sm:w-fit bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4 transition-all duration-300"
               >
                 Join
               </button>

@@ -27,36 +27,15 @@ export default defineTool("show_stock_purchase_ui", () => {
     description:
       "Shows the current price of the stock and allow the user to buy it. Prefer this when there is a clear intention of buying a stock.",
     parameters: z.object({
-      symbol: z
-        .string()
-        .describe(
-          "The name or symbol of the stock. e.g. DOGE/AAPL/USD."
-        ),
-      limit: z
-        .number()
-        .optional()
-        .describe(
-          "The limit price of the order. Optional, defaults to market price."
-        ),
+      symbol: z.string().describe("The name or symbol of the stock. e.g. DOGE/AAPL/USD."),
+      limit: z.number().optional().describe("The limit price of the order. Optional, defaults to market price."),
       numberOfShares: z
         .number()
-        .describe(
-          "The **number of shares** for a stock to purchase. Defaults to 100."
-        )
+        .describe("The **number of shares** for a stock to purchase. Defaults to 100.")
         .default(100),
-      market: z
-        .string()
-        .describe(
-          "The market of the stock. e.g. ITMX/CSB. This is provided by the model."
-        ),
-      company: z
-        .string()
-        .describe(
-          "The company name of the stock. This is provided by the model."
-        ),
-      currency: z
-        .string()
-        .describe("The currency of the stock. This is provided by the model."),
+      market: z.string().describe("The market of the stock. e.g. ITMX/CSB. This is provided by the model."),
+      company: z.string().describe("The company name of the stock. This is provided by the model."),
+      currency: z.string().describe("The currency of the stock. This is provided by the model."),
     }),
     generate: withCheckPermission<ToolParams>(
       {
@@ -66,7 +45,7 @@ export default defineTool("show_stock_purchase_ui", () => {
             relation: RELATION.CAN_BUY_STOCKS,
             context: { current_time: new Date().toISOString() },
           }),
-        onUnauthorized: withTextGeneration(async function*({ symbol }) {
+        onUnauthorized: withTextGeneration(async function* ({ symbol }) {
           return `
 The user requesting the operation is not authorized to purchase ${symbol}.
 Specific restrictions might apply, such as:
@@ -77,14 +56,7 @@ Please tell the user they should contact the support desk of Market0 to get more
 `;
         }),
       },
-      async function* ({
-        symbol,
-        limit,
-        market,
-        company,
-        currency,
-        numberOfShares = 10,
-      }) {
+      async function* ({ symbol, limit, market, company, currency, numberOfShares = 10 }) {
         if (numberOfShares < 10 || numberOfShares > 1000) {
           history.update({
             role: "assistant",
@@ -101,8 +73,8 @@ Please tell the user they should contact the support desk of Market0 to get more
           messageID,
           symbol,
           price,
-          market,
-          company,
+          market: stockStatus.exchange,
+          company: stockStatus.shortname,
           currency,
           initialQuantity: numberOfShares,
           delta: stockStatus.delta,
@@ -116,11 +88,7 @@ Please tell the user they should contact the support desk of Market0 to get more
           params,
         });
 
-        return (
-          <StockPurchase
-            {...params}
-          />
-        );
+        return <StockPurchase {...params} />;
       }
     ),
   };

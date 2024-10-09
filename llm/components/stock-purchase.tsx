@@ -54,8 +54,8 @@ type StockPurchaseUIParams = {
    * Holds the result of the user interaction with the component.
    */
   result?: {
-    message: string
-    status: "success" | "failure"
+    message: string;
+    status: "success" | "failure";
   };
 };
 
@@ -101,31 +101,25 @@ export function StockPurchase({
 
   return (
     <WarningWrapper className="max-w-xl">
-      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-5">
-        <div className="flex flex-row justify-between px-3">
+      <div className="p-2 sm:p-4 text-green-400 rounded-2xl bg-zinc-950 pt-3 sm:pt-5">
+        <div className="flex flex-row justify-between px-2 sm:px-3">
           <div className="flex flex-col gap-2">
             <div className="text-base font-semibold text-white">{symbol}</div>
 
-            <div className="text-sm text text-white/40 leading-6">
+            <div className="text-xs sm:text-sm text text-white/40 leading-6">
               {company} • {market} • {currency}
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="text-base font-semibold text-white text-right">
-              ${price}
-            </div>
+            <div className="text-base font-semibold text-white text-right">${price}</div>
             <div
-              className={`inline-flex items-center gap-2 text-sm ${
+              className={`inline-flex items-center gap-2 text-xs sm:text-sm ${
                 delta > 0 ? "text-green-400" : "text-red-400"
               }`}
             >
               {delta > 0 ? <StockUpIcon /> : <StockDownIcon />}
               <span>
-                {delta} (
-                {`${delta > 0 ? "+" : ""}${((delta / price) * 100).toFixed(
-                  2
-                )}%`}
-                )
+                {delta} ({`${delta > 0 ? "+" : ""}${((delta / price) * 100).toFixed(2)}%`})
               </span>
             </div>
           </div>
@@ -133,12 +127,12 @@ export function StockPurchase({
 
         {purchasingUI ? (
           <div className="flex flex-row gap-4 pb-2 mt-5 mx-3 border-t border-white/20 pt-5 items-center">
-            <div className="text-white text-lg font-light">{purchasingUI}</div>
+            <div className="text-white text-base sm:text-lg font-light">{purchasingUI}</div>
           </div>
         ) : (
           <>
-            <div className="relative pb-5 mt-5 mx-3 border-t border-white/20 pt-5">
-              <p className="text-white/80 text-base mb-5">Shares to purchase</p>
+            <div className="relative pb-5 mt-5 mx-2 sm:mx-3 border-t border-white/20 pt-5">
+              <p className="text-white/80 text-sm sm:text-base mb-5">Shares to purchase</p>
               <input
                 id="labels-range-input"
                 type="range"
@@ -148,39 +142,33 @@ export function StockPurchase({
                 max="1000"
                 className="w-full h-1 rounded-lg appearance-none cursor-pointer bg-zinc-600 accent-green-500 dark:bg-zinc-700"
               />
-              <span className="absolute text-xs bottom-1 start-0 text-zinc-400">
-                0
-              </span>
+              <span className="absolute text-xs bottom-1 start-0 text-zinc-400">0</span>
               <span className="absolute text-xs -translate-x-1/2 bottom-1 start-1/3 text-zinc-400 rtl:translate-x-1/2">
                 100
               </span>
               <span className="absolute text-xs -translate-x-1/2 bottom-1 start-2/3 text-zinc-400 rtl:translate-x-1/2">
                 500
               </span>
-              <span className="absolute text-xs bottom-1 end-0 text-zinc-400">
-                1000
-              </span>
+              <span className="absolute text-xs bottom-1 end-0 text-zinc-400">1000</span>
             </div>
 
-            <div className="mt-6 mx-3">
+            <div className="mt-6 mx-2 sm:mx-3">
               <div className="flex justify-between items-end">
                 <div>
-                  <p className="font-medium text-white text-sm mb-1">
-                    Total cost
-                  </p>
+                  <p className="font-medium text-white text-sm mb-1">Total cost</p>
                   <div className="flex flex-row gap-2 text-white text-sm font-light">
                     {quantity} shares x ${price} per share
                   </div>
                 </div>
-                <div className="text-xl leading-8 font-semibold">
+                <div className="text-xl font-semibold">
                   <span>{formatNumber(quantity * price)}</span>
                 </div>
               </div>
             </div>
 
-            <div className="mx-3 mb-3">
+            <div className="mx-2 sm:mx-3 mb-3">
               <button
-                className="w-full py-2 mt-6 bg-green-500 rounded-lg text-black text-base font-normal"
+                className="w-full py-2 mt-6 bg-green-500 rounded-lg text-black text-sm sm:text-base font-normal"
                 onClick={async () => {
                   const response = await confirmPurchase({
                     symbol,

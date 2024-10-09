@@ -17,29 +17,19 @@ export function Positions({ positions }: { positions: Position[] }) {
         {positions.map((position) => (
           <button
             key={position.ticker_id}
-            className="flex p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
+            className="flex p-4 sm:p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
             onClick={async () => {
-              const response = await continueConversation(
-                `View ${position.ticker_id}`
-              );
-              setMessages((prevMessages: ClientMessage[]) => [
-                ...prevMessages,
-                response,
-              ]);
+              const response = await continueConversation(`View ${position.ticker_id}`);
+              setMessages((prevMessages: ClientMessage[]) => [...prevMessages, response]);
             }}
           >
-            <div className="flex flex-row justify-between w-full items-end px-3">
+            <div className="flex flex-row justify-between w-full items-end px-1 sm:px-3">
               <div className="flex flex-col gap-2">
-                <div className="text-sm text text-white leading-6 text-left">
-                  {position.ticker_id}
-                </div>
-                <div className="text-base font-semibold text-white text-left">
-                  Qty: {position.quantity}
-                </div>
+                <div className="text-xs sm:text-sm text-white leading-6 text-left">{position.ticker_id}</div>
+                <div className="text-sm sm:text-base font-semibold text-white text-left">Qty: {position.quantity}</div>
               </div>
-              <div className="text-sm text-white text-right">
-                Avg. Price: $
-                {parseFloat(position.av_price.toString()).toFixed(2)}
+              <div className="text-xs sm:text-sm text-white text-right">
+                Avg. Price: ${parseFloat(position.av_price.toString()).toFixed(2)}
               </div>
             </div>
           </button>
