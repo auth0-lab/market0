@@ -3,14 +3,13 @@ import { z } from "zod";
 
 import { RELATION } from "@/lib/constants";
 import { getStockPrices } from "@/lib/market/stocks";
+import { defineTool } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
+import { StockPurchase } from "@/llm/components/stock-purchase";
+import { getHistory } from "@/llm/utils";
+import { withTextGeneration } from "@/llm/with-text-generation";
 import { withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permission";
-
-import { defineTool } from "../ai-helpers";
-import { StockPurchase } from "../components/stock-purchase";
-import { getHistory } from "../utils";
-import { withTextGeneration } from "../with-text-generation";
 
 type ToolParams = {
   symbol: string;

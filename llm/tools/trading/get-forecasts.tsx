@@ -3,15 +3,14 @@ import toPlainObject from "lodash.toplainobject";
 import { z } from "zod";
 
 import { userUsage } from "@/lib/db";
+import stocks from "@/lib/market/stocks.json";
 import { getSymbolRetriever } from "@/llm/actions/langchain-helpers";
 import { defineTool } from "@/llm/ai-helpers";
+import { aiParams } from "@/llm/ai-params";
 import { Documents } from "@/llm/components/documents";
 import * as serialization from "@/llm/components/serialization";
 import { getHistory } from "@/llm/utils";
 import { getUser } from "@/sdk/fga";
-
-import stocks from "../../lib/market/stocks.json";
-import { aiParams } from "../ai-params";
 
 export default defineTool("get_forecasts", () => {
   const history = getHistory();

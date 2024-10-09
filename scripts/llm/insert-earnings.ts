@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import type { Document } from "@langchain/core/documents";
-import stocks from "../../lib/market/stocks.json";
+import stocks from "@/lib/market/stocks.json";
 
 dotenv.config({ path: ".env.local" });
 

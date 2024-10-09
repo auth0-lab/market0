@@ -7,7 +7,7 @@ import {
   OpenFgaClient,
   TypeName,
 } from "@openfga/sdk";
-import stocks from "../../lib/market/stocks.json";
+import stocks from "@/lib/market/stocks.json";
 
 const fgaClient = new OpenFgaClient({
   apiUrl: process.env.FGA_API_URL,
