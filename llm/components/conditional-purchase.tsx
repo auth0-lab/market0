@@ -202,7 +202,7 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
               </div>
             </div>
             <div className="border-t border-white/20 mt-4 sm:mt-5 pt-4 sm:pt-5">
-              <div className="flex flex-row gap-4 items-start">
+              <div className="flex flex-row gap-4 items-center">
                 <div className="w-[25px]">
                   <CheckGreenIcon />
                 </div>

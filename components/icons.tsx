@@ -100,8 +100,8 @@ function ExternalLink() {
       fill="none"
       strokeWidth="0"
       viewBox="0 0 15 15"
-      height="16px"
-      width="16px"
+      height="20px"
+      width="20px"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -482,7 +482,7 @@ function CircleIcon() {
 
 function ArrowRightIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M3.125 7.5H11.875"
         stroke="currentColor"
@@ -763,7 +763,31 @@ function DiscordMenuIcon() {
   );
 }
 
+function LogoutIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="4" fill="#F9F1F1" />
+      <path
+        d="M13.5 23.5H10.1667C9.72464 23.5 9.30072 23.3244 8.98816 23.0118C8.67559 22.6993 8.5 22.2754 8.5 21.8333V10.1667C8.5 9.72464 8.67559 9.30072 8.98816 8.98816C9.30072 8.67559 9.72464 8.5 10.1667 8.5H13.5"
+        stroke="#FF3642"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19.334 20.1673L23.5007 16.0007L19.334 11.834"
+        stroke="#FF3642"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M23.5 16H13.5" stroke="#FF3642" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  );
+}
+
 export {
+  LogoutIcon,
   LearnMenuIcon,
   ShareMenuIcon,
   GitHubMenuIcon,
