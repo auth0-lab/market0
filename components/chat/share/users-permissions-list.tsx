@@ -30,7 +30,9 @@ export async function UserPermissionBlock({ user }: UserPermissionBlockProps) {
   console.log("PermissionBlock", generateId());
 
   const { email } = user;
-  let userInfo = {
+
+  // Default user profile stored chat_users table
+  let userProfile = {
     picture: "",
     name: email,
     given_name: email.split("")[0],
@@ -38,13 +40,15 @@ export async function UserPermissionBlock({ user }: UserPermissionBlockProps) {
   };
 
   if (user.user_id) {
-    userInfo = await fetchUserById(user.user_id);
+    // embed user profile
+    const userInfo = await fetchUserById(user.user_id);
+    userProfile = { ...userProfile, ...userInfo };
   }
 
-  const picture = userInfo?.picture;
-  const name = userInfo?.name;
-  const given_name = userInfo?.given_name;
-  const family_name = userInfo?.family_name;
+  const picture = userProfile?.picture;
+  const name = userProfile?.name;
+  const given_name = userProfile?.given_name;
+  const family_name = userProfile?.family_name;
 
   return (
     <li className="flex items-center justify-between">
