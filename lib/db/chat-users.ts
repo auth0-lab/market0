@@ -49,7 +49,6 @@ export const add = async ({ chat_id, email, user_id, access, status }: CreateCha
 };
 
 export const remove = async (id: string): Promise<void> => {
-  console.log("ID", id);
   await sql`
     DELETE FROM chat_users
     WHERE id = ${id}

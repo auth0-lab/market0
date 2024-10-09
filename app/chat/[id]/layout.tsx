@@ -8,7 +8,7 @@ import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissi
 import { UnauthorizedError } from "@/components/fga/unauthorized";
 import { getHistoryFromStore } from "@/llm/actions/history";
 import { getUser, withFGA } from "@/sdk/fga";
-import { assignChatReader, isChatUser } from "@/sdk/fga/chats";
+import { assignChatReader, isChatOwner, isChatUser } from "@/sdk/fga/chats";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
 
 type RootChatParams = Readonly<{
@@ -22,9 +22,10 @@ async function RootLayout({ children, params }: RootChatParams) {
   const conversation = await getHistoryFromStore(params.id);
   const user = await getUser();
   const { messages, ownerID } = conversation;
+  const isOwner = await isChatOwner(params.id);
 
   return (
-    <ChatProvider chatId={params.id} readOnly={ownerID !== user.sub}>
+    <ChatProvider chatId={params.id} readOnly={!isOwner} hasMessages={messages.length > 0}>
       <div className="flex flex-col h-full w-full">
         <Header>
           <ShareConversation>
