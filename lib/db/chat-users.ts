@@ -93,7 +93,7 @@ export const update = async (
   params: { user_id?: string; access?: ChatUserAccess; status?: ChatUserStatus }
 ): Promise<ChatUser | null> => {
   const result = await sql`
-    UPDATE reminders
+    UPDATE chat_users
     SET user_id = COALESCE(${params.user_id ?? null}, user_id),
         access = COALESCE(${params.access ?? null}, access),
         status = COALESCE(${params.status ?? null}, status)
@@ -110,7 +110,7 @@ export const updateByUserEmail = async (
   params: { user_id?: string; status?: ChatUserStatus }
 ): Promise<ChatUser | null> => {
   const result = await sql`
-    UPDATE reminders
+    UPDATE chat_users
     SET user_id = COALESCE(${params.user_id ?? null}, user_id),
         status = COALESCE(${params.status ?? null}, status)
     WHERE chat_id = ${chat_id} AND email = ${email}
