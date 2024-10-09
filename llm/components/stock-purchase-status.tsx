@@ -8,8 +8,16 @@ export const StockPurchaseStatus = ({
   status?: "in-progress" | "success" | "failure";
 }) => (
   <div className="flex flex-row gap-4 items-center">
-    {status === "failure" && <CancelRedIcon />}
-    {status === "success" && <CheckGreenIcon />}
+    {status === "failure" && (
+      <div className="w-[25px]">
+        <CancelRedIcon />
+      </div>
+    )}
+    {status === "success" && (
+      <div className="w-[25px]">
+        <CheckGreenIcon />
+      </div>
+    )}
     {status === "in-progress" && (
       <div className="animate-spin h-5 w-5 border-t-2 border-b-2 border-white rounded-full" />
     )}

@@ -1,16 +1,15 @@
 "use client";
 
 import clsx, { ClassValue } from "clsx";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import useConnectedAccounts from "@/hooks/auth0/use-connected-accounts";
 
 import BasicInfoForm from "./basic-info-form";
 import ConnectedAccounts from "./connected-accounts";
-
-import useConnectedAccounts from "@/hooks/auth0/use-connected-accounts";
 
 interface KeyValueMap {
   [key: string]: any;
@@ -37,18 +36,12 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
       <div className="md:block">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">User Profile</h2>
-          <p className="text-muted-foreground">
-            Info about you and your preferences.
-          </p>
+          <p className="text-muted-foreground">Info about you and your preferences.</p>
         </div>
         <Separator className="my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="lg:w-1/5">
-            <nav
-              className={
-                "flex space-x-1 lg:flex-col lg:space-x-0 lg:space-y-1 justify-center"
-              }
-            >
+            <nav className={"flex space-x-1 lg:flex-col lg:space-x-0 lg:space-y-1 justify-start"}>
               {[
                 { title: "General", id: "basic-info" },
                 { title: "Connected Accounts", id: "connected-accounts" },
@@ -59,9 +52,7 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
                   key={item.id}
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
-                    currentItem === item.id
-                      ? "bg-muted hover:bg-muted"
-                      : "hover:bg-transparent hover:underline",
+                    currentItem === item.id ? "bg-muted hover:bg-muted" : "hover:bg-transparent hover:underline",
                     "justify-start",
                     "px-3 py-1.5"
                   )}
@@ -87,8 +78,7 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
                     connection: "google-oauth2",
                     displayName: "Google",
                     api: "google-all",
-                    description:
-                      "Create and manage events and tasks in your Google Calendar.",
+                    description: "Create and manage events and tasks in your Google Calendar.",
                   },
                 ]}
                 allowLink={true}

@@ -124,7 +124,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                     <button
                       key={example.id}
                       onClick={onExampleClick(example.message)}
-                      className="bg-gray-100 text-sm font-light py-3 rounded-lg flex gap-3 items-center justify-center hover:bg-gray-200/90 transition-all duration-300"
+                      className="bg-gray-100 text-sm font-light py-3 rounded-lg flex gap-3 items-center justify-between px-4 pl-5 sm:px-0 sm:pl-0 sm:justify-center hover:bg-gray-200/90 transition-all duration-300"
                     >
                       {example.title} <ArrowUpIcon />
                     </button>

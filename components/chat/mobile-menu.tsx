@@ -10,6 +10,7 @@ import {
   GitHubMenuIcon,
   IconAuth0,
   LearnMenuIcon,
+  LogoutIcon,
   MenuIcon,
   ShareMenuIcon,
 } from "@/components/icons";
@@ -103,14 +104,28 @@ function MenuMobile({ user }: { user: Claims }) {
               </Link>
             </li>
           </ul>
-          <DrawerFooter className="border-t border-[#E2E8F0] flex flex-row items-center gap-4 p-5">
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.picture} alt={user.picture} />
-                <AvatarFallback>{getAvatarFallback(user)}</AvatarFallback>
-              </Avatar>
-            </Button>
-            <div className="text-sm text-gray-900 font-normal leading-6">{user.email}</div>
+          <DrawerFooter className="border-t border-[#E2E8F0] flex flex-col items-center justify-between gap-0 p-0">
+            <div className="w-full min-h-[57px]">
+              <DrawerClose className="w-full py-3 px-5">
+                <Link href="/profile" className="flex flex-row items-center gap-4 w-full">
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.picture} alt={user.picture} />
+                      <AvatarFallback>{getAvatarFallback(user)}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                  <div className="text-sm text-gray-900 font-normal leading-6">{user.email}</div>
+                </Link>
+              </DrawerClose>
+            </div>
+            <div className="w-full border-t border-[#E2E8F0] min-h-[57px] items-center flex">
+              <a href="/api/auth/logout" className="flex items-center justify-between w-full py-3 px-5">
+                <div className="flex items-center gap-4">
+                  <LogoutIcon />
+                  <span className="text-sm text-gray-900">Logout</span>
+                </div>
+              </a>
+            </div>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

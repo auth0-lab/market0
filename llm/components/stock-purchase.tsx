@@ -126,7 +126,7 @@ export function StockPurchase({
         </div>
 
         {purchasingUI ? (
-          <div className="flex flex-row gap-4 pb-2 mt-5 mx-3 border-t border-white/20 pt-5 items-center">
+          <div className="flex flex-row gap-4 pb-2 mt-4 sm:mt-5 pt-4 sm:pt-5 mx-3 border-t border-white/20 items-center">
             <div className="text-white text-base sm:text-lg font-light">{purchasingUI}</div>
           </div>
         ) : (
