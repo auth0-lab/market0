@@ -26,10 +26,10 @@ import {
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useToast } from "../ui/use-toast";
+import { useChat } from "./context";
 
 export interface ShareConversationProps {
   children?: React.ReactNode;
-  chatId: string | undefined;
 }
 
 const formSchema = z.object({
@@ -37,8 +37,9 @@ const formSchema = z.object({
   role: z.enum(["Viewer", "Editor"]),
 });
 
-export function ShareConversation({ children, chatId }: ShareConversationProps) {
+export function ShareConversation({ children }: ShareConversationProps) {
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
+  const { chatId, readOnly } = useChat();
   const [isWorking, setIsWorking] = useState(false);
   const { toast } = useToast();
 
@@ -77,7 +78,7 @@ export function ShareConversation({ children, chatId }: ShareConversationProps) 
   }
 
   // render nothing if we are not in the context of a chat
-  if (!chatId) {
+  if (!chatId || readOnly) {
     return null;
   }
 
