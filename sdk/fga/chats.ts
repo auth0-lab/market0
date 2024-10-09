@@ -1,19 +1,14 @@
 "use server";
 
-import { ChatUserAccess } from "@/lib/db/chat-users";
-import { fgaClient, getUser } from "./";
 import { chatUsers } from "@/lib/db";
+import { ChatUserAccess } from "@/lib/db/chat-users";
+
+import { fgaClient, getUser } from "./";
 
 const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS ? parseInt(process.env.MAX_CHAT_READERS, 10) : 5;
 
 export async function getChatUsers(chatId: string, { access }: { access?: ChatUserAccess } = {}) {
-  const readers = await chatUsers.list(chatId, { access });
-  return readers.map((r) => ({
-    id: r.id,
-    email: r.email,
-    access: r.access,
-    status: r.status,
-  }));
+  return await chatUsers.list(chatId, { access });
 }
 
 export async function addChatUsers(chatId: string, emails: string[]) {
@@ -65,7 +60,13 @@ export async function assignChatOwner(chatId: string) {
       object: `chat:${chatId}`,
     },
   ]);
-  await chatUsers.add({ chat_id: chatId, email: user.email, access: "owner", status: "provisioned" });
+  await chatUsers.add({
+    chat_id: chatId,
+    user_id: user.sub,
+    email: user.email,
+    access: "owner",
+    status: "provisioned",
+  });
 }
 
 export async function assignChatReader(chatId: string) {

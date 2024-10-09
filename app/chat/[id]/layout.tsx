@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { AI } from "@/app/actions";
 import { ChatProvider } from "@/components/chat/context";
 import { Header } from "@/components/chat/header";
@@ -7,7 +9,6 @@ import { getHistoryFromStore } from "@/llm/actions/history";
 import { getUser, withFGA } from "@/sdk/fga";
 import { assignChatReader, isChatUser } from "@/sdk/fga/chats";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
-import { redirect } from "next/navigation";
 
 type RootChatParams = Readonly<{
   children: React.ReactNode;
@@ -33,13 +34,6 @@ async function RootLayout({ children, params }: RootChatParams) {
     </ChatProvider>
   );
 }
-
-const fga = { assignChatReader: (a: string) => {} };
-const invitationsDb = {
-  isUserInvited: async (a: string) => {
-    return Promise<true>;
-  },
-};
 
 export default withCheckPermission(
   {

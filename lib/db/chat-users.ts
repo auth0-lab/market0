@@ -17,6 +17,7 @@ export type ChatUser = {
 type CreateChatUser = {
   chat_id: string;
   email: string;
+  user_id?: string;
   access: ChatUserAccess;
   status?: ChatUserStatus;
 };
@@ -27,19 +28,30 @@ const mapChatUserFromDB = (chatUser: any): ChatUser => ({
   updated_at: new Date(chatUser.updated_at),
 });
 
-export const add = async ({ chat_id, email, access, status }: CreateChatUser): Promise<ChatUser> => {
-  const result = await sql`
+export const add = async ({ chat_id, email, user_id, access, status }: CreateChatUser): Promise<ChatUser> => {
+  let result;
+
+  if (!user_id) {
+    result = await sql`
     INSERT INTO chat_users (chat_id, email, access, status)
     VALUES (${chat_id}, ${email.toLowerCase()}, ${access}, ${status || "pending"})
     RETURNING *
   `;
+  } else {
+    result = await sql`
+    INSERT INTO chat_users (chat_id, email, user_id, access, status)
+    VALUES (${chat_id}, ${email.toLowerCase()}, ${user_id}, ${access}, ${status || "pending"})
+    RETURNING *
+  `;
+  }
 
   return mapChatUserFromDB(result[0]);
 };
 
 export const remove = async (id: string): Promise<void> => {
+  console.log("ID", id);
   await sql`
-    DELETE chat_users
+    DELETE FROM chat_users
     WHERE id = ${id}
   `;
 };
