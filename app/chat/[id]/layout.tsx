@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { AI } from "@/app/actions";
 import { ChatProvider } from "@/components/chat/context";
 import { Header } from "@/components/chat/header";
+import { PermissionsViewers } from "@/components/chat/permissions-viewers";
 import { ShareConversation } from "@/components/chat/share";
 import { UnauthorizedError } from "@/components/fga/unauthorized";
 import { getHistoryFromStore } from "@/llm/actions/history";
@@ -22,16 +23,16 @@ type RootChatParams = Readonly<{
 
 async function RootLayout({ children, params }: RootChatParams) {
   const conversation = await getHistoryFromStore(params.id);
-  const { messages, ownerID } = conversation;
-  const user = await getUser();
+  const { messages } = conversation;
 
   console.log("layout redraw", generateId());
   return (
     <ChatProvider chatId={params.id}>
       <Header>
-        <ShareConversation user={user} chatId={params.id} />
+        <ShareConversation chatId={params.id}>
+          <PermissionsViewers chatId={params.id} />
+        </ShareConversation>
       </Header>
-
       <AI initialAIState={messages} conversationID={params.id}>
         {children}
       </AI>

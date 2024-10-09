@@ -1,24 +1,17 @@
 "use client";
 
 import { generateId } from "ai";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { fetchUserById } from "@/app/actions";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
-import { ChatUser } from "@/lib/db/chat-users";
 import { cn } from "@/lib/utils";
-import { addChatUsers, getChatUsers, removeChatUser } from "@/sdk/fga/chats";
+import { addChatUsers } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 
-import { getAvatarFallback } from "../auth0/user-button";
-import { CaretDownIcon, CircleCheckBigIcon, LinkIcon2, ShareIcon } from "../icons";
-import Loader from "../loader";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { CircleCheckBigIcon, LinkIcon2, ShareIcon } from "../icons";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -30,136 +23,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
-import { ScrollArea } from "../ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useToast } from "../ui/use-toast";
 
-import type { Claims } from "@auth0/nextjs-auth0";
-import type { GetUsers200ResponseOneOfInner } from "auth0";
 export interface ShareConversationProps {
-  user: Claims;
   chatId: string | undefined;
+  children: React.ReactNode;
 }
-
-interface PermissionBlockProps {
-  user: ChatUser;
-  onAccessRemoval: (user_id: string) => void;
-}
-
-const PermissionBlock = ({ user, onAccessRemoval }: PermissionBlockProps) => {
-  console.log("redraw permission", generateId());
-  const [loading, setIsLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState<GetUsers200ResponseOneOfInner>();
-
-  const { id, email } = user;
-  const picture = userInfo?.picture;
-  const name = userInfo?.name || email;
-  const given_name = userInfo?.given_name || email.split("")[0];
-  const family_name = userInfo?.family_name || email.split("")[1];
-  const role = user.access === "can_view" ? "Viewer" : "Owner";
-
-  useEffect(() => {
-    if (!user.user_id) {
-      return;
-    }
-
-    async function retrieveUserInfo() {
-      try {
-        const data = await fetchUserById(user.user_id!);
-        setUserInfo(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    retrieveUserInfo();
-  }, [user]);
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  return (
-    <li className="flex items-center justify-between">
-      <div className="flex items-center justify-start gap-3">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={picture} alt={picture} />
-          <AvatarFallback>{getAvatarFallback({ family_name, given_name })}</AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col items-left justify-between flex-grow">
-          <span className=" text-slate-800 font-medium">{name}</span>
-          <span className="text-gray-600 text-sm">{email}</span>
-        </div>
-      </div>
-      {role === "Owner" && (
-        <Button variant="ghost" className="font-normal">
-          <span className="text-slate-400">{role}</span>
-        </Button>
-      )}
-      {role === "Viewer" && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="font-normal">
-              <span className="text-slate-400">{role}</span>
-              <CaretDownIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="text-sm">
-            <DropdownMenuItem>
-              <Link href="#" className="flex justify-start items-center gap-1 font-normal" onClick={() => void 0}>
-                <CheckIcon /> Viewer
-              </Link>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem>
-              <Link
-                href="#"
-                className={cn("flex justify-start items-center gap-1 font-normal", {
-                  "ps-5 disabled text-slate-400 cursor-not-allowed": true,
-                })}
-                onClick={() => void 0}
-              >
-                Editor
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem>
-              <Link
-                href="#"
-                className="flex justify-start items-center gap-1 font-normal text-destructive"
-                onClick={() => onAccessRemoval(id)}
-              >
-                <TrashIcon />
-                Remove access
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
-    </li>
-  );
-};
 
 const formSchema = z.object({
   user: z.string().email(),
   role: z.enum(["Viewer", "Editor"]),
 });
 
-export function ShareConversation({ user, chatId }: ShareConversationProps) {
-  const [viewers, setViewers] = useState<ChatUser[]>([]);
+export function ShareConversation({ chatId, children }: ShareConversationProps) {
+  // console.log("ShareConversation", generateId());
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
-  const [isLoading, setIsLoading] = useState(true);
   const [isWorking, setIsWorking] = useState(false);
   const { toast } = useToast();
 
@@ -176,29 +56,12 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
 
     try {
       setIsWorking(true);
-      const [invitedUser] = await addChatUsers(chatId!, [email]);
-      setViewers((prev) => [...prev, invitedUser]);
+      await addChatUsers(chatId!, [email]);
       form.reset();
     } catch (err) {
       toast({
         title: "Error!",
         description: (err as Error).message || "There was a problem sharing this chat. Try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsWorking(false);
-    }
-  }
-
-  async function handleOnRemove(id: string) {
-    try {
-      setIsWorking(true);
-      await removeChatUser(id);
-      setViewers((prev) => prev.filter((viewer) => viewer.id !== id));
-    } catch (err) {
-      toast({
-        title: "Error!",
-        description: (err as Error).message || "There was a problem removing access to this chat. Try again later.",
         variant: "destructive",
       });
     } finally {
@@ -215,30 +78,8 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
   }
 
   useEffect(() => {
-    console.log("redraw", generateId());
+    console.log("ShareConversation", generateId());
   }, []);
-
-  // initial load of viewers
-  useEffect(() => {
-    async function retrieveViewers() {
-      try {
-        const retrievedViewers = await getChatUsers(chatId!);
-        setViewers(() => [...retrievedViewers]);
-      } catch (err) {
-        toast({
-          title: "Error!",
-          description: (err as Error).message || "There was a problem retrieving chat readers. Try again later.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    if (chatId) {
-      retrieveViewers();
-    }
-  }, [chatId]);
 
   // render nothing if we are not in the context of a chat
   if (!chatId) {
@@ -320,22 +161,7 @@ export function ShareConversation({ user, chatId }: ShareConversationProps) {
           </form>
         </Form>
 
-        <div className="py-2 pt-5 border-t border-slate-200">
-          <h2 className="text-sm font-normal mb-3">Who has access</h2>
-          <ScrollArea className="min-h-[150px] max-h-[240px] h-full rounded-md">
-            <ul className="space-y-2">
-              {isLoading && (
-                <div className="mx-auto">
-                  <Loader />
-                </div>
-              )}
-
-              {viewers.map((user) => (
-                <PermissionBlock key={generateId()} user={user} onAccessRemoval={handleOnRemove} />
-              ))}
-            </ul>
-          </ScrollArea>
-        </div>
+        {children}
 
         <DialogFooter className="flex gap-1">
           <Button
