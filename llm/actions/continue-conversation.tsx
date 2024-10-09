@@ -8,23 +8,23 @@ import { userUsage } from "@/lib/db";
 import { composeTools } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
 import { getSystemPrompt } from "@/llm/system-prompt";
-import getEvents from "@/llm/tools/get-events";
-import getForecasts from "@/llm/tools/get-forecasts";
-import listStocks from "@/llm/tools/list-stocks";
-import showCurrentPositions from "@/llm/tools/show-current-positions";
-import showStockPrice from "@/llm/tools/show-stock-price";
-import showStockPurchaseUI from "@/llm/tools/show-stock-purchase-ui";
+import checkSubscription from "@/llm/tools/newsletter/check-subscription";
+import setSubscription from "@/llm/tools/newsletter/set-subscription";
+import setEmployeer from "@/llm/tools/profile/set-employeer";
+import setProfileAttributes from "@/llm/tools/profile/set-profile-attributes";
+import addReminder from "@/llm/tools/schedule/add-reminder";
+import getEvents from "@/llm/tools/schedule/get-events";
+import addConditionalPurchase from "@/llm/tools/trading/add-conditional-purchase";
+import getForecasts from "@/llm/tools/trading/get-forecasts";
+import listStocks from "@/llm/tools/trading/list-stocks";
+import showCurrentPositions from "@/llm/tools/trading/show-current-positions";
+import showStockPrice from "@/llm/tools/trading/show-stock-price";
+import showStockPurchaseUI from "@/llm/tools/trading/show-stock-purchase-ui";
 import { ClientMessage, ServerMessage } from "@/llm/types";
 import { getUser } from "@/sdk/fga";
 
 import { aiParams } from "../ai-params";
 import { FormattedText } from "../components/FormattedText";
-import addConditionalPurchase from "../tools/add-conditional-purchase";
-import addReminder from "../tools/add-reminder";
-import checkSubscription from "../tools/check-subscription";
-import setEmployeer from "../tools/set-employeer";
-import setProfileAttributes from "../tools/set-profile-attributes";
-import setSubscription from "../tools/set-subscription";
 
 type ContinueConversationParams = {
   /**

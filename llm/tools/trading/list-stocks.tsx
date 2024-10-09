@@ -1,12 +1,11 @@
 import { z } from "zod";
 
+import allStocks from "@/lib/market/stocks.json";
 import { defineTool } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
 import { Stocks } from "@/llm/components/stocks";
 import { StocksSkeleton } from "@/llm/components/stocks-skeleton";
 import { getHistory } from "@/llm/utils";
-
-import allStocks from "../../lib/market/stocks.json";
 
 export default defineTool("list_stocks", () => {
   const history = getHistory();

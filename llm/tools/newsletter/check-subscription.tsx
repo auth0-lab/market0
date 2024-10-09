@@ -1,12 +1,14 @@
 import { z } from "zod";
 
 import Loader from "@/components/loader";
+import stocks from "@/lib/market/stocks.json";
+import { checkEnrollment } from "@/llm/actions/newsletter";
 import { defineTool } from "@/llm/ai-helpers";
+import { withTextGeneration } from "@/llm/with-text-generation";
 
-import stocks from "../../lib/market/stocks.json";
-import { checkEnrollment } from "../actions/newsletter";
-import { withTextGeneration } from "../with-text-generation";
-
+/**
+ * This tool allows the user to check if they are subscribed to the newsletter.
+ */
 export default defineTool("check_subscription", async () => {
   return {
     description: `Check if the user is subscribed to the newsletter`,

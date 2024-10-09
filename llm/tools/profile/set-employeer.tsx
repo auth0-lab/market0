@@ -2,9 +2,8 @@ import { z } from "zod";
 
 import Loader from "@/components/loader";
 import { defineTool } from "@/llm/ai-helpers";
+import { withTextGeneration } from "@/llm/with-text-generation";
 import { fgaClient, getUser } from "@/sdk/fga";
-
-import { withTextGeneration } from "../with-text-generation";
 
 export default defineTool("set_employeer", async () => {
   return {
