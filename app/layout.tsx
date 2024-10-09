@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 import { Inter } from "next/font/google";
@@ -13,6 +13,13 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Auth0 AI | Market0",
   description: "Market0 is a demo app that showcases secure auth patterns for GenAI apps",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  maximumScale: 1.0,
+  userScalable: false,
 };
 
 export default async function RootLayout({
