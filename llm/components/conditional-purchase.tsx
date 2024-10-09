@@ -102,7 +102,7 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
           message={
             <>
               {!simulating && (
-                <div className="text-slate-500 text-sm leading-6">
+                <div className="text-slate-500 text-xs sm:text-sm leading-6">
                   To simulate the agent executing the task, please click{" "}
                   <button className="border-b border-slate-500 leading-none" onClick={simulateExecution}>
                     here
@@ -111,18 +111,18 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
                 </div>
               )}
               {simulating && (
-                <div className="flex gap-3 items-center w-fit mx-auto text-slate-500 text-sm leading-6">
+                <div className="flex gap-3 items-center w-fit mx-auto text-slate-500 text-xs sm:text-sm leading-6">
                   Simulating <Loader />
                 </div>
               )}
             </>
           }
         >
-          <div className="p-5 rounded-2xl bg-zinc-950 text-white">
+          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-white">Buy {conditionalPurchase.symbol}</div>
-                <div className="text-sm text text-white/40 leading-6">
+                <div className="text-xs sm:text-sm text text-white/40 leading-6">
                   Created {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
@@ -130,15 +130,15 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
                 <div className="text-base font-semibold text-green-400 text-right">
                   If {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
-                <div className="text-sm text text-white/40 leading-6 uppercase">Condition</div>
+                <div className="text-xs sm:text-sm text text-white/40 leading-6 uppercase">Condition</div>
               </div>
             </div>
-            <div className="border-t border-white/20 mt-5 pt-5">
+            <div className="border-t border-white/20 mt-4 sm:mt-5 pt-4 sm:pt-5">
               <div className="flex flex-row gap-3 items-start">
                 <div className="w-[25px]">
                   <TaskIcon />
                 </div>
-                <div className="text-white font-light">
+                <div className="text-white font-light text-base sm:text-lg">
                   Task: Buy {conditionalPurchase.quantity} ${conditionalPurchase.symbol} shares if{" "}
                   {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
@@ -150,13 +150,13 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
     case "canceled":
       return (
         <WarningWrapper className="max-w-xl">
-          <div className="p-5 rounded-2xl bg-zinc-950 text-white">
+          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-white">
                   Buy {conditionalPurchase.quantity} shares of {conditionalPurchase.symbol}
                 </div>
-                <div className="text-sm text text-white/40 leading-6">
+                <div className="text-xs sm:text-sm text text-white/40 leading-6">
                   Created {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
@@ -164,15 +164,15 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
                 <div className="text-base font-semibold text-green-400">
                   If {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
-                <div className="text-sm text text-white/40 leading-6 uppercase">Condition</div>
+                <div className="text-xs sm:text-sm text text-white/40 leading-6 uppercase">Condition</div>
               </div>
             </div>
-            <div className="border-t border-white/20 mt-5 pt-5">
+            <div className="border-t border-white/20 mt-4 sm:mt-5 pt-4 sm:pt-5">
               <div className="flex flex-row gap-4 items-start">
                 <div className="w-[25px]">
                   <CancelRedIcon />
                 </div>
-                <div className="text-white font-light">
+                <div className="text-white font-light text-base sm:text-lg">
                   The purchase was <strong className="text-red-400">CANCELED</strong> on{" "}
                   {format(conditionalPurchase.updated_at, "PPPP p")}.
                 </div>
@@ -184,13 +184,13 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
     case "completed":
       return (
         <WarningWrapper className="max-w-xl">
-          <div className="p-5 rounded-2xl bg-zinc-950 text-white">
+          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
                 <div className="text-base font-semibold text-white">
                   Buy {conditionalPurchase.quantity} shares of {conditionalPurchase.symbol}
                 </div>
-                <div className="text-sm text text-white/40 leading-6">
+                <div className="text-xs sm:text-sm text text-white/40 leading-6">
                   Created {formatRelative(conditionalPurchase.created_at, new Date())}
                 </div>
               </div>
@@ -198,15 +198,15 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
                 <div className="text-base font-semibold text-green-400">
                   If {conditionalPurchase.metric} {conditionalPurchase.operator} {conditionalPurchase.threshold}
                 </div>
-                <div className="text-sm text text-white/40 leading-6 uppercase">Condition</div>
+                <div className="text-xs sm:text-sm text text-white/40 leading-6 uppercase">Condition</div>
               </div>
             </div>
-            <div className="border-t border-white/20 mt-5 pt-5">
+            <div className="border-t border-white/20 mt-4 sm:mt-5 pt-4 sm:pt-5">
               <div className="flex flex-row gap-4 items-start">
                 <div className="w-[25px]">
                   <CheckGreenIcon />
                 </div>
-                <div className="text-white font-light">
+                <div className="text-white font-light text-base sm:text-lg">
                   The purchase was <strong className="text-green-400">COMPLETED</strong> on{" "}
                   {format(conditionalPurchase.updated_at, "PPPP p")}.
                 </div>

@@ -34,14 +34,13 @@ export function Stock({
   const chartRef = useRef<HTMLDivElement>(null);
 
   let width = 0;
-  const resizeObserverResult =
-    useResizeObserver({
-      ref: chartRef,
-      box: "content-box",
-      //TODO: This fails on safari 17. Need to investigate
-      //      returns twice the value of content-box.
-      // box: "device-pixel-content-box",
-    });
+  const resizeObserverResult = useResizeObserver({
+    ref: chartRef,
+    box: "content-box",
+    //TODO: This fails on safari 17. Need to investigate
+    //      returns twice the value of content-box.
+    // box: "device-pixel-content-box",
+  });
 
   //TODO remove this when the issue is fixed
   // width = resizeObserverResult?.width ? resizeObserverResult?.width : 0;
@@ -66,38 +65,32 @@ export function Stock({
 
   return (
     <WarningWrapper className="max-w-xl">
-      <div className="p-4 text-green-400 rounded-2xl bg-zinc-950 pt-5">
-        <div className="flex flex-row justify-between px-3">
+      <div className="text-green-400 rounded-2xl bg-zinc-950 pt-3 sm:pt-5">
+        <div className="flex flex-row justify-between px-5 sm:px-7">
           <div className="flex flex-col gap-2">
             <div className="text-base font-semibold text-white">{symbol}</div>
 
-            <div className="text-sm text text-white/40 leading-6">
+            <div className="text-xs sm:text-sm text text-white/40 leading-6">
               {company} • {market} • {currency}
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="text-base font-semibold text-white text-right">
-              ${price}
-            </div>
+            <div className="text-base font-semibold text-white text-right">${price}</div>
             <div
-              className={`inline-flex items-center gap-2 text-sm ${
+              className={`inline-flex items-center gap-2 text-xs sm:text-sm ${
                 delta > 0 ? "text-green-400" : "text-red-400"
               }`}
             >
               {delta > 0 ? <StockUpIcon /> : <StockDownIcon />}
               <span>
-                {delta} (
-                {`${delta > 0 ? "+" : ""}${((delta / price) * 100).toFixed(
-                  2
-                )}%`}
-                )
+                {delta} ({`${delta > 0 ? "+" : ""}${((delta / price) * 100).toFixed(2)}%`})
               </span>
             </div>
           </div>
         </div>
 
         <div
-          className="relative mx-4 cursor-default mt-5"
+          className="relative cursor-default mt-5"
           onPointerMove={(event) => {
             if (chartRef.current) {
               const { clientX } = event;
@@ -133,26 +126,13 @@ export function Stock({
               }}
             >
               <div className="text-xs tabular-nums">${priceAtTime.value}</div>
-              <div className="text-xs text-zinc-400 tabular-nums">
-                {priceAtTime.time}
-              </div>
+              <div className="text-xs text-zinc-400 tabular-nums">{priceAtTime.time}</div>
             </div>
           ) : null}
 
-          <svg
-            viewBox="0 0 250.0 168.0"
-            height="80"
-            width="100%"
-            preserveAspectRatio="none"
-          >
+          <svg viewBox="0 0 250.0 168.0" height="80" width="100%" preserveAspectRatio="none">
             <defs>
-              <linearGradient
-                id="fill-id-tsuid_31"
-                x1="0%"
-                x2="0%"
-                y1="0%"
-                y2="100%"
-              >
+              <linearGradient id="fill-id-tsuid_31" x1="0%" x2="0%" y1="0%" y2="100%">
                 <stop offset="0%" stopColor="#34a853" stopOpacity="0.38"></stop>
                 <stop offset="13%" stopColor="#e6f4ea" stopOpacity="0"></stop>
               </linearGradient>
@@ -160,18 +140,8 @@ export function Stock({
                 <rect height="100%" width="0" x="0" y="0"></rect>
               </clipPath>
               <defs>
-                <linearGradient
-                  id="chart-grad-_f1bJZYLUHqWpxc8Prs2meA_33"
-                  x1="0%"
-                  x2="0%"
-                  y1="0%"
-                  y2="100%"
-                >
-                  <stop
-                    offset="0%"
-                    stopColor="#34a853"
-                    stopOpacity="0.38"
-                  ></stop>
+                <linearGradient id="chart-grad-_f1bJZYLUHqWpxc8Prs2meA_33" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stopColor="#34a853" stopOpacity="0.38"></stop>
                   <stop offset="13%" stopColor="#e6f4ea" stopOpacity="0"></stop>
                 </linearGradient>
               </defs>

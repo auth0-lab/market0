@@ -76,7 +76,7 @@ export default function Chat({ params }: { params: { id: string } }) {
             {conversation.map((message: ClientMessage) =>
               message.role === "user" ? (
                 <div key={message.id} className="flex flex-row gap-3 py-3 items-center justify-end">
-                  <div className="relative max-w-[70%] text-base text-stone-600 font-light bg-[#F4F4F4] rounded-full px-5 py-2.5">
+                  <div className="relative w-fit sm:max-w-[70%] text-sm sm:text-base text-stone-600 font-light bg-[#F4F4F4] rounded-full px-5 py-2.5">
                     {message.display}
                   </div>
                   <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
@@ -91,10 +91,13 @@ export default function Chat({ params }: { params: { id: string } }) {
                   <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
                     <Market0Icon />
                   </div>
-                  <div className="w-full font-light text-stone-600 flex items-center">{message.display}</div>
+                  <div className="w-full font-light text-stone-600 flex items-center text-sm sm:text-base">
+                    {message.display}
+                  </div>
                 </div>
               ) : null
             )}
+
             <div ref={visibilityRef} className="w-full h-px" />
           </div>
           {conversation.length === 0 && (
@@ -146,7 +149,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                           <Input
                             autoFocus
                             autoComplete="off"
-                            className="bg-white shadow-none border-0 focus-visible:ring-0 py-2 px-0 placeholder-slate-500/80 text-base font-light"
+                            className="bg-white shadow-none border-0 focus-visible:ring-0 py-2 px-0 placeholder-slate-500/80 text-sm sm:text-base font-light"
                             placeholder="Start Typing..."
                             {...field}
                           />
