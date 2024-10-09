@@ -4,9 +4,10 @@ import { AI } from "@/app/actions";
 import { ChatProvider } from "@/components/chat/context";
 import { Header } from "@/components/chat/header";
 import { ShareConversation } from "@/components/chat/share";
+import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissions-list";
 import { UnauthorizedError } from "@/components/fga/unauthorized";
 import { getHistoryFromStore } from "@/llm/actions/history";
-import { getUser, withFGA } from "@/sdk/fga";
+import { withFGA } from "@/sdk/fga";
 import { assignChatReader, isChatUser } from "@/sdk/fga/chats";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
 
@@ -20,12 +21,13 @@ type RootChatParams = Readonly<{
 async function RootLayout({ children, params }: RootChatParams) {
   const conversation = await getHistoryFromStore(params.id);
   const { messages, ownerID } = conversation;
-  const user = await getUser();
 
   return (
     <ChatProvider chatId={params.id}>
       <Header>
-        <ShareConversation user={user} chatId={params.id} />
+        <ShareConversation chatId={params.id}>
+          <ChatUsersPermissionsList chatId={params.id} />
+        </ShareConversation>
       </Header>
 
       <AI initialAIState={messages} conversationID={params.id}>
