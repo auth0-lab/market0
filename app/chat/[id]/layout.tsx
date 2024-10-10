@@ -35,7 +35,7 @@ async function RootLayout({ children, params }: RootChatParams) {
           </ShareConversation>
         </Header>
 
-        <AI initialAIState={messages} conversationID={params.id}>
+        <AI initialAIState={messages} conversationID={params.id} readOnly={!isOwner}>
           {children}
         </AI>
       </div>

@@ -17,6 +17,7 @@ export function Stock({
   market,
   currency,
   company,
+  readOnly = false,
 }: {
   symbol: string;
   price: number;
@@ -24,6 +25,7 @@ export function Stock({
   market: string;
   currency: string;
   company: string;
+  readOnly?: boolean;
 }) {
   const [priceAtTime, setPriceAtTime] = useState({
     time: "00:00",
@@ -64,7 +66,7 @@ export function Stock({
   }
 
   return (
-    <WarningWrapper className="max-w-xl">
+    <WarningWrapper className="max-w-xl" readOnly={readOnly}>
       <div className="text-green-400 rounded-2xl bg-zinc-950 pt-3 sm:pt-5">
         <div className="flex flex-row justify-between px-5 sm:px-7">
           <div className="flex flex-col gap-2">

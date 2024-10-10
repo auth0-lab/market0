@@ -11,9 +11,11 @@ import { Event } from "../actions/calendar-events";
 export function CalendarEvents({
   events,
   addEvents,
+  readOnly = false,
 }: {
   events: Event[];
   addEvents: (events: Event[]) => Promise<any>;
+  readOnly?: boolean;
 }) {
   const [working, setWorking] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -28,16 +30,14 @@ export function CalendarEvents({
         }}
         connectWidget={{
           title: "Connect to Google Calendar",
-          description:
-            "To add events to your calendar, you’ll first need to connect to your Google Account.",
+          description: "To add events to your calendar, you’ll first need to connect to your Google Account.",
         }}
         shouldCheckAuthorization={true}
+        readOnly={readOnly}
       >
         <div className="border border-gray-300 rounded-lg p-6 flex items-center w-full justify-between">
           <div className="flex flex-col gap-2">
-            <h2 className="text-base leading-6 font-semibold">
-              Add Events to my Calendar
-            </h2>
+            <h2 className="text-base leading-6 font-semibold">Add Events to my Calendar</h2>
             <p className="text-sm leading-5 font-light text-gray-500">
               All events will be added to your Google Calendar.
             </p>
@@ -47,7 +47,7 @@ export function CalendarEvents({
 
             {!finished && (
               <button
-                disabled={working || finished}
+                disabled={working || finished || readOnly}
                 onClick={async () => {
                   setWorking(true);
                   await addEvents(events);

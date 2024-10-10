@@ -781,7 +781,38 @@ function LogoutIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M23.5 16H13.5" stroke="#FF3642" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M23.5 16H13.5" stroke="#FF3642" strokeWidth="1.25" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  );
+}
+
+function WarningPageIcon() {
+  return (
+    <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M11.3518 1.59253H5.05552C4.6626 1.59253 4.28578 1.74861 4.00795 2.02645C3.73012 2.30428 3.57404 2.6811 3.57404 3.07401V14.9259C3.57404 15.3188 3.73012 15.6956 4.00795 15.9734C4.28578 16.2513 4.6626 16.4073 5.05552 16.4073H13.9444C14.3373 16.4073 14.7141 16.2513 14.992 15.9734C15.2698 15.6956 15.4259 15.3188 15.4259 14.9259V5.6666L11.3518 1.59253Z"
+        fill="#DFE4EA"
+        stroke="#020617"
+        strokeWidth="0.694444"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M9.5 6.77783V9.7408V6.77783Z" fill="#DFE4EA" />
+      <path
+        d="M9.5 6.77783V9.7408"
+        stroke="#020617"
+        strokeWidth="0.694444"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M9.5 12.7036H9.50741H9.5Z" fill="#DFE4EA" />
+      <path
+        d="M9.5 12.7036H9.50741"
+        stroke="#020617"
+        strokeWidth="0.694444"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -854,4 +885,5 @@ export {
   CaretDownIcon,
   CircleCheckBigIcon,
   DiscordIcon,
+  WarningPageIcon,
 };

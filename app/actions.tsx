@@ -14,12 +14,13 @@ import { getUser } from "@/sdk/fga";
 
 type Props = Parameters<ReturnType<typeof createAI<ServerMessage[], ClientMessage[]>>>[0] & {
   conversationID: string;
+  readOnly: boolean;
 };
 const HIDDEN_ROLES = ["system", "tool"];
 export const AI = (p: Props) => {
-  const { conversationID, ...params } = p;
+  const { conversationID, readOnly, ...params } = p;
 
-  const C = createAI<ServerMessage[], ClientMessage[]>({
+  const AIContext = createAI<ServerMessage[], ClientMessage[]>({
     actions: {
       continueConversation,
       confirmPurchase,
@@ -60,7 +61,7 @@ export const AI = (p: Props) => {
                 display: (
                   // @ts-ignore
                   // this one is complicated to fix, but it's not a big deal
-                  <Component {...(params as Parameters<typeof Component>[0])} />
+                  <Component {...(params as Parameters<typeof Component>[0])} readOnly={readOnly} />
                 ),
               };
             }
@@ -75,7 +76,7 @@ export const AI = (p: Props) => {
     },
   });
 
-  return <C {...params} />;
+  return <AIContext {...params} />;
 };
 
 export const fetchUserById = async (user_id: string) => {

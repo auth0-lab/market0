@@ -10,9 +10,18 @@ import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditi
 import { getConditionalPurchaseById } from "@/llm/actions/conditional-purchases";
 import { isGuardianEnrolled } from "@/sdk/auth0/mgmt";
 
+import { NotAvailableReadOnly } from "./not-available-read-only";
 import WarningWrapper from "./warning-wrapper";
 
-export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEnrolled: boolean }) {
+export function ConditionalPurchase({
+  id,
+  isMFAEnrolled,
+  readOnly,
+}: {
+  id: string;
+  isMFAEnrolled: boolean;
+  readOnly: boolean;
+}) {
   const [isWorking, setIsWorking] = useState(true);
   const [simulating, setSimulating] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(isMFAEnrolled);
@@ -44,6 +53,10 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
 
   if (isWorking) {
     return <Loader />;
+  }
+
+  if (readOnly) {
+    return <NotAvailableReadOnly />;
   }
 
   if (!conditionalPurchase) {
@@ -119,6 +132,7 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
       return (
         <WarningWrapper
           className="max-w-xl"
+          readOnly={readOnly}
           message={
             <>
               {!simulating && (
@@ -169,7 +183,7 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
       );
     case "canceled":
       return (
-        <WarningWrapper className="max-w-xl">
+        <WarningWrapper className="max-w-xl" readOnly={readOnly}>
           <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
@@ -203,7 +217,7 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
       );
     case "completed":
       return (
-        <WarningWrapper className="max-w-xl">
+        <WarningWrapper className="max-w-xl" readOnly={readOnly}>
           <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
