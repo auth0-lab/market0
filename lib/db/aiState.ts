@@ -6,6 +6,8 @@ export type SaveAIState = {
   conversationID: string;
   userID: string;
   messages: ServerMessage[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export const save = async ({ conversationID, userID, messages }: SaveAIState): Promise<void> => {
@@ -25,10 +27,38 @@ export const save = async ({ conversationID, userID, messages }: SaveAIState): P
 
 export const get = async ({ conversationID }: { conversationID: string }): Promise<Conversation> => {
   const result = await sql`
-    SELECT messages, user_id as "ownerID"
+    SELECT messages,
+      user_id as "ownerID",
+          updated_at as "updatedAt",
+          created_at as "createdAt"
     FROM chat_histories
     WHERE conversation_id = ${conversationID}
   `;
 
   return result[0] ? (result[0] as Conversation) : { messages: [], ownerID: "" };
+};
+
+/**
+ * The conversation metadata without the messages.
+ */
+export type ConversationData = Omit<SaveAIState, 'messages'>;
+
+export const list = async ({ ownerID }: { ownerID: string }): Promise<ConversationData[]> => {
+  const r = await sql`
+    SELECT conversation_id,
+           user_id,
+          updated_at,
+          created_at
+    FROM chat_histories
+    WHERE user_id = ${ownerID}
+    ORDER BY created_at DESC
+    LIMIT 20
+  `;
+
+  return r.map(c => ({
+    conversationID: c.conversation_id,
+    userID: c.user_id,
+    updatedAt: c.updated_at,
+    createdAt: c.created_at,
+  }));
 };

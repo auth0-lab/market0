@@ -1,10 +1,11 @@
 import { AI, fetchUserById } from "@/app/actions";
 import { ChatProvider } from "@/components/chat/context";
+import ConversationPicker from "@/components/chat/conversation-picker";
 import { Header } from "@/components/chat/header";
 import { ShareConversation } from "@/components/chat/share";
 import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissions-list";
 import { ErrorContainer } from "@/components/fga/error";
-import { getHistoryFromStore } from "@/llm/actions/history";
+import { getHistoryFromStore, listConversations } from "@/llm/actions/history";
 import { getUser, withFGA } from "@/sdk/fga";
 import { assignChatReader, isChatOwner, isUserInvitedToChat } from "@/sdk/fga/chats";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
@@ -18,6 +19,7 @@ type RootChatParams = Readonly<{
 
 async function RootLayout({ children, params }: RootChatParams) {
   const conversation = await getHistoryFromStore(params.id);
+  const allConversations = await listConversations();
   const { messages, ownerID } = conversation;
   const isOwner = await isChatOwner(params.id);
   const user = await getUser();
@@ -28,6 +30,7 @@ async function RootLayout({ children, params }: RootChatParams) {
     <ChatProvider chatId={params.id} readOnly={!isOwner} hasMessages={messages.length > 0} ownerProfile={ownerProfile}>
       <div className="flex flex-col h-full w-full">
         <Header>
+          <ConversationPicker conversations={allConversations} selectedConversationID={params.id} />
           {isOwner && (
             <ShareConversation>
               {/**
