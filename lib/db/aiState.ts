@@ -23,6 +23,19 @@ export const save = async ({ conversationID, userID, messages }: SaveAIState): P
     ON CONFLICT (conversation_id, user_id)
     DO UPDATE SET messages = EXCLUDED.messages, updated_at = NOW();
   `;
+
+  //A user can only have a maximum of 20 conversations
+  await sql`
+    DELETE FROM chat_histories
+    WHERE user_id = ${userID}
+    AND conversation_id NOT IN (
+      SELECT conversation_id
+      FROM chat_histories
+      WHERE user_id = ${userID}
+      ORDER BY created_at DESC
+      LIMIT 20
+    )
+  `;
 };
 
 export const get = async ({ conversationID }: { conversationID: string }): Promise<Conversation> => {
