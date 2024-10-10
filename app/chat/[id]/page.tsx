@@ -217,7 +217,7 @@ export default function Chat({ params }: { params: { id: string } }) {
               <div className="flex flex-row justify-between gap-2 items-center">
                 <div className="w-full space-y-0">
                   <div className="bg-gray-100 shadow-none border-0 py-2 px-0 text-sm sm:text-base text-black">
-                    You have view-only access
+                    You have view-only access for this chat.
                   </div>
                 </div>
                 <Link href="/">

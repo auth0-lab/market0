@@ -20,7 +20,6 @@ const HIDDEN_ROLES = ["system", "tool"];
 export const AI = (p: Props) => {
   const { conversationID, readOnly, ...params } = p;
 
-  console.log("AI", conversationID, readOnly, params);
   const AIContext = createAI<ServerMessage[], ClientMessage[]>({
     actions: {
       continueConversation,

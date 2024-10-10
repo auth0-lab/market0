@@ -106,7 +106,7 @@ export function StockPurchase({
   }
 
   return (
-    <WarningWrapper className="max-w-xl">
+    <WarningWrapper className="max-w-xl" readOnly={readOnly}>
       <div className="p-2 sm:p-4 text-green-400 rounded-2xl bg-zinc-950 pt-3 sm:pt-5">
         <div className="flex flex-row justify-between px-2 sm:px-3">
           <div className="flex flex-col gap-2">
@@ -175,6 +175,7 @@ export function StockPurchase({
             <div className="mx-2 sm:mx-3 mb-3">
               <button
                 className="w-full py-2 mt-6 bg-green-500 rounded-lg text-black text-sm sm:text-base font-normal"
+                disabled={readOnly}
                 onClick={async () => {
                   const response = await confirmPurchase({
                     symbol,

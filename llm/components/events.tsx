@@ -12,10 +12,10 @@ interface Event {
   description: string;
 }
 
-export function Events({ events }: { events: Event[] }) {
+export function Events({ events, readOnly = false }: { events: Event[]; readOnly?: boolean }) {
   return (
     <div className="flex flex-col gap-4">
-      <WarningWrapper>
+      <WarningWrapper readOnly={readOnly}>
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3">
             {events.map((event) => (
@@ -37,7 +37,7 @@ export function Events({ events }: { events: Event[] }) {
         </div>
       </WarningWrapper>
 
-      <CalendarEvents events={events} addEvents={addEventsToCalendar} />
+      <CalendarEvents events={events} addEvents={addEventsToCalendar} readOnly={readOnly} />
     </div>
   );
 }

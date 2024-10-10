@@ -7,12 +7,12 @@ import { Position } from "@/lib/db";
 import { ClientMessage } from "../types";
 import WarningWrapper from "./warning-wrapper";
 
-export function Positions({ positions }: { positions: Position[] }) {
+export function Positions({ positions, readOnly = false }: { positions: Position[]; readOnly?: boolean }) {
   const [, setMessages] = useUIState();
   const { continueConversation } = useActions();
 
   return (
-    <WarningWrapper className="max-w-sm">
+    <WarningWrapper className="max-w-sm" readOnly={readOnly}>
       <div className="flex flex-col gap-2">
         {positions.map((position) => (
           <button
