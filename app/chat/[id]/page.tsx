@@ -72,7 +72,7 @@ export default function Chat({ params }: { params: { id: string } }) {
         <div className="flex-1 overflow-y-auto">
           <div
             ref={messagesRef}
-            className={cn("flex-1 min-w-0 max-w-4xl mx-auto w-full px-3 sm:px-0", {
+            className={cn("flex-1 min-w-0 max-w-4xl mx-auto w-full px-3 sm:px-1", {
               hidden: conversation.length === 0,
             })}
           >
@@ -105,7 +105,7 @@ export default function Chat({ params }: { params: { id: string } }) {
           </div>
           {conversation.length === 0 && (
             <div className="flex flex-col gap-60 max-w-4xl mx-auto w-full mt-auto h-full justify-between">
-              <div className="min-w-0 min-h-0 w-full flex flex-col items-center gap-2 sm:gap-6 mt-28 sm:mt-52">
+              <div className="min-w-0 min-h-0 w-full flex flex-col items-center gap-2 sm:gap-6 mt-28 sm:mt-52 px-3 sm:px-1">
                 <div className="min-h-8">
                   <Market0Icon />
                 </div>
@@ -119,7 +119,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                   Market0 is a demo app that showcases secure auth patterns for GenAI apps
                 </p>
               </div>
-              <div className="w-full">
+              <div className="w-full px-3 sm:px-1">
                 <div className="flex flex-col gap-5 items-center mb-5">
                   <CircleIcon />
                   <span className="text-slate-500 text-sm font-light">Get started with these examples</span>
@@ -140,7 +140,7 @@ export default function Chat({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        <div className={cn("flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-0 h-fit")}>
+        <div className={cn("flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit")}>
           <div className="p-3 bg-white border border-gray-200 rounded-lg focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row justify-between gap-2 items-center">
