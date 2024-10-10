@@ -30,20 +30,19 @@ export default function ConversationPicker({
   conversations = [],
   selectedConversationID,
 }: ConversationPickerProps) {
-
-  // group by date of createdAt
-  const groups = groupBy(conversations, (conversation: ConversationData) => {
-    return DateTime.fromJSDate(conversation.createdAt).startOf('day').toRelativeCalendar();
-  });
-
   if (!conversations.some(c => c.conversationID === selectedConversationID)) {
     conversations = [
       ...conversations,
       { conversationID: selectedConversationID, createdAt: new Date(), updatedAt: new Date(),userID: "" },
-    ];
+    ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   const [open, setOpen] = React.useState(false);
+
+  const groups = groupBy(conversations, (conversation: ConversationData) => {
+    return DateTime.fromJSDate(conversation.createdAt).startOf('day').toRelativeCalendar();
+  });
+
   const [selectedConversation, setSelectedConversation] = React.useState<
     ConversationData
   >(
@@ -73,7 +72,7 @@ export default function ConversationPicker({
             <ChevronsUpDown size={14} />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent className="w-[200px] p-0" align="end">
           <Command>
             <CommandList>
               <CommandEmpty>
@@ -99,7 +98,7 @@ export default function ConversationPicker({
                           className="flex w-full items-center"
                         >
                           {DateTime.fromJSDate(conversation.createdAt).toLocaleString(DateTime.TIME_SIMPLE)} - {conversation.conversationID}
-                          {selectedConversation === conversation && (
+                          {selectedConversationID === conversation.conversationID && (
                             <Check className={"ml-auto h-4 w-4"} />
                           )}
                         </a>
@@ -116,7 +115,7 @@ export default function ConversationPicker({
                 <CommandGroup>
                   <CommandItem>
                     <a
-                      href="/"
+                      href="/new"
                       className="flex items-center justify-between gap-3 w-full block text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                     >
                       Start new chat
