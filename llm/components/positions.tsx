@@ -3,6 +3,7 @@
 import { useActions, useUIState } from "ai/rsc";
 
 import { Position } from "@/lib/db";
+import { cn } from "@/lib/utils";
 
 import { ClientMessage } from "../types";
 import WarningWrapper from "./warning-wrapper";
@@ -17,7 +18,10 @@ export function Positions({ positions, readOnly = false }: { positions: Position
         {positions.map((position) => (
           <button
             key={position.ticker_id}
-            className="flex p-4 sm:p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
+            className={cn(
+              "flex p-4 sm:p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300",
+              { "hover:bg-zinc-950": readOnly }
+            )}
             onClick={async () => {
               const response = await continueConversation(`View ${position.ticker_id}`);
               setMessages((prevMessages: ClientMessage[]) => [...prevMessages, response]);

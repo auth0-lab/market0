@@ -15,7 +15,7 @@ export default function WarningWrapper({
     <fieldset
       className={cn(
         "p-2 bg-gray-200 flex-1 rounded-3xl",
-        { "diabled [&>*]:opacity-70 [&_*]:cursor-not-allowed": readOnly },
+        { "diabled [&>*]:opacity-80 grayscale [&_*]:cursor-not-allowed": readOnly },
         className
       )}
       disabled={readOnly}

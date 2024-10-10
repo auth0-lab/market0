@@ -5,8 +5,8 @@ import { PromptUserContainer } from "./prompt-user-container";
 export function NotAvailableReadOnly({ message }: { message?: React.ReactNode }) {
   return (
     <PromptUserContainer
-      title="Not available for read-only mode"
-      description={message || "You do not have permission to view this section."}
+      title="Action not available"
+      description={message || "You cannot perform actions on read-only mode."}
       icon={
         <div className="bg-gray-200 p-3 rounded-lg flex-wrap">
           <WarningPageIcon />

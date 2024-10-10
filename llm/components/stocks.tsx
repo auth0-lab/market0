@@ -3,6 +3,7 @@
 import { useActions, useUIState } from "ai/rsc";
 
 import { StockDownIcon, StockUpIcon } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 import { ClientMessage } from "../types";
 import WarningWrapper from "./warning-wrapper";
@@ -16,7 +17,10 @@ export function Stocks({ stocks, readOnly = false }: { stocks: any[]; readOnly?:
       <div className="flex flex-col gap-2">
         {stocks.map((stock) => (
           <button
-            className="flex p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300"
+            className={cn(
+              "flex p-5 text-green-400 rounded-2xl bg-zinc-950 hover:bg-zinc-800 transition-all duration-300",
+              { "hover:bg-zinc-950": readOnly }
+            )}
             disabled={readOnly}
             key={stock.symbol}
             onClick={async () => {

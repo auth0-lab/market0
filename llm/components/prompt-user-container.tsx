@@ -40,7 +40,6 @@ export function PromptUserContainer({
 
       {action && (
         <div className="w-full sm:w-fit">
-          {}
           <button
             onClick={() => action.onClick()}
             className={cn(

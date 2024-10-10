@@ -212,7 +212,7 @@ export default function Chat({ params }: { params: { id: string } }) {
         )}
 
         {readOnly && (
-          <div className="bottom-0 flex-shrink-0 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 mb-5 sm:px-0">
+          <div className="flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit">
             <div className="p-5 bg-gray-100  rounded-xl">
               <div className="flex flex-row justify-between gap-2 items-center">
                 <div className="w-full space-y-0">
