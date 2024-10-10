@@ -45,7 +45,7 @@ export async function removeChatUser(id: string) {
   }
 }
 
-export async function isChatUser(chatId: string) {
+export async function isUserInvitedToChat(chatId: string) {
   const user = await getUser();
   const chatUser = await chatUsers.getByUserEmail(chatId, user.email);
   return !!chatUser;
