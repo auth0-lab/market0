@@ -1,10 +1,11 @@
 import { AI } from "@/app/actions";
 import { ChatProvider } from "@/components/chat/context";
+import ConversationPicker from "@/components/chat/conversation-picker";
 import { Header } from "@/components/chat/header";
 import { ShareConversation } from "@/components/chat/share";
 import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissions-list";
 import { UnauthorizedError } from "@/components/fga/unauthorized";
-import { getHistoryFromStore } from "@/llm/actions/history";
+import { getHistoryFromStore, listConversations } from "@/llm/actions/history";
 import { withFGA } from "@/sdk/fga";
 import { assignChatReader, isChatOwner, isUserInvitedToChat } from "@/sdk/fga/chats";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
@@ -18,6 +19,7 @@ type RootChatParams = Readonly<{
 
 async function RootLayout({ children, params }: RootChatParams) {
   const conversation = await getHistoryFromStore(params.id);
+  const allConversations = await listConversations();
   const { messages } = conversation;
   const isOwner = await isChatOwner(params.id);
 
@@ -25,6 +27,7 @@ async function RootLayout({ children, params }: RootChatParams) {
     <ChatProvider chatId={params.id} readOnly={!isOwner} hasMessages={messages.length > 0}>
       <div className="flex flex-col h-full w-full">
         <Header>
+          <ConversationPicker conversations={allConversations} selectedConversationID={params.id} />
           <ShareConversation>
             {/**
              * Because of a rendering bug with server components and client
