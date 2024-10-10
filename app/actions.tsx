@@ -7,7 +7,6 @@ import { saveAIStateToStore } from "@/lib/db";
 import { confirmPurchase } from "@/llm/actions/confirm-purchase";
 import { continueConversation } from "@/llm/actions/continue-conversation";
 import { checkEnrollment } from "@/llm/actions/newsletter";
-import { createGoogleTask } from "@/llm/actions/reminders";
 import * as serialization from "@/llm/components/serialization";
 import { ClientMessage, ServerMessage } from "@/llm/types";
 import { getUser as fetchUser } from "@/sdk/auth0/mgmt";
@@ -24,7 +23,6 @@ export const AI = (p: Props) => {
     actions: {
       continueConversation,
       confirmPurchase,
-      createGoogleTask,
       checkEnrollment,
     },
     onSetAIState: async ({ state, done }) => {

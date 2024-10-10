@@ -68,17 +68,12 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
             {currentItem === "connected-accounts" && (
               <ConnectedAccounts
                 availableAccounts={[
-                  // {
-                  //   connection: "box",
-                  //   displayName: "Box",
-                  //   api: "box-write",
-                  //   description: "Upload files to your Box account.",
-                  // },
                   {
                     connection: "google-oauth2",
                     displayName: "Google",
                     api: "google-all",
-                    description: "Create and manage events and tasks in your Google Calendar.",
+                    description:
+                      "Create and manage events in your Google Calendar.",
                   },
                 ]}
                 allowLink={true}

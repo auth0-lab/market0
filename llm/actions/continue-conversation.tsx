@@ -12,7 +12,6 @@ import checkSubscription from "@/llm/tools/newsletter/check-subscription";
 import setSubscription from "@/llm/tools/newsletter/set-subscription";
 import setEmployeer from "@/llm/tools/profile/set-employeer";
 import setProfileAttributes from "@/llm/tools/profile/set-profile-attributes";
-import addReminder from "@/llm/tools/schedule/add-reminder";
 import getEvents from "@/llm/tools/schedule/get-events";
 import addConditionalPurchase from "@/llm/tools/trading/add-conditional-purchase";
 import getForecasts from "@/llm/tools/trading/get-forecasts";
@@ -87,7 +86,6 @@ export async function continueConversation(
     },
     tools: await composeTools(
       showStockPurchaseUI,
-      addReminder,
       addConditionalPurchase,
       showStockPrice,
       showCurrentPositions,

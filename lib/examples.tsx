@@ -59,9 +59,4 @@ export const menuItems = [
     message: "Buy 10 ZEKO when P/E ratio is above 0",
     icon: <CartIcon />,
   },
-  {
-    id: generateId(),
-    message: "Remind me to buy ZEKO in two weeks",
-    icon: <ReminderIcon />,
-  },
 ];

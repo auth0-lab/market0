@@ -87,7 +87,6 @@ export const getAIStateFromStore = async ({ conversationID }: { conversationID: 
   return result[0] ? (result[0] as Conversation) : { messages: [], ownerID: "" };
 };
 
-export * as reminders from "./reminders";
 export * as conditionalPurchases from "./conditional-purchases";
 export * as userUsage from "./userUsage";
 export * as documents from "./documents";
