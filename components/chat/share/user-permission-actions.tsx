@@ -1,10 +1,8 @@
 "use client";
 
-import { generateId } from "ai";
 import {} from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 
-import { CaretDownIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,7 +23,7 @@ export interface UserPermissionActionsProps {
 
 export function UserPermissionActions({ user }: UserPermissionActionsProps) {
   const { id } = user;
-  const role = user.access === "can_view" ? "Viewer" : "Owner";
+  const role = user.access === "can_view" ? "viewer" : "owner";
 
   async function handleOnRemove() {
     try {
@@ -39,46 +37,42 @@ export function UserPermissionActions({ user }: UserPermissionActionsProps) {
     }
   }
 
-  useEffect(() => {
-    console.log("PermissionActions", generateId());
-  }, []);
-
   return (
     <>
-      {role === "Owner" && (
-        <Button variant="ghost" className="font-normal">
-          <span className="text-slate-400">{role}</span>
+      {role === "owner" && (
+        <Button variant="ghost" className="font-normal pointer-events-none">
+          <span className="text-gray-600 text-sm">{role}</span>
         </Button>
       )}
-      {role === "Viewer" && (
+      {role === "viewer" && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="font-normal">
-              <span className="text-slate-400">{role}</span>
+            <Button variant="ghost" className="font-normal flex gap-2">
+              <span className="text-gray-600 text-sm">{role}</span>
               <ChevronDownIcon />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="text-sm">
+          <DropdownMenuContent className="text-sm" align="end" sideOffset={8}>
             <DropdownMenuItem>
-              <button className="flex justify-start items-center gap-1 font-normal">
-                <CheckIcon /> Viewer
+              <button className="flex justify-start text-gray-600 items-center gap-1 font-normal text-sm">
+                <CheckIcon /> viewer
               </button>
             </DropdownMenuItem>
 
             <DropdownMenuItem>
               <button
-                className={cn("flex justify-start items-center gap-1 font-normal", {
-                  "ps-5 disabled text-slate-400 cursor-not-allowed": true,
+                className={cn("flex justify-start items-center gap-1 font-normal text-sm", {
+                  "ps-5 disabled text-gray-400 cursor-not-allowed": true,
                 })}
               >
-                Editor
+                editor
               </button>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
             <DropdownMenuItem>
               <button
-                className="flex justify-start items-center gap-1 font-normal text-destructive"
+                className="flex justify-start items-center gap-1 font-normal text-sm text-destructive"
                 onClick={handleOnRemove}
               >
                 <TrashIcon />

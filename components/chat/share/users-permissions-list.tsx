@@ -1,6 +1,5 @@
 "use server";
 
-import { generateId } from "ai";
 import React from "react";
 
 import { fetchUserById } from "@/app/actions";
@@ -27,8 +26,6 @@ interface UserPermissionBlockProps {
 }
 
 export async function UserPermissionBlock({ user }: UserPermissionBlockProps) {
-  console.log("PermissionBlock", generateId());
-
   const { email } = user;
 
   // Default user profile stored chat_users table
@@ -58,8 +55,8 @@ export async function UserPermissionBlock({ user }: UserPermissionBlockProps) {
           <AvatarFallback>{getAvatarFallback({ family_name, given_name })}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col items-left justify-between flex-grow">
-          <span className="text-slate-800 font-medium">{name}</span>
-          <span className="text-gray-600 text-sm">{email}</span>
+          <span className="text-gray-800 text-sm font-normal">{name}</span>
+          <span className="text-gray-400 text-sm">{email}</span>
         </div>
       </div>
 
@@ -69,7 +66,6 @@ export async function UserPermissionBlock({ user }: UserPermissionBlockProps) {
 }
 
 export async function ChatUsersPermissionsList({ chatId }: ChatUsersPermissionsList) {
-  console.log("PermissionsViewers", generateId());
   // render nothing if we are not in the context of a chat
   if (!chatId) {
     return null;
@@ -78,12 +74,12 @@ export async function ChatUsersPermissionsList({ chatId }: ChatUsersPermissionsL
   const viewers = await getChatUsers(chatId!);
 
   return (
-    <div className="py-2 pt-5 border-t border-slate-200">
-      <h2 className="text-sm font-normal mb-3">Who has access</h2>
-      <ScrollArea className="min-h-[120px] max-h-[180px] h-full rounded-md">
-        <ul className="space-y-2">
+    <div className="py-2 pt-5 border-t border-slate-200 -mx-6 mt-5">
+      <h2 className="text-sm font-normal mb-3 px-6">Who has access</h2>
+      <ScrollArea className="min-h-[120px] sm:max-h-[180px] h-fit sm:h-[180px] rounded-md">
+        <ul className="space-y-3 px-6">
           {viewers.map((user) => (
-            <UserPermissionBlock key={generateId()} user={user} />
+            <UserPermissionBlock key={user.id} user={user} />
           ))}
         </ul>
       </ScrollArea>
