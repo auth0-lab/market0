@@ -2,12 +2,12 @@
 
 import { useActions, useUIState } from "ai/rsc";
 
-import { Position } from "@/lib/db";
+import { transactions } from "@/lib/db";
 
 import { ClientMessage } from "../types";
 import WarningWrapper from "./warning-wrapper";
 
-export function Positions({ positions }: { positions: Position[] }) {
+export function Positions({ positions }: { positions: transactions.Position[] }) {
   const [, setMessages] = useUIState();
   const { continueConversation } = useActions();
 
