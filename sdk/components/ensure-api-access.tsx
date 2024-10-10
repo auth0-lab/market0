@@ -17,6 +17,7 @@ type EnsureAPIAccessProps = {
   };
   onUserAuthorized?: () => Promise<void>;
   shouldCheckAuthorization: boolean | ShouldCheckAuthorizationHandler;
+  readOnly?: boolean;
 };
 
 export function EnsureAPIAccess({
@@ -25,15 +26,14 @@ export function EnsureAPIAccess({
   connectWidget: { title, description },
   onUserAuthorized,
   shouldCheckAuthorization,
+  readOnly,
 }: EnsureAPIAccessProps) {
   const [isWorking, setIsWorking] = useState(true);
   const [isLoginRequired, setLoginRequired] = useState(false);
 
   const init = useCallback(async () => {
     const shouldCheck =
-      typeof shouldCheckAuthorization === "function"
-        ? await shouldCheckAuthorization()
-        : shouldCheckAuthorization;
+      typeof shouldCheckAuthorization === "function" ? await shouldCheckAuthorization() : shouldCheckAuthorization;
 
     if (shouldCheck) {
       const ctx = await getThirdPartyContext({
@@ -75,6 +75,7 @@ export function EnsureAPIAccess({
         title={title}
         description={description}
         api={provider.api || provider.name}
+        readOnly={readOnly}
       />
     );
   }
