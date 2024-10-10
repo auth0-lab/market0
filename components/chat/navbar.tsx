@@ -15,7 +15,6 @@ import {
   LearnMenuIcon,
   LogoutIcon,
   MenuIcon,
-  ShareMenuIcon,
 } from "@/components/icons";
 import { Claims } from "@auth0/nextjs-auth0";
 

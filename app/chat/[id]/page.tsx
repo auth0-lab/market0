@@ -113,7 +113,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                 <div className="min-h-8">
                   <Market0Icon />
                 </div>
-                <h1 className="text-4xl sm:text-6xl tracking-tight leading-[72px]">
+                <h1 className="text-3xl sm:text-6xl tracking-tight leading-[72px]">
                   Welcome to{" "}
                   <span className="bg-text-gradient bg-clip-text" style={{ WebkitTextFillColor: "transparent" }}>
                     Market0
