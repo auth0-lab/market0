@@ -10,7 +10,7 @@ export async function Header({ children }: { children?: React.ReactNode }) {
   const user = session?.user!;
 
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between w-full px-5 sm:px-6 py-3 h-14 shrink-0 bg-background backdrop-blur-xl">
+    <header className="z-50 flex items-center justify-between w-full px-5 sm:px-6 py-3 h-14 shrink-0 bg-background">
       <div className="flex items-center gap-6">
         <span className="inline-flex items-center home-links whitespace-nowrap">
           <Link href="https://lab.auth0.com" rel="noopener" target="_blank">

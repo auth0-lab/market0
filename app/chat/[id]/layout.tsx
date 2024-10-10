@@ -24,15 +24,17 @@ async function RootLayout({ children, params }: RootChatParams) {
 
   return (
     <ChatProvider chatId={params.id}>
-      <Header>
-        <ShareConversation chatId={params.id}>
-          <ChatUsersPermissionsList chatId={params.id} />
-        </ShareConversation>
-      </Header>
+      <div className="flex flex-col h-full w-full">
+        <Header>
+          <ShareConversation chatId={params.id}>
+            <ChatUsersPermissionsList chatId={params.id} />
+          </ShareConversation>
+        </Header>
 
-      <AI initialAIState={messages} conversationID={params.id}>
-        {children}
-      </AI>
+        <AI initialAIState={messages} conversationID={params.id}>
+          {children}
+        </AI>
+      </div>
     </ChatProvider>
   );
 }
