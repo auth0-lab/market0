@@ -2,6 +2,7 @@
 
 import { format, formatRelative } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
+import { BrowserView, MobileView } from "react-device-detect";
 
 import { CancelRedIcon, CheckGreenIcon, TaskIcon } from "@/components/icons";
 import Loader from "@/components/loader";
@@ -51,23 +52,42 @@ export function ConditionalPurchase({ id, isMFAEnrolled }: { id: string; isMFAEn
 
   if (!isEnrolled) {
     return (
-      <div className="border border-gray-300 rounded-xl items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0">
-        <div className="flex flex-col gap-1 sm:gap-1.5">
-          <h2 className="text-sm sm:text-base leading-6 font-semibold">Action Required: Setup Async Authentication</h2>
-          <p className="text-xs sm:text-sm leading-5 font-light text-gray-500">
-            Please enroll to Auth0 Guardian so we can notify you when the condition is met. This is necessary to secure
-            your future transaction.
-          </p>
-        </div>
-        <div className="w-full sm:w-fit">
-          <a
-            href={`/api/auth/login?returnTo=${window.location.pathname}&screenHint=mfa`}
-            className="w-full sm:w-fit inline-block text-center bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
-          >
-            Enroll
-          </a>
-        </div>
-      </div>
+      <>
+        <MobileView>
+          <div className="border border-gray-300 rounded-xl items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0">
+            <div className="flex flex-col gap-1 sm:gap-1.5">
+              <p className="text-xs sm:text-sm leading-5 font-light text-gray-500">
+                It looks like you&apos;re using a <strong>mobile device</strong>. This demo requires enrollment, which
+                involves scanning a QR code.
+              </p>
+              <p className="text-xs sm:text-sm leading-5 font-bold text-gray-500">
+                To try this feature, please open the demo on a computer.
+              </p>
+            </div>
+          </div>
+        </MobileView>
+        <BrowserView>
+          <div className="border border-gray-300 rounded-xl items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0">
+            <div className="flex flex-col gap-1 sm:gap-1.5">
+              <h2 className="text-sm sm:text-base leading-6 font-semibold">
+                Action Required: Setup Async Authentication
+              </h2>
+              <p className="text-xs sm:text-sm leading-5 font-light text-gray-500">
+                Please enroll to Auth0 Guardian so we can notify you when the condition is met. This is necessary to
+                secure your future transaction.
+              </p>
+            </div>
+            <div className="w-full sm:w-fit">
+              <a
+                href={`/api/auth/login?returnTo=${window.location.pathname}&screenHint=mfa`}
+                className="w-full sm:w-fit inline-block text-center bg-gray-200 text-black whitespace-nowrap rounded-md text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 hover:text-white py-2 px-4"
+              >
+                Enroll
+              </a>
+            </div>
+          </div>
+        </BrowserView>
+      </>
     );
   }
 
