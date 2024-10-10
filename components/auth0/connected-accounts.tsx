@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 
+import { GoogleIcon } from "../icons";
+
 function Spinner() {
   return (
     <svg
@@ -128,10 +130,10 @@ export default function ConnectedAccounts({
   };
 
   return (
-    <Card>
-      <CardHeader className="p-4 md:p-6">
-        <CardTitle className="text-lg font-normal"></CardTitle>
-        <CardDescription>Connect your social accounts to access their information.</CardDescription>
+    <Card className="shadow-none">
+      <CardHeader className="p-4 md:p-6 mb-3">
+        <CardTitle className="text-lg sm:text-xl font-bold tracking-tight">Accounts</CardTitle>
+        <CardDescription className="text-sm font-light">Link social accounts to sync your data</CardDescription>
       </CardHeader>
 
       <CardContent className="grid gap-6 p-4 pt-0 md:p-6 md:pt-0">
@@ -168,18 +170,21 @@ export default function ConnectedAccounts({
                   key={connection}
                   className="flex flex-col md:flex-row items-center justify-between md:space-x-2 space-y-6 md:space-y-0"
                 >
-                  <Label className="flex flex-col space-y-1">
-                    <span className="leading-6">{displayName}</span>
+                  <Label className="flex flex-col space-y-2">
+                    <div className="flex gap-3 items-center">
+                      <GoogleIcon />
+                      <span className="leading-6 text-sm font-medium">{displayName}</span>
+                    </div>
                     {description && (
-                      <p className="font-normal leading-snug text-muted-foreground max-w-fit">{description}</p>
+                      <p className="font-light font-sm leading-5 text-muted-foreground max-w-fit">{description}</p>
                     )}
                   </Label>
-                  <div className="flex space-x-24 items-center justify-end md:min-w-24">
+                  <div className="flex space-x-24 items-center justify-end md:min-w-24 w-full sm:w-fit">
                     {isConnected ? (
                       <>
                         {onUnlink && (
                           <Button
-                            className="h-fit min-w-24"
+                            className="h-fit min-w-24 w-full sm:w-fit"
                             variant="outline"
                             onClick={handleUnlinkAccount(connection)}
                             disabled={isUnlinkingAccount === connection || isMainConnection}
@@ -191,7 +196,7 @@ export default function ConnectedAccounts({
                       </>
                     ) : (
                       <Button
-                        className="h-fit min-w-24"
+                        className="h-fit min-w-24 w-full sm:w-fit"
                         variant="outline"
                         disabled={!allowLink || isLinkingAccount === connection}
                         onClick={handleLinkAccount(connection, api)}

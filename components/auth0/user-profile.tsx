@@ -35,16 +35,20 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
     <div className="max-w-screen-lg mx-auto gap-5 md:gap-5 lg:gap-5 justify-center p-2 flex flex-col w-full">
       <div className="md:block">
         <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">User Profile</h2>
-          <p className="text-muted-foreground">Info about you and your preferences.</p>
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight">User Profile</h2>
+          <p className="text-muted-foreground text-sm sm:text-base font-light">Info about you and your preferences.</p>
         </div>
-        <Separator className="my-6" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+        <Separator className="my-6 hidden sm:inline-block" />
+        <div className="flex flex-col space-y-2 sm:space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0 mt-4 sm:mt-0">
           <aside className="lg:w-1/5">
-            <nav className={"flex space-x-1 lg:flex-col lg:space-x-0 lg:space-y-1 justify-start"}>
+            <nav
+              className={
+                "flex space-x-1 lg:flex-col lg:space-x-0 lg:space-y-1 justify-start w-full bg-[#F1F5F9] sm:bg-transparent rounded-lg sm:rounded-none p-1.5 sm:p-0"
+              }
+            >
               {[
                 { title: "General", id: "basic-info" },
-                { title: "Connected Accounts", id: "connected-accounts" },
+                { title: "Accounts", id: "connected-accounts" },
               ].map((item) => (
                 <button
                   onClick={handleItemClick(item.id)}
@@ -52,9 +56,12 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
                   key={item.id}
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
-                    currentItem === item.id ? "bg-muted hover:bg-muted" : "hover:bg-transparent hover:underline",
+                    currentItem === item.id
+                      ? "bg-white hover:bg-white sm:bg-muted sm:hover:bg-muted"
+                      : "sm:hover:bg-transparent sm:hover:underline text-[#64748B] sm:text-black",
                     "justify-start",
-                    "px-3 py-1.5"
+                    "px-3 py-1.5",
+                    "flex-1 justify-center sm:justify-start"
                   )}
                 >
                   {item.title}
@@ -72,8 +79,7 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
                     connection: "google-oauth2",
                     displayName: "Google",
                     api: "google-all",
-                    description:
-                      "Create and manage events in your Google Calendar.",
+                    description: "Create and manage events in your Google Calendar.",
                   },
                 ]}
                 allowLink={true}
