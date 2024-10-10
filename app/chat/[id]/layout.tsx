@@ -1,11 +1,11 @@
-import { AI } from "@/app/actions";
+import { AI, fetchUserById } from "@/app/actions";
 import { ChatProvider } from "@/components/chat/context";
 import { Header } from "@/components/chat/header";
 import { ShareConversation } from "@/components/chat/share";
 import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissions-list";
 import { UnauthorizedError } from "@/components/fga/unauthorized";
 import { getHistoryFromStore } from "@/llm/actions/history";
-import { withFGA } from "@/sdk/fga";
+import { getUser, withFGA } from "@/sdk/fga";
 import { assignChatReader, isChatOwner, isUserInvitedToChat } from "@/sdk/fga/chats";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
 
@@ -18,11 +18,14 @@ type RootChatParams = Readonly<{
 
 async function RootLayout({ children, params }: RootChatParams) {
   const conversation = await getHistoryFromStore(params.id);
-  const { messages } = conversation;
+  const { messages, ownerID } = conversation;
   const isOwner = await isChatOwner(params.id);
+  const user = await getUser();
+  const chatOwnerID = ownerID ?? (isOwner ? user.sub : undefined);
+  const ownerProfile = chatOwnerID ? await fetchUserById(chatOwnerID) : undefined;
 
   return (
-    <ChatProvider chatId={params.id} readOnly={!isOwner} hasMessages={messages.length > 0}>
+    <ChatProvider chatId={params.id} readOnly={!isOwner} hasMessages={messages.length > 0} ownerProfile={ownerProfile}>
       <div className="flex flex-col h-full w-full">
         <Header>
           <ShareConversation>
