@@ -3,7 +3,6 @@ import { Documents } from "./documents";
 import { Events } from "./events";
 import { FormattedText } from "./FormattedText";
 import { Positions } from "./positions";
-import { Reminder } from "./reminder";
 import { SimpleMessage } from "./simple-message";
 import { Stock } from "./stock";
 import { StockPurchase } from "./stock-purchase";
@@ -17,7 +16,6 @@ export const components = {
   Stocks,
   SimpleMessage,
   StockPurchase,
-  Reminder,
   ConditionalPurchase,
   FormattedText,
 };

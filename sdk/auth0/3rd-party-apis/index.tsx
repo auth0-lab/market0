@@ -1,7 +1,7 @@
 import { getSession } from "@auth0/nextjs-auth0";
 
-import * as google from "./providers/google";
 import * as box from "./providers/box";
+import * as google from "./providers/google";
 
 const PROVIDERS_APIS = [
   {
@@ -11,15 +11,9 @@ const PROVIDERS_APIS = [
   },
   {
     name: "google",
-    api: "google-tasks",
-    requiredScopes: ["https://www.googleapis.com/auth/tasks"],
-  },
-  {
-    name: "google",
     api: "google-all",
     requiredScopes: [
       "https://www.googleapis.com/auth/calendar.events",
-      "https://www.googleapis.com/auth/tasks",
     ],
   },
   {
