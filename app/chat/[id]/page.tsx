@@ -144,67 +144,91 @@ export default function Chat({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        <div className={cn("flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit")}>
-          <div className="p-3 bg-white border border-gray-200 rounded-lg focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-row justify-between gap-2 items-center">
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem className="w-full space-y-0">
-                      <FormControl>
-                        <Input
-                          autoFocus
-                          autoComplete="off"
-                          className="bg-white shadow-none border-0 focus-visible:ring-0 py-2 px-0 placeholder-slate-500/80 font-light"
-                          placeholder="Start Typing..."
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                {!form.formState.disabled && <Examples onExampleClick={onExampleClick} />}
-
-                <Button
-                  disabled={!form.formState.isDirty || form.formState.disabled}
-                  type="submit"
-                  className="px-3 py-2 m-0 bg-black hover:bg-black text-white text-sm leading-6 font-light"
+        {!readOnly && (
+          <div className={cn("flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit")}>
+            <div className="p-3 bg-white border border-gray-200 rounded-lg focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="flex flex-row justify-between gap-2 items-center"
                 >
-                  Send
-                </Button>
-              </form>
-            </Form>
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem className="w-full space-y-0">
+                        <FormControl>
+                          <Input
+                            autoFocus
+                            autoComplete="off"
+                            className="bg-white shadow-none border-0 focus-visible:ring-0 py-2 px-0 placeholder-slate-500/80 font-light"
+                            placeholder="Start Typing..."
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {!form.formState.disabled && <Examples onExampleClick={onExampleClick} />}
+
+                  <Button
+                    disabled={!form.formState.isDirty || form.formState.disabled}
+                    type="submit"
+                    className="px-3 py-2 m-0 bg-black hover:bg-black text-white text-sm leading-6 font-light"
+                  >
+                    Send
+                  </Button>
+                </form>
+              </Form>
+            </div>
+            {conversation.length > 0 && (
+              <div className="relative px-2 py-2 text-center text-[11px] sm:text-xs font-light text-slate-500 md:px-[60px]">
+                <span>Market0 is a demo app that showcases secure auth patterns for GenAI apps</span>
+              </div>
+            )}
+            {conversation.length === 0 && (
+              <div className="px-2 py-2 text-xs font-light text-slate-500 md:px-[60px] flex gap-2 items-center justify-center">
+                <Link
+                  href="https://www.okta.com/privacy-policy/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-black transition-all duration-300"
+                >
+                  Privacy Policy
+                </Link>
+                <span>•</span>
+                <Link
+                  href="https://www.okta.com/terms-of-service/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-black transition-all duration-300"
+                >
+                  Terms of Service
+                </Link>
+              </div>
+            )}
           </div>
-          {conversation.length > 0 && (
-            <div className="relative px-2 py-2 text-center text-[11px] sm:text-xs font-light text-slate-500 md:px-[60px]">
-              <span>Market0 is a demo app that showcases secure auth patterns for GenAI apps</span>
+        )}
+
+        {readOnly && (
+          <div className="bottom-0 flex-shrink-0 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 mb-5 sm:px-0">
+            <div className="p-5 bg-gray-100  rounded-xl">
+              <div className="flex flex-row justify-between gap-2 items-center">
+                <div className="w-full space-y-0">
+                  <div className="bg-gray-100 shadow-none border-0 py-2 px-0 text-sm sm:text-base text-black">
+                    You have view-only access
+                  </div>
+                </div>
+                <Link href="/">
+                  <Button className="py-6 px-8 m-0 text-md leading-6 font-light" variant="default" onClick={() => {}}>
+                    Start New Chat
+                  </Button>
+                </Link>
+              </div>
             </div>
-          )}
-          {conversation.length === 0 && (
-            <div className="px-2 py-2 text-xs font-light text-slate-500 md:px-[60px] flex gap-2 items-center justify-center">
-              <Link
-                href="https://www.okta.com/privacy-policy/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-black transition-all duration-300"
-              >
-                Privacy Policy
-              </Link>
-              <span>•</span>
-              <Link
-                href="https://www.okta.com/terms-of-service/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-black transition-all duration-300"
-              >
-                Terms of Service
-              </Link>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </main>
   );

@@ -57,6 +57,11 @@ type StockPurchaseUIParams = {
     message: string;
     status: "success" | "failure";
   };
+
+  /**
+   * If true, the component is read-only.
+   */
+  readOnly?: boolean;
 };
 
 export function StockPurchase({
@@ -69,6 +74,7 @@ export function StockPurchase({
   company,
   messageID,
   result,
+  readOnly = false,
 }: StockPurchaseUIParams) {
   const [quantity, setQuantity] = useState(initialQuantity || 100);
   const [purchasingUI, setPurchasingUI] = useState<null | React.ReactNode>(
