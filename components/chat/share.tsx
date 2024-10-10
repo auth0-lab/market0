@@ -45,27 +45,21 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref
       <Button
         ref={ref}
         className={cn(
-          "hidden sm:flex",
-          "bg-gray-100 text-slate-800 gap-2 items-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] border-gray-100 text-sm hover:bg-gray-100 hover:text-black transition-all duration-300",
+          "sm:bg-gray-100 text-slate-800 sm:gap-2 items-center sm:px-3 sm:py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] border-gray-100 text-sm hover:bg-gray-100 hover:text-black transition-all duration-300",
           { "disabled opacity-50 cursor-not-allowed": disabled },
+
+          "flex items-center gap-4 px-0 font-normal bg-transparent shadow-none",
           className
         )}
         {...rest}
       >
-        <ShareMenuIcon /> Share chat
-      </Button>
-      <Button
-        variant="ghost"
-        ref={ref}
-        className={cn(
-          "flex items-center gap-4 sm:hidden px-0 font-normal",
-          { "disabled opacity-50 cursor-not-allowed": disabled },
-          className
-        )}
-        {...rest}
-      >
-        <ShareMenuIcon />
-        <span className="text-sm text-gray-900">Share chat</span>
+        <span className="hidden sm:inline-flex">
+          <ShareIcon />
+        </span>
+        <span className="sm:hidden inline-flex">
+          <ShareMenuIcon />
+        </span>{" "}
+        Share chat
       </Button>
     </>
   );
@@ -197,7 +191,7 @@ export function ShareConversation({ children }: ShareConversationProps) {
                                   <SelectValue placeholder="Select role to for the user to share" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent align="end">
                                 <SelectItem value="Viewer">can view</SelectItem>
                                 <SelectItem value="Editor" disabled>
                                   can edit
