@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { CircleCheckBigIcon, LinkIcon2, ShareIcon } from "../icons";
 import Loader from "../loader";
-import { Button } from "../ui/button";
+import { Button, ButtonProps } from "../ui/button";
 import {
   Dialog,
   DialogClose,
@@ -25,11 +25,12 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { useToast } from "../ui/use-toast";
+import { useChat } from "./context";
 
 export interface ShareConversationProps {
   children?: React.ReactNode;
-  chatId: string | undefined;
 }
 
 const formSchema = z.object({
@@ -37,8 +38,39 @@ const formSchema = z.object({
   role: z.enum(["Viewer", "Editor"]),
 });
 
-export function ShareConversation({ children, chatId }: ShareConversationProps) {
+const ShareButton = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+  const { disabled, className, ...rest } = props;
+  return (
+    <Button
+      ref={ref}
+      className={cn(
+        "bg-gray-100 text-slate-800 flex gap-2 items-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] border-gray-100 text-sm hover:bg-gray-100 hover:text-black transition-all duration-300",
+        { "disabled opacity-50 cursor-not-allowed": disabled },
+        className
+      )}
+      {...rest}
+    >
+      <ShareIcon /> Share chat
+    </Button>
+  );
+});
+
+const TooltipWrapper = ({ message, children }: { message: string; children: React.ReactNode }) => {
+  return (
+    <TooltipProvider>
+      <Tooltip disableHoverableContent={true}>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent>
+          <p>{message}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
+
+export function ShareConversation({ children }: ShareConversationProps) {
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
+  const { chatId, hasMessages, readOnly } = useChat();
   const [isWorking, setIsWorking] = useState(false);
   const { toast } = useToast();
 
@@ -77,16 +109,25 @@ export function ShareConversation({ children, chatId }: ShareConversationProps) 
   }
 
   // render nothing if we are not in the context of a chat
-  if (!chatId) {
+  // additionally, if the chat is read-only, we should not
+  // render the share button
+  if (!chatId || readOnly) {
     return null;
+  }
+
+  // doesn't make sense to share a chat without messages
+  if (!hasMessages) {
+    return (
+      <TooltipWrapper message="Start a conversation before sharing!">
+        <ShareButton disabled={!hasMessages} />
+      </TooltipWrapper>
+    );
   }
 
   return (
     <Dialog onOpenChange={() => form.reset()}>
-      <DialogTrigger asChild={true}>
-        <Button className="bg-gray-100 text-slate-800 flex gap-2 items-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] border-gray-100 text-sm hover:bg-gray-100 hover:text-black transition-all duration-300">
-          <ShareIcon /> Share chat
-        </Button>
+      <DialogTrigger asChild>
+        <ShareButton />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

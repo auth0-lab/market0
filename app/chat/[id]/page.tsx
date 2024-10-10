@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { useChat } from "@/components/chat/context";
 import { Examples } from "@/components/chat/examples";
 import { ArrowUpIcon, CircleIcon, Market0Icon } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,13 +28,15 @@ const formSchema = z.object({
 export const maxDuration = 60;
 
 export default function Chat({ params }: { params: { id: string } }) {
+  const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
+  const { readOnly, setHasMessages } = useChat();
   const { user } = useUser();
-  const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    disabled: readOnly,
     defaultValues: {
       message: "",
     },
@@ -49,8 +52,8 @@ export default function Chat({ params }: { params: { id: string } }) {
     ]);
 
     const message = await continueConversation(input);
-
     setConversation((currentConversation: ClientMessage[]) => [...currentConversation, message]);
+    setHasMessages(true);
   }
 
   const onExampleClick = (input: string) => async () => {
@@ -61,6 +64,7 @@ export default function Chat({ params }: { params: { id: string } }) {
 
     const message = await continueConversation(input);
     setConversation((currentConversation: ClientMessage[]) => [...currentConversation, message]);
+    setHasMessages(true);
   };
 
   return (

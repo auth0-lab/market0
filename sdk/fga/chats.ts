@@ -80,3 +80,13 @@ export async function assignChatReader(chatId: string) {
   ]);
   await chatUsers.updateByUserEmail(chatId, user.email, { user_id: user.sub, status: "provisioned" });
 }
+
+export async function isChatOwner(chatId: string) {
+  const user = await getUser();
+  const { allowed } = await fgaClient.check({
+    user: `user:${user.sub}`,
+    relation: "owner",
+    object: `chat:${chatId}`,
+  });
+  return !!allowed;
+}
