@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import {
   ArrowRightIcon,
@@ -30,10 +33,10 @@ import {
 } from "../ui/drawer";
 import { DropdownMenu, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut } from "../ui/dropdown-menu";
 
-function MenuMobile({ user }: { user: Claims }) {
+function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNode }) {
   return (
     <div className="sm:hidden flex items-center">
-      <Drawer direction="left">
+      <Drawer direction="left" modal={false}>
         <DrawerTrigger>
           <MenuIcon />
         </DrawerTrigger>
@@ -69,10 +72,7 @@ function MenuMobile({ user }: { user: Claims }) {
               </Link>
             </li>
             <li className="flex items-center py-3 px-5 border-t border-[#E2E8F0] justify-between">
-              <div className="flex items-center gap-4">
-                <ShareMenuIcon />
-                <span className="text-sm text-gray-900">Share chat</span>
-              </div>
+              <DrawerClose asChild>{children}</DrawerClose>
               <ArrowRightIcon />
             </li>
             <li className="border-t border-[#E2E8F0]">
@@ -173,11 +173,17 @@ function MenuDesktop({ user, children }: { user: Claims; children?: React.ReactN
   );
 }
 
-export function Menu({ user, children }: { user: Claims; children?: React.ReactNode }) {
+export function Navbar({ user, children }: { user: Claims; children?: React.ReactNode }) {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    setIsDesktop(window.matchMedia("(min-width: 768px)").matches);
+  }, []);
+
   return (
     <>
-      <MenuMobile user={user} />
-      <MenuDesktop user={user}>{children}</MenuDesktop>
+      {!isDesktop && <MenuMobile user={user}>{children}</MenuMobile>}
+      {isDesktop && <MenuDesktop user={user}>{children}</MenuDesktop>}
     </>
   );
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRightIcon, IconAuth0 } from "@/components/icons";
 import { getSession } from "@auth0/nextjs-auth0";
 
-import { Menu } from "./mobile-menu";
+import { Navbar } from "./navbar";
 
 export async function Header({ children }: { children?: React.ReactNode }) {
   const session = await getSession();
@@ -27,7 +27,7 @@ export async function Header({ children }: { children?: React.ReactNode }) {
         </Link>
       </div>
 
-      <Menu user={user}>{children}</Menu>
+      <Navbar user={user}>{children}</Navbar>
     </header>
   );
 }
