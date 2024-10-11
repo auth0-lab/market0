@@ -53,7 +53,7 @@ export function ErrorContainer({
         };
   return (
     <main
-      className="flex flex-col h-full overflow-hidden mx-auto items-center justify-center max-w-[768px]"
+      className="flex flex-col h-full overflow-hidden items-center justify-center md:max-w-[768px] mx-6 md:mx-auto"
       style={{ maxHeight: "calc(100vh - 56px)" }}
     >
       <DottedContainer>
@@ -61,7 +61,9 @@ export function ErrorContainer({
           <div className="flex flex-col items-center justify-center gap-3">
             <div className="bg-gray-300 p-5 rounded-2xl">{icon || <UnautorizedIcon />}</div>
             <h2 className="text-base leading-5 font-semibold text-gray-900">{title || "Not Authorized"}</h2>
-            <p className="text-sm">{message || "You are not authorized to access the requested information."}</p>
+            <p className="text-sm text-center">
+              {message || "You are not authorized to access the requested information."}
+            </p>
           </div>
           {finalAction && (
             <Button
