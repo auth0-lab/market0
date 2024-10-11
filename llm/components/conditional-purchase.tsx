@@ -16,11 +16,11 @@ import WarningWrapper from "./warning-wrapper";
 export function ConditionalPurchase({
   id,
   isMFAEnrolled,
-  readOnly,
+  readOnly = false,
 }: {
   id: string;
   isMFAEnrolled: boolean;
-  readOnly: boolean;
+  readOnly?: boolean;
 }) {
   const [isWorking, setIsWorking] = useState(true);
   const [simulating, setSimulating] = useState(false);
