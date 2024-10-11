@@ -58,7 +58,7 @@ function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNo
           <ul>
             <li className="border-t border-[#E2E8F0]">
               <Link
-                href="https://auth0.com"
+                href="https://auth0.ai"
                 rel="noopener"
                 target="_blank"
                 className="flex items-center justify-between py-3 px-5"
