@@ -31,7 +31,7 @@ To setup your Auth0 Lab tenant for the sample, create two applications:
   - **API:** `Auth0 Management API`
   - **Permissions:** `read:users update:users delete:users read:authentication_methods`
 
-Configure [Google](https://marketplace.auth0.com/integrations/google-social-connection) and [Box](https://marketplace.auth0.com/integrations/box-social-connection) as social connections.
+Configure [Google](https://marketplace.auth0.com/integrations/google-social-connection) as social connections.
 
 And enable MFA with [push notifications using Auth0 Guardian](https://auth0.com/docs/secure/multi-factor-authentication/auth0-guardian#enroll-in-push-notifications).
 
