@@ -43,7 +43,7 @@ function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNo
           <DrawerHeader>
             <DrawerTitle className="px-1">
               <div className="flex justify-between items-center">
-                <Link href="https://lab.auth0.com" rel="noopener" target="_blank">
+                <Link href="https://auth0.com" rel="noopener" target="_blank">
                   <IconAuth0 className="w-5 h-5 sm:h-6 sm:w-6" />
                 </Link>
 
@@ -58,7 +58,7 @@ function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNo
           <ul>
             <li className="border-t border-[#E2E8F0]">
               <Link
-                href="https://lab.auth0.com"
+                href="https://auth0.com"
                 rel="noopener"
                 target="_blank"
                 className="flex items-center justify-between py-3 px-5"
