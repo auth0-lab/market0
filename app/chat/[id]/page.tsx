@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { useChat } from "@/components/chat/context";
 import { Examples } from "@/components/chat/examples";
-import { ArrowUpIcon, CircleIcon, Market0Icon } from "@/components/icons";
+import { ArrowUpIcon, CircleIcon, Market0Icon, SimplePlusIcon } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -143,7 +143,7 @@ export default function Chat({ params }: { params: { id: string } }) {
         </div>
 
         {!readOnly && (
-          <div className={cn("flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit")}>
+          <div className="flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit">
             <div className="p-3 bg-white border border-gray-200 rounded-lg focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
               <Form {...form}>
                 <form
@@ -210,19 +210,24 @@ export default function Chat({ params }: { params: { id: string } }) {
         )}
 
         {readOnly && (
-          <div className="flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit">
-            <div className="p-5 bg-gray-100  rounded-xl">
-              <div className="flex flex-row justify-between gap-2 items-center">
-                <div className="w-full space-y-0">
-                  <div className="bg-gray-100 shadow-none border-0 py-2 px-0 text-sm sm:text-base text-black">
-                    You have view-only access for this chat.
-                  </div>
-                </div>
-                <Link href="/">
-                  <Button className="py-6 px-8 m-0 text-md leading-6 font-light" variant="default" onClick={() => {}}>
-                    Start New Chat
-                  </Button>
-                </Link>
+          <div
+            className={cn(
+              "flex-shrink-1 min-w-0 min-h-0 bg-white max-w-4xl mx-auto w-full px-3 sm:px-1 h-fit",
+              "mb-5 text-sm sm:text-base"
+            )}
+          >
+            <div className="p-3 bg-gray-100 rounded-xl">
+              <div className="flex flex-row justify-between items-center gap-2 ">
+                <p className="w-full ps-3 text-slate-500">You have view-only access for this chat.</p>
+                <Button
+                  className="py-2 px-4 m-0 text-sm font-light flex gap-2"
+                  variant="default"
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
+                >
+                  <SimplePlusIcon /> Start New Chat
+                </Button>
               </div>
             </div>
           </div>

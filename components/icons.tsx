@@ -131,6 +131,19 @@ function PlusIcon() {
   );
 }
 
+function SimplePlusIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M8.2795 8.267H8.65634V7.89015V3.35682C8.65634 3.2704 8.72641 3.20033 8.81283 3.20033C8.89925 3.20033 8.96932 3.2704 8.96932 3.35682V7.89015V8.267H9.34616H13.8795C13.9659 8.267 14.036 8.33708 14.036 8.42349C14.036 8.50989 13.9659 8.57997 13.8795 8.57997H9.34616H8.96932V8.95682V13.4902C8.96932 13.5766 8.89923 13.6466 8.81283 13.6466C8.72643 13.6466 8.65634 13.5766 8.65634 13.4902V8.95682V8.57997H8.2795H3.74616C3.65974 8.57997 3.58968 8.50991 3.58968 8.42349C3.58968 8.33706 3.65974 8.267 3.74616 8.267H8.2795Z"
+        fill="#020617"
+        stroke="#F8FAFC"
+        strokeWidth="0.753695"
+      />
+    </svg>
+  );
+}
+
 function TrendingStocksIcon() {
   return (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -866,6 +879,7 @@ export {
   IconAuth0,
   ExternalLink,
   PlusIcon,
+  SimplePlusIcon,
   TrendingStocksIcon,
   ArrowUpIcon,
   StockPriceIcon,
