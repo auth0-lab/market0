@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { ClientMessage, Document } from "@/llm/types";
 
 import { FormattedText } from "./FormattedText";
+import { NotAvailableReadOnly } from "./not-available-read-only";
 import { PromptUserContainer } from "./prompt-user-container";
 import WarningWrapper from "./warning-wrapper";
 
@@ -52,7 +53,7 @@ export const Documents = ({
       <div className="p-4 rounded-2xl bg-white">
         <FormattedText content={text} />
         {documents.length > 0 && finished && (
-          <div className="flex flex-row gap-0 mt-1 mb-4">
+          <div className="flex flex-row gap-0 mt-1">
             {documents.map((document: Document, index: number) => (
               <div key={document.metadata.id} className="text-xs">
                 <TooltipProvider>
@@ -76,17 +77,22 @@ export const Documents = ({
             ))}
           </div>
         )}
-        {showEnrollment && finished && (
-          <PromptUserContainer
-            title="Join Market0 Newsletter"
-            description="To get access to analyst forecasts join the newsletter"
-            action={{
-              label: "Join",
-              onClick: enroll,
-            }}
-            readOnly={readOnly}
-          />
-        )}
+        {showEnrollment &&
+          finished &&
+          (readOnly ? (
+            <NotAvailableReadOnly containerClassName="mt-4" />
+          ) : (
+            <PromptUserContainer
+              title="Join Market0 Newsletter"
+              description="To get access to analyst forecasts join the newsletter"
+              action={{
+                label: "Join",
+                onClick: enroll,
+              }}
+              readOnly={readOnly}
+              containerClassName="mt-4"
+            />
+          ))}
       </div>
     </WarningWrapper>
   );

@@ -17,7 +17,6 @@ import { useScrollAnchor } from "@/hooks/chat/use-scroll-anchor";
 import { examples } from "@/lib/examples";
 import { cn } from "@/lib/utils";
 import { ClientMessage } from "@/llm/types";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
@@ -31,8 +30,7 @@ export default function Chat({ params }: { params: { id: string } }) {
   const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
-  const { readOnly, setHasMessages } = useChat();
-  const { user } = useUser();
+  const { readOnly, ownerProfile, setHasMessages } = useChat();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,7 +86,7 @@ export default function Chat({ params }: { params: { id: string } }) {
                   </div>
                   <div className="border rounded-full h-8 w-8 min-w-8 flex items-center justify-center">
                     <Avatar className="h-full w-full rounded-full">
-                      <AvatarImage src={user?.picture!} alt={user?.nickname!} />
+                      <AvatarImage src={ownerProfile?.picture!} alt={ownerProfile?.nickname!} />
                       <AvatarFallback>U</AvatarFallback>
                     </Avatar>
                   </div>
