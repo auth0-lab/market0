@@ -3,7 +3,7 @@ import { ChatProvider } from "@/components/chat/context";
 import { Header } from "@/components/chat/header";
 import { ShareConversation } from "@/components/chat/share";
 import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissions-list";
-import { UnauthorizedError } from "@/components/fga/unauthorized";
+import { ErrorContainer } from "@/components/fga/error";
 import { getHistoryFromStore } from "@/llm/actions/history";
 import { getUser, withFGA } from "@/sdk/fga";
 import { assignChatReader, isChatOwner, isUserInvitedToChat } from "@/sdk/fga/chats";
@@ -66,10 +66,8 @@ export default withCheckPermission(
     },
     onUnauthorized: ({ params }: RootChatParams) => (
       <ChatProvider chatId={params.id} readOnly={true}>
-        <div className="flex flex-col h-full w-full">
-          <Header />
-          <UnauthorizedError>The conversation does not exist or you are not authorized to access it.</UnauthorizedError>
-        </div>
+        <Header />
+        <ErrorContainer message="The conversation does not exist or you are not authorized to access it." />
       </ChatProvider>
     ),
   },
