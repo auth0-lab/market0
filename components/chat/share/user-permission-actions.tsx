@@ -1,8 +1,8 @@
 "use client";
 
-import {} from "lucide-react";
 import React from "react";
 
+import { CheckIcon, ChevronDownIcon, TrashIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,7 +15,6 @@ import { toast } from "@/components/ui/use-toast";
 import { ChatUser } from "@/lib/db/chat-users";
 import { cn } from "@/lib/utils";
 import { removeChatUser } from "@/sdk/fga/chats";
-import { CheckIcon, ChevronDownIcon, TrashIcon } from "@radix-ui/react-icons";
 
 export interface UserPermissionActionsProps {
   user: ChatUser;
@@ -47,7 +46,7 @@ export function UserPermissionActions({ user }: UserPermissionActionsProps) {
       {role === "viewer" && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="font-normal flex gap-2">
+            <Button variant="ghost" className="font-normal flex gap-2 items-center">
               <span className="text-gray-600 text-sm">{role}</span>
               <ChevronDownIcon />
             </Button>

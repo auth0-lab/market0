@@ -525,6 +525,14 @@ function ChevronRightIcon() {
   );
 }
 
+function ChevronDownIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function ShareIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -643,6 +651,20 @@ function CircleCheckBigIcon() {
     >
       <path d="M21.801 10A10 10 0 1 1 17 3.335" />
       <path d="m9 11 3 3L22 4" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M13.3333 4L5.99996 11.3333L2.66663 8"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -794,7 +816,7 @@ function LogoutIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M23.5 16H13.5" stroke="#FF3642" strokeWidth="1.25" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M23.5 16H13.5" stroke="#FF3642" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -861,6 +883,30 @@ function GoogleIcon() {
   );
 }
 
+function TrashIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 6H21" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M19 6V20C19 21 18 22 17 22H7C6 22 5 21 5 20V6"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8 6V4C8 3 9 2 10 2H14C15 2 16 3 16 4V6"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M10 11V17" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14 11V17" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export {
   GoogleIcon,
   LogoutIcon,
@@ -875,6 +921,7 @@ export {
   EarningsIcon,
   CartIcon,
   ChevronRightIcon,
+  ChevronDownIcon,
   ArrowRightIcon,
   IconAuth0,
   ExternalLink,
@@ -898,6 +945,8 @@ export {
   LinkIcon2,
   CaretDownIcon,
   CircleCheckBigIcon,
+  CheckIcon,
   DiscordIcon,
   WarningPageIcon,
+  TrashIcon,
 };
