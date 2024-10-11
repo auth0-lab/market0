@@ -1,8 +1,15 @@
 import { WarningPageIcon } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 import { PromptUserContainer } from "./prompt-user-container";
 
-export function NotAvailableReadOnly({ message }: { message?: React.ReactNode }) {
+export function NotAvailableReadOnly({
+  message,
+  containerClassName,
+}: {
+  message?: React.ReactNode;
+  containerClassName?: string;
+}) {
   return (
     <PromptUserContainer
       title="Action not available"
@@ -12,7 +19,7 @@ export function NotAvailableReadOnly({ message }: { message?: React.ReactNode })
           <WarningPageIcon />
         </div>
       }
-      containerClassName="border-gray-200 border-dashed bg-gray-100"
+      containerClassName={cn("border-gray-200 border-dashed bg-gray-100", containerClassName)}
     />
   );
 }

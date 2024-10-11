@@ -43,6 +43,11 @@ export function ConditionalPurchase({
   }, [id]);
 
   useEffect(() => {
+    if (readOnly) {
+      setIsWorking(false);
+      return;
+    }
+
     (async () => {
       await readConditionalPurchase();
       await checkGuardianEnrollment();

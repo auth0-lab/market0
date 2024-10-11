@@ -7,6 +7,7 @@ import Loader from "@/components/loader";
 import { EnsureAPIAccess } from "@/sdk/components/ensure-api-access";
 
 import { Event } from "../actions/calendar-events";
+import { NotAvailableReadOnly } from "./not-available-read-only";
 
 export function CalendarEvents({
   events,
@@ -19,6 +20,10 @@ export function CalendarEvents({
 }) {
   const [working, setWorking] = useState(false);
   const [finished, setFinished] = useState(false);
+
+  if (readOnly) {
+    return <NotAvailableReadOnly />;
+  }
 
   return (
     <div className="flex gap-3 flex-row items-center mt-2">
