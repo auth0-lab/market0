@@ -11,8 +11,10 @@ export const formatNumber = (value: number) =>
     currency: "USD",
   }).format(value);
 
-export const runAsyncFnWithoutBlocking = (
-  fn: (...args: any) => Promise<any>
-) => {
+export const runAsyncFnWithoutBlocking = (fn: (...args: any) => Promise<any>) => {
   fn();
 };
+
+export function getGoogleConnectionName() {
+  return process.env.NEXT_PUBLIC_GOOGLE_CONNECTION_NAME || "google-oauth2";
+}
