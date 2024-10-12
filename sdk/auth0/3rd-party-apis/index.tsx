@@ -8,12 +8,12 @@ const PROVIDERS_APIS = [
   {
     name: "google",
     api: "google-calendar",
-    requiredScopes: ["https://www.googleapis.com/auth/calendar.events"],
+    requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
   },
   {
     name: "google",
     api: "google-all",
-    requiredScopes: ["https://www.googleapis.com/auth/calendar.events"],
+    requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
   },
   {
     name: "box",
@@ -52,6 +52,7 @@ const providerMapper = {
     };
 
     const accessToken = await google.getAccessToken();
+
     if (accessToken) {
       provider.containsRequiredScopes = await google.verifyAccessToken(accessToken, requiredScopes);
     }

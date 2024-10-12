@@ -16,9 +16,9 @@ export default defineTool("get_events", () => {
     parameters: z.object({
       events: z.array(
         z.object({
-          date: z
-            .string()
-            .describe("The date of the event, in ISO-8601 format"),
+          date: z.string().describe("The date of the event, in ISO-8601 format"),
+          startDate: z.string().describe("The start time of the event"),
+          endDate: z.string().describe("The end time of the event no more that 2 hours after the start time"),
           headline: z.string().describe("The headline of the event"),
           description: z.string().describe("The description of the event"),
         })

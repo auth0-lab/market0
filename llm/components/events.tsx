@@ -2,12 +2,14 @@
 
 import { format, parseISO } from "date-fns";
 
-import { addEventsToCalendar } from "../actions/calendar-events";
+import { checkAvailabilityForEvents } from "../actions/calendar-events";
 import { CalendarEvents } from "./calendar-events";
 import WarningWrapper from "./warning-wrapper";
 
 interface Event {
   date: string;
+  startDate: string;
+  endDate: string;
   headline: string;
   description: string;
 }
@@ -37,7 +39,7 @@ export function Events({ events, readOnly = false }: { events: Event[]; readOnly
         </div>
       </WarningWrapper>
 
-      <CalendarEvents events={events} addEvents={addEventsToCalendar} readOnly={readOnly} />
+      <CalendarEvents events={events} checkAvailability={checkAvailabilityForEvents} readOnly={readOnly} />
     </div>
   );
 }
