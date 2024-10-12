@@ -7,6 +7,7 @@ import { twMerge } from "tailwind-merge";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useConnectedAccounts from "@/hooks/auth0/use-connected-accounts";
+import { getGoogleConnectionName } from "@/lib/utils";
 
 import BasicInfoForm from "./basic-info-form";
 import ConnectedAccounts from "./connected-accounts";
@@ -76,7 +77,7 @@ export default function UserProfile({ user }: { user: KeyValueMap }) {
               <ConnectedAccounts
                 availableAccounts={[
                   {
-                    connection: "google-oauth2",
+                    connection: getGoogleConnectionName(),
                     displayName: "Google",
                     api: "google-all",
                     description: "Create and manage events in your Google Calendar.",

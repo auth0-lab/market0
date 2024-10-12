@@ -1,5 +1,6 @@
 "use client";
 
+import { getGoogleConnectionName } from "@/lib/utils";
 import { PromptUserContainer } from "@/llm/components/prompt-user-container";
 
 export const ConnectGoogleAccount = ({
@@ -14,16 +15,20 @@ export const ConnectGoogleAccount = ({
   readOnly?: boolean;
 }) => {
   return (
-    <PromptUserContainer
-      title={title}
-      description={description}
-      action={{
-        label: "Connect",
-        onClick: () => {
-          window.location.href = `/api/auth/login?3rdPartyApi=${api}&linkWith=google-oauth2&returnTo=${window.location.pathname}`;
-        },
-      }}
-      readOnly={readOnly}
-    />
+    <>
+      <PromptUserContainer
+        title={title}
+        description={description}
+        action={{
+          label: "Connect",
+          onClick: () => {
+            window.location.href = `/api/auth/login?3rdPartyApi=${api}&linkWith=${getGoogleConnectionName()}&returnTo=${
+              window.location.pathname
+            }`;
+          },
+        }}
+        readOnly={readOnly}
+      />
+    </>
   );
 };

@@ -1,3 +1,4 @@
+import { getGoogleConnectionName } from "@/lib/utils";
 import { getSession } from "@auth0/nextjs-auth0";
 
 import * as box from "./providers/box";
@@ -12,9 +13,7 @@ const PROVIDERS_APIS = [
   {
     name: "google",
     api: "google-all",
-    requiredScopes: [
-      "https://www.googleapis.com/auth/calendar.events",
-    ],
+    requiredScopes: ["https://www.googleapis.com/auth/calendar.events"],
   },
   {
     name: "box",
@@ -54,10 +53,7 @@ const providerMapper = {
 
     const accessToken = await google.getAccessToken();
     if (accessToken) {
-      provider.containsRequiredScopes = await google.verifyAccessToken(
-        accessToken,
-        requiredScopes
-      );
+      provider.containsRequiredScopes = await google.verifyAccessToken(accessToken, requiredScopes);
     }
 
     provider.isAPIAccessEnabled = !!accessToken;
@@ -92,9 +88,7 @@ export async function getThirdPartyContext(params: With3PartyApisParams) {
   };
 
   for (const provider of params.providers) {
-    context[provider.name] = await providerMapper[provider.name](
-      provider.requiredScopes
-    );
+    context[provider.name] = await providerMapper[provider.name](provider.requiredScopes);
   }
 
   return context;
@@ -105,15 +99,12 @@ export async function handle3rdPartyParams(thirdPartyApi: string) {
   const user = session?.user;
   let authorizationParams = {};
 
-  const provider = PROVIDERS_APIS.find(
-    (provider) =>
-      provider.api === thirdPartyApi || provider.name === thirdPartyApi
-  );
+  const provider = PROVIDERS_APIS.find((provider) => provider.api === thirdPartyApi || provider.name === thirdPartyApi);
 
   switch (provider?.name) {
     case "google":
       authorizationParams = {
-        connection: "google-oauth2",
+        connection: getGoogleConnectionName(),
         connection_scope: provider?.requiredScopes.join(),
         access_type: "offline",
         login_hint: user?.email,
