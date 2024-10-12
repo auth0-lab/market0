@@ -2,7 +2,7 @@
 
 import Markdown from "react-markdown";
 
-import { UnauthorizedError } from "@/components/fga/unauthorized";
+import { ErrorContainer } from "@/components/fga/error";
 import { documents } from "@/lib/db";
 import { withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
@@ -38,7 +38,7 @@ export default withCheckPermission(
         relation: "can_view",
       }),
     onUnauthorized: async () => {
-      return <UnauthorizedError>You are not authorized to view this document.</UnauthorizedError>;
+      return <ErrorContainer message="You are not authorized to view this document." />;
     },
   },
   Report
