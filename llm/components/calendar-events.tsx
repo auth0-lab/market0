@@ -82,7 +82,7 @@ export function CalendarEvents({
               {availability.map((event: EventAvailability) => (
                 <li
                   key={event.date}
-                  className="flex gap-5 sm:gap-10 justify-between border-t border-gray-300 pt-4 pb-4 last:pb-0 flex-col sm:flex-row"
+                  className="flex gap-0 sm:gap-10 justify-between border-t border-gray-300 pt-4 pb-4 last:pb-0 flex-col sm:flex-row"
                 >
                   <div className="flex flex-col gap-2 sm:min-w-80 sm:max-w-80">
                     <div className={cn("text-sm font-medium text-gray-800")}>{event.headline}</div>
@@ -91,7 +91,7 @@ export function CalendarEvents({
                       {format(parseISO(event.startDate), "hh:mm a ")} to {format(parseISO(event.endDate), "hh:mm a ")}
                     </div>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center mt-3 sm:mt-0">
                     {!event.slotAvailable && (
                       <Badge
                         variant="outline"
@@ -101,7 +101,7 @@ export function CalendarEvents({
                       </Badge>
                     )}
                   </div>
-                  <div className="flex justify-center sm:justify-end items-center min-w-60">
+                  <div className="flex justify-center sm:justify-end items-center min-w-60 mt-5 sm:mt-0">
                     <a
                       href={getCalendarLink(event)}
                       target="_blank"
