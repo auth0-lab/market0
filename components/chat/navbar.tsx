@@ -70,12 +70,7 @@ function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNo
                 <ArrowRightIcon />
               </Link>
             </li>
-            {children && (
-              <li className="flex items-center py-3 px-5 border-t border-[#E2E8F0] justify-between">
-                <DrawerClose asChild>{children}</DrawerClose>
-                <ArrowRightIcon />
-              </li>
-            )}
+            {children && <li className="border-t border-[#E2E8F0]">{children}</li>}
 
             <li className="border-t border-[#E2E8F0]">
               <Link
