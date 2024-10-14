@@ -3,6 +3,7 @@
 import groupBy from "lodash.groupby";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { DateTime } from "luxon";
+import Link from "next/link";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,38 +17,52 @@ import {
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ConversationData } from "@/lib/db/aiState";
+import { listConversations } from "@/llm/actions/history";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
 interface ConversationPickerProps extends PopoverTriggerProps {
-  conversations: ConversationData[];
   selectedConversationID: string;
+  //This is only used to trigger the reload of the conversations
+  messagesLenght?: number;
+}
+
+const getTitle = (conversation?: ConversationData) => {
+  if (!conversation) { return; }
+  return conversation.title ?? `Chat from ${DateTime.fromJSDate(conversation.createdAt).toRelative()}`;
 }
 
 export default function ConversationPicker({
-  conversations = [],
   selectedConversationID,
+  messagesLenght,
 }: ConversationPickerProps) {
-  if (!conversations.some(c => c.conversationID === selectedConversationID)) {
-    conversations = [
-      ...conversations,
-      { conversationID: selectedConversationID, createdAt: new Date(), updatedAt: new Date(),userID: "" },
-    ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  }
+  console.log("ConversationPicker");
+  const [conversations, setConversation ] = React.useState<ConversationData[]>([]);
+  const [selectedConversation, setSelectedConversation] = React.useState<
+    ConversationData
+  >();
+
+  React.useEffect(() => {
+    (async () => {
+      let conversations = await listConversations();
+      if (!conversations.some(c => c.conversationID === selectedConversationID)) {
+        conversations = [
+          ...conversations,
+          { conversationID: selectedConversationID, createdAt: new Date(), updatedAt: new Date(), userID: "", title: "This chat" },
+        ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      }
+      setConversation(conversations);
+      setSelectedConversation(conversations.find(c => c.conversationID === selectedConversationID));
+    })();
+  }, [selectedConversationID, messagesLenght]);
 
   const [open, setOpen] = React.useState(false);
 
   const groups = groupBy(conversations, (conversation: ConversationData) => {
     return DateTime.fromJSDate(conversation.createdAt).startOf('day').toRelativeCalendar();
   });
-
-  const [selectedConversation, setSelectedConversation] = React.useState<
-    ConversationData
-  >(
-    conversations.find(c => c.conversationID === selectedConversationID)!
-  );
 
   return (
       <Popover open={open} onOpenChange={setOpen}>
@@ -60,7 +75,7 @@ export default function ConversationPicker({
             className={`w-full justify-between pr-1 pl-2 $border-0`}
           >
             <div className="flex flex-col items-start">
-              <span className="text-sm">{selectedConversation.conversationID}</span>
+              <span className="text-sm">{getTitle(selectedConversation)}</span>
               {/* {subtitle && (
                 <span className="text-gray-500 font-light text-xs">
                   {typeof subtitle === "string"
@@ -72,11 +87,11 @@ export default function ConversationPicker({
             <ChevronsUpDown size={14} />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="end">
+        <PopoverContent className="w-[350px] p-0" align="end">
           <Command>
             <CommandList>
               <CommandEmpty>
-                No conversations found.
+                No chats found.
               </CommandEmpty>
             </CommandList>
 
@@ -92,16 +107,17 @@ export default function ConversationPicker({
                           setOpen(false);
                         }}
                         className="text-sm"
+                        value={conversation.conversationID}
                       >
-                        <a
+                        <Link
                           href={`/chat/${conversation.conversationID}`}
                           className="flex w-full items-center"
                         >
-                          {DateTime.fromJSDate(conversation.createdAt).toLocaleString(DateTime.TIME_SIMPLE)} - {conversation.conversationID}
+                          {getTitle(conversation)}
                           {selectedConversationID === conversation.conversationID && (
                             <Check className={"ml-auto h-4 w-4"} />
                           )}
-                        </a>
+                        </Link>
                       </CommandItem>
                     )
                   )}
