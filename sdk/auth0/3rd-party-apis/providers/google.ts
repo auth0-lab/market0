@@ -48,7 +48,7 @@ export async function getAccessToken() {
     accessToken = await fetchAccessToken(auth0IdToken);
     return accessToken;
   } catch (e) {
-    console.debug(e);
+    console.error(e);
   }
 
   return accessToken;
