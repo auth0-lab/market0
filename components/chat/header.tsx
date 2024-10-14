@@ -5,7 +5,7 @@ import { getSession } from "@auth0/nextjs-auth0";
 
 import { Navbar } from "./navbar";
 
-export async function Header({ children }: { children?: React.ReactNode }) {
+export async function Header({ children }: { children?: React.ReactNode | React.ReactNode[] }) {
   const session = await getSession();
   const user = session?.user!;
 

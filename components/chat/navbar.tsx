@@ -32,9 +32,12 @@ import {
 } from "../ui/drawer";
 import { DropdownMenu, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut } from "../ui/dropdown-menu";
 
-function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNode }) {
+const toArray = (children: React.ReactNode[] | React.ReactNode) => (Array.isArray(children) ? children : [children]);
+
+function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNode[] | React.ReactNode }) {
   return (
     <div className="sm:hidden flex items-center">
+      {toArray(children)[0]}
       <Drawer direction="left" modal={false}>
         <DrawerTrigger>
           <MenuIcon />
@@ -70,7 +73,11 @@ function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNo
                 <ArrowRightIcon />
               </Link>
             </li>
-            {children && <li className="border-t border-[#E2E8F0]">{children}</li>}
+            {toArray(children).map((child, idx) => (
+              <li key={`navbar-inner-child-item-${idx}`} className="border-t border-[#E2E8F0]">
+                {child}
+              </li>
+            ))}
 
             <li className="border-t border-[#E2E8F0]">
               <Link

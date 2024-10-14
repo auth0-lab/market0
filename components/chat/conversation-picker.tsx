@@ -1,6 +1,6 @@
 "use client";
 
-import groupBy from "lodash.groupby";
+import { groupBy } from "lodash-es";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { DateTime } from "luxon";
 import Link from "next/link";
@@ -72,10 +72,10 @@ export default function ConversationPicker({
             role="combobox"
             aria-expanded={open}
             aria-label="Select a team"
-            className={`w-full justify-between pr-1 pl-2 $border-0`}
+            className={`inline-flex items-center justify-between pr-1 pl-2 $border-0 w-[150px] md:w-[320px] overflow-hidden whitespace-nowrap truncate`}
           >
-            <div className="flex flex-col items-start">
-              <span className="text-sm">{getTitle(selectedConversation)}</span>
+            <div className="truncate">
+              <span className="text-sm truncate">{getTitle(selectedConversation)}</span>
               {/* {subtitle && (
                 <span className="text-gray-500 font-light text-xs">
                   {typeof subtitle === "string"
@@ -84,7 +84,7 @@ export default function ConversationPicker({
                 </span>
               )} */}
             </div>
-            <ChevronsUpDown size={14} />
+            <ChevronsUpDown size={14} className="lucide lucide-chevrons-up-down flex-shrink-0 ml-2" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[350px] p-0" align="end">
