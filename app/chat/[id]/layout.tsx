@@ -21,7 +21,7 @@ async function RootLayout({ children, params }: RootChatParams) {
   const { messages, ownerID } = conversation;
   const isOwner = await isChatOwner(params.id);
   const user = await getUser();
-  const chatOwnerID = ownerID ?? (isOwner ? user.sub : undefined);
+  const chatOwnerID = ownerID || (isOwner ? user.sub : undefined);
   const ownerProfile = chatOwnerID ? await fetchUserById(chatOwnerID) : undefined;
 
   return (
