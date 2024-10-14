@@ -14,7 +14,15 @@ interface Event {
   description: string;
 }
 
-export function Events({ events, readOnly = false }: { events: Event[]; readOnly?: boolean }) {
+export function Events({
+  events,
+  companyName,
+  readOnly = false,
+}: {
+  events: Event[];
+  companyName: string;
+  readOnly?: boolean;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <WarningWrapper readOnly={readOnly}>
@@ -39,7 +47,12 @@ export function Events({ events, readOnly = false }: { events: Event[]; readOnly
         </div>
       </WarningWrapper>
 
-      <CalendarEvents events={events} checkAvailability={checkAvailabilityForEvents} readOnly={readOnly} />
+      <CalendarEvents
+        events={events}
+        checkAvailability={checkAvailabilityForEvents}
+        companyName={companyName}
+        readOnly={readOnly}
+      />
     </div>
   );
 }

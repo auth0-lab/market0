@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns";
 import { useState } from "react";
 
 import { GoogleCalendarIcon } from "@/components/icons";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { EnsureAPIAccess } from "@/sdk/components/ensure-api-access";
 
@@ -13,10 +14,12 @@ import { NotAvailableReadOnly } from "./not-available-read-only";
 export function CalendarEvents({
   events,
   checkAvailability,
+  companyName,
   readOnly = false,
 }: {
   events: Event[];
   checkAvailability: (events: Event[]) => Promise<any>;
+  companyName: string;
   readOnly?: boolean;
 }) {
   const [availability, setAvailability] = useState([]);
@@ -69,9 +72,9 @@ export function CalendarEvents({
       >
         <div className="border border-gray-300 rounded-lg p-6 flex flex-col gap-8 items-left w-full justify-between">
           <div className="flex flex-col gap-1">
-            <h2 className="text-base leading-6 font-semibold">Events available</h2>
+            <h2 className="text-base leading-6 font-semibold">Your availability</h2>
             <p className="text-sm leading-5 font-light text-gray-500">
-              See which events you can add to your calendar based on your availability.
+              This is your availability for {companyName}’s events
             </p>
           </div>
           <div>
@@ -79,28 +82,38 @@ export function CalendarEvents({
               {availability.map((event: EventAvailability) => (
                 <li
                   key={event.date}
-                  className="flex gap-5 sm:gap-10 justify-between border-t border-gray-300 pt-4 pb-4 flex-col sm:flex-row"
+                  className="flex gap-5 sm:gap-10 justify-between border-t border-gray-300 pt-4 pb-4 last:pb-0 flex-col sm:flex-row"
                 >
-                  <div className="flex flex-col gap-2">
-                    <div className={cn("text-sm font-medium text-gray-800", !event.slotAvailable && "line-through")}>
-                      {event.headline}
-                    </div>
-                    <div className={cn("text-xs font-light text-gray-500", !event.slotAvailable && "line-through")}>
-                      {format(parseISO(event.date), "MMMM dd, yyyy")} from {format(parseISO(event.startDate), "hh a ")}{" "}
-                      to {format(parseISO(event.endDate), "hh a ")}
+                  <div className="flex flex-col gap-2 sm:min-w-80 sm:max-w-80">
+                    <div className={cn("text-sm font-medium text-gray-800")}>{event.headline}</div>
+                    <div className={cn("text-xs font-light text-gray-500")}>
+                      {format(parseISO(event.date), "MMMM EE dd, yyyy")} from{" "}
+                      {format(parseISO(event.startDate), "hh:mm a ")} to {format(parseISO(event.endDate), "hh:mm a ")}
                     </div>
                   </div>
-                  <div className="flex justify-center sm:justify-end items-center min-w-60">
-                    {event.slotAvailable && (
-                      <a
-                        href={getCalendarLink(event)}
-                        target="_blank"
-                        rel="noopener noreferer"
-                        className="text-sm font-medium text-blue-600"
+                  <div className="flex items-center">
+                    {!event.slotAvailable && (
+                      <Badge
+                        variant="outline"
+                        className="w-fit border-[#64748B] text-[11px] font-semibold tracking-wider uppercase px-2 py-0 hover:border-[#64748B] cursor-default"
                       >
-                        Add to my calendar
-                      </a>
+                        Conflict
+                      </Badge>
                     )}
+                  </div>
+                  <div className="flex justify-center sm:justify-end items-center min-w-60">
+                    <a
+                      href={getCalendarLink(event)}
+                      target="_blank"
+                      rel="noopener noreferer"
+                      className={cn(
+                        "text-sm font-normal",
+                        event.slotAvailable ? "text-black border-black" : "text-red-400 border-red-400",
+                        "border w-full text-center rounded-md py-2 sm:rounded-none sm:w-fit sm:border-none"
+                      )}
+                    >
+                      {event.slotAvailable ? "Add to my calendar" : "Add anyways"}
+                    </a>
                   </div>
                 </li>
               ))}
