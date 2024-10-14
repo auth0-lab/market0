@@ -82,7 +82,7 @@ export function CalendarEvents({
               {availability.map((event: EventAvailability) => (
                 <li
                   key={event.date}
-                  className="flex gap0 sm:gap-10 justify-between border-t border-gray-300 pt-4 pb-4 last:pb-0 flex-col sm:flex-row"
+                  className="flex gap-0 sm:gap-10 justify-between border-t border-gray-300 pt-4 pb-4 last:pb-0 flex-col sm:flex-row"
                 >
                   <div className="flex flex-col gap-2 sm:min-w-80 sm:max-w-80">
                     <div className={cn("text-sm font-medium text-gray-800")}>{event.headline}</div>
