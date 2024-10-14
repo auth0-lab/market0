@@ -3,6 +3,7 @@
 import { format, parseISO } from "date-fns";
 import { useState } from "react";
 
+import { GoogleCalendarIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { EnsureAPIAccess } from "@/sdk/components/ensure-api-access";
 
@@ -52,8 +53,15 @@ export function CalendarEvents({
           requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
         }}
         connectWidget={{
-          title: "Connect to Google Calendar",
-          description: "To check your calendar availability for events, connect your Google Account first.",
+          icon: (
+            <div className="bg-gray-200 p-3 rounded-lg flex-wrap">
+              <GoogleCalendarIcon />
+            </div>
+          ),
+          title: "Check your availability in Google Calendar",
+          description:
+            "This will only check free/busy availability, not get full calendar acces . This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
+          action: { label: "Check" },
         }}
         shouldCheckAuthorization={true}
         readOnly={readOnly}

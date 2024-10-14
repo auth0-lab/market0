@@ -24,7 +24,7 @@ export function PromptUserContainer({
   return (
     <fieldset
       className={cn(
-        "border border-gray-300 rounded-lg items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0",
+        "border border-gray-300 rounded-lg items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-2",
         { "disabled cursor-not-allowed": readOnly },
         containerClassName
       )}
