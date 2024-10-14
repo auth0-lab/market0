@@ -12,8 +12,10 @@ type EnsureAPIAccessProps = {
   children: ReactNode;
   provider: Provider;
   connectWidget: {
+    icon?: ReactNode;
     title: string;
     description: string;
+    action?: { label: string };
   };
   onUserAuthorized?: () => Promise<void>;
   shouldCheckAuthorization: boolean | ShouldCheckAuthorizationHandler;
@@ -23,7 +25,7 @@ type EnsureAPIAccessProps = {
 export function EnsureAPIAccess({
   children,
   provider,
-  connectWidget: { title, description },
+  connectWidget: { title, description, icon, action },
   onUserAuthorized,
   shouldCheckAuthorization,
   readOnly,
@@ -74,6 +76,8 @@ export function EnsureAPIAccess({
       <ConnectGoogleAccount
         title={title}
         description={description}
+        icon={icon}
+        action={action}
         api={provider.api || provider.name}
         readOnly={readOnly}
       />
