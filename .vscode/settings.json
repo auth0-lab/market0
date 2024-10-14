@@ -42,5 +42,8 @@
   "sql-formatter.dialect": "pl/sql",
   "[sql]": {
     "editor.defaultFormatter": "bradymholt.pgformatter"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

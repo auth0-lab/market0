@@ -27,24 +27,23 @@ async function RootLayout({ children, params }: RootChatParams) {
 
   return (
     <ChatProvider chatId={params.id} readOnly={!isOwner} hasMessages={messages.length > 0} ownerProfile={ownerProfile}>
-      <div className="flex flex-col h-full w-full">
-        <Header outerElements={<ConversationPicker selectedConversationID={params.id} messagesLenght={messages.length} />}>
-          {isOwner && (
-            <ShareConversation>
-              {/**
-               * Because of a rendering bug with server components and client
-               * components, we require passing the chatId at this instance
-               * instead of using the chatId from the context.
-               */}
-              <ChatUsersPermissionsList chatId={params.id} />
-            </ShareConversation>
-          )}
-        </Header>
-
-        <AI initialAIState={messages} conversationID={params.id} readOnly={!isOwner}>
+      <AI initialAIState={messages} conversationID={params.id} readOnly={!isOwner}>
+        <div className="flex flex-col h-full w-full">
+          <Header outerElements={<ConversationPicker selectedConversationID={params.id} />}>
+            {isOwner && (
+              <ShareConversation>
+                {/**
+                 * Because of a rendering bug with server components and client
+                 * components, we require passing the chatId at this instance
+                 * instead of using the chatId from the context.
+                 */}
+                <ChatUsersPermissionsList chatId={params.id} />
+              </ShareConversation>
+            )}
+          </Header>
           {children}
-        </AI>
-      </div>
+        </div>
+      </AI>
     </ChatProvider>
   );
 }
