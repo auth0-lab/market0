@@ -5,7 +5,7 @@ import { getSession } from "@auth0/nextjs-auth0";
 
 import { Navbar } from "./navbar";
 
-export async function Header({ children }: { children?: React.ReactNode | React.ReactNode[] }) {
+export async function Header({ children, outerElements }: { children?: React.ReactNode, outerElements?: React.ReactNode }) {
   const session = await getSession();
   const user = session?.user!;
 
@@ -26,7 +26,7 @@ export async function Header({ children }: { children?: React.ReactNode | React.
         </Link>
       </div>
 
-      <Navbar user={user}>{children}</Navbar>
+      <Navbar user={user} outerElements={outerElements}>{children}</Navbar>
     </header>
   );
 }

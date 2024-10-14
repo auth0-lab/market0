@@ -34,10 +34,18 @@ import { DropdownMenu, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut
 
 const toArray = (children: React.ReactNode[] | React.ReactNode) => (Array.isArray(children) ? children : [children]);
 
-function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNode[] | React.ReactNode }) {
+function MenuMobile({
+  user,
+  children,
+  outerElements,
+}: {
+  user: Claims;
+  children?: React.ReactNode;
+  outerElements?: React.ReactNode;
+}) {
   return (
     <div className="sm:hidden flex items-center">
-      {toArray(children)[0]}
+      {outerElements}
       <Drawer direction="left" modal={false}>
         <DrawerTrigger>
           <MenuIcon />
@@ -177,7 +185,15 @@ function MenuDesktop({ user, children }: { user: Claims; children?: React.ReactN
   );
 }
 
-export function Navbar({ user, children }: { user: Claims; children?: React.ReactNode }) {
+export function Navbar({
+  user,
+  children,
+  outerElements,
+}: {
+  user: Claims;
+  children?: React.ReactNode;
+  outerElements?: React.ReactNode;
+}) {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -186,8 +202,17 @@ export function Navbar({ user, children }: { user: Claims; children?: React.Reac
 
   return (
     <>
-      {!isDesktop && <MenuMobile user={user}>{children}</MenuMobile>}
-      {isDesktop && <MenuDesktop user={user}>{children}</MenuDesktop>}
+      {!isDesktop && (
+        <MenuMobile user={user} outerElements={outerElements}>
+          {children}
+        </MenuMobile>
+      )}
+      {isDesktop && (
+        <MenuDesktop user={user}>
+          {outerElements}
+          {children}
+        </MenuDesktop>
+      )}
     </>
   );
 }

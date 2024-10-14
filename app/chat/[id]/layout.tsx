@@ -28,8 +28,7 @@ async function RootLayout({ children, params }: RootChatParams) {
   return (
     <ChatProvider chatId={params.id} readOnly={!isOwner} hasMessages={messages.length > 0} ownerProfile={ownerProfile}>
       <div className="flex flex-col h-full w-full">
-        <Header>
-          <ConversationPicker selectedConversationID={params.id} messagesLenght={messages.length} />
+        <Header outerElements={<ConversationPicker selectedConversationID={params.id} messagesLenght={messages.length} />}>
           {isOwner && (
             <ShareConversation>
               {/**
