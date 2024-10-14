@@ -81,11 +81,15 @@ function MenuMobile({
                 <ArrowRightIcon />
               </Link>
             </li>
-            {toArray(children).map((child, idx) => (
-              <li key={`navbar-inner-child-item-${idx}`} className="border-t border-[#E2E8F0]">
-                {child}
-              </li>
-            ))}
+
+            {toArray(children).map(
+              (child, idx) =>
+                child && (
+                  <li key={`navbar-inner-child-item-${idx}`} className="border-t border-[#E2E8F0]">
+                    {child}
+                  </li>
+                )
+            )}
 
             <li className="border-t border-[#E2E8F0]">
               <Link
