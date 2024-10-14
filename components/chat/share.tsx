@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { addChatUsers } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { CircleCheckBigIcon, LinkIcon2, ShareIcon, ShareMenuIcon } from "../icons";
+import { ArrowRightIcon, CircleCheckBigIcon, LinkIcon2, ShareIcon, ShareMenuIcon } from "../icons";
 import Loader from "../loader";
 import { Button, ButtonProps } from "../ui/button";
 import {
@@ -38,30 +38,44 @@ const formSchema = z.object({
   role: z.enum(["Viewer", "Editor"]),
 });
 
-const ShareButton = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+const ShareButton = React.forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonProps>((props, ref) => {
   const { disabled, className, ...rest } = props;
   return (
-    <>
-      <Button
-        ref={ref}
-        className={cn(
-          "sm:bg-gray-100 text-slate-800 sm:gap-2 items-center sm:px-3 sm:py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] border-gray-100 text-sm hover:bg-gray-100 hover:text-black transition-all duration-300",
-          { "disabled opacity-50 cursor-not-allowed": disabled },
+    <Button
+      ref={ref}
+      className={cn(
+        // common styles
+        "flex items-center text-slate-800 shadow-none font-normal bg-transparent hover:bg-transparent h-full w-full",
+        // button navbar styles (desktop)
+        "sm:text-sm sm:bg-gray-100 sm:hover:bg-gray-100 sm:border-gray-100 sm:ring-[#CFD1D4] sm:hover:ring-2 sm:rounded-md hover:text-black sm:transition-all sm:duration-300",
+        "sm:justify-center sm:px-3 sm:py-2 ",
+        // collapsible navbar link styles (mobile)
+        "justify-between px-5 py-3",
+        // disabled styles
+        { "disabled opacity-50 cursor-not-allowed": disabled },
+        // additional styles provided by user
+        className
+      )}
+      {...rest}
+    >
+      {/** As button (desktop) */}
 
-          "flex items-center gap-4 px-0 font-normal bg-transparent shadow-none",
-          className
-        )}
-        {...rest}
-      >
-        <span className="hidden sm:inline-flex">
-          <ShareIcon />
-        </span>
-        <span className="sm:hidden inline-flex">
-          <ShareMenuIcon />
-        </span>{" "}
+      <div className="hidden sm:flex items-center gap-2">
+        <ShareIcon />
         Share chat
-      </Button>
-    </>
+      </div>
+
+      {/** As collapsible navbar link (mobile) */}
+
+      <div className="flex sm:hidden items-center gap-4">
+        <ShareMenuIcon />
+        Share Chat
+      </div>
+
+      <span className="inline-flex sm:hidden">
+        <ArrowRightIcon />
+      </span>
+    </Button>
   );
 });
 
