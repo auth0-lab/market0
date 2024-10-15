@@ -73,28 +73,27 @@ export default function ConversationPicker({ selectedConversation: initialConver
     setSelectedConversation(c);
   }, [selectedConversation, conversations]);
 
-  const fetchConversations = React.useCallback(async () => {
+  const updateConversationList = React.useCallback(async () => {
+    const userMessages = currentConversation.filter((m: { role: string }) => m.role === "user");
+    if (userMessages.length > 4 && conversations.length > 1) {
+      return;
+    }
     let cs = await listUserConversations();
     if (isEqual(cs, conversations)) {
       return;
     }
     setConversations(cs);
-  }, [conversations]);
+  }, [conversations, currentConversation]);
 
   React.useEffect(() => {
     if (readOnly) {
       return;
     }
-
     //TODO: we should find a more reliable way to determine when the conversation has finished streaming.
-    const userMessages = currentConversation.filter((m: { role: string }) => m.role === "user");
-    if (userMessages.length > 4) {
-      return;
-    }
     (async () => {
-      await fetchConversations();
+      await updateConversationList();
     })();
-  }, [selectedConversation, currentConversation, fetchConversations, readOnly]);
+  }, [updateConversationList, readOnly]);
 
   const [open, setOpen] = React.useState(false);
 
@@ -124,19 +123,15 @@ export default function ConversationPicker({ selectedConversation: initialConver
                 {conversations.map((conversation) => (
                   <CommandItem
                     key={conversation.conversationID}
-                    onSelect={() => {
-                      setSelectedConversation(conversation);
-                      setOpen(false);
-                    }}
                     className="text-sm"
                     value={conversation.conversationID}
                   >
-                    <Link href={`/chat/${conversation.conversationID}`} className="flex w-full items-center">
+                    <a href={`/chat/${conversation.conversationID}`} className="flex w-full items-center">
                       {getTitle(conversation)}
                       {selectedConversation.conversationID === conversation.conversationID && (
                         <CheckIcon className="ml-auto" />
                       )}
-                    </Link>
+                    </a>
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -148,10 +143,10 @@ export default function ConversationPicker({ selectedConversation: initialConver
             <CommandList>
               <CommandGroup>
                 <CommandItem>
-                  <Link href="/new" className="flex w-full items-center justify-between">
+                  <a href="/new" className="flex w-full items-center justify-between">
                     Start new chat
                     <SimplePlusIcon />
-                  </Link>
+                  </a>
                 </CommandItem>
               </CommandGroup>
             </CommandList>
