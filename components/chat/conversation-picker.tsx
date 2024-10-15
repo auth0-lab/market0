@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { listUserConversations } from "@/llm/actions/history";
 
 import { CheckIcon, ChevronUpDownIcon, SimplePlusIcon } from "../icons";
+import { useChat } from "./context";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
