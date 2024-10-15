@@ -1,7 +1,7 @@
 "use client";
 import { useUIState } from "ai/rsc";
+import { formatDistance, formatRelative, startOfDay } from "date-fns";
 import { groupBy, isEqual } from "lodash-es";
-import { DateTime } from "luxon";
 import Link from "next/link";
 import * as React from "react";
 
@@ -32,7 +32,7 @@ const getTitle = (conversation?: ConversationData) => {
   if (!conversation) {
     return;
   }
-  return conversation.title ?? `Chat from ${DateTime.fromJSDate(conversation.createdAt).toRelative()}`;
+  return conversation.title ?? `Chat from ${formatDistance(conversation.createdAt, new Date(), { addSuffix: true })}`;
 };
 
 const PickerButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({ children, className, ...props }, ref) => (
@@ -99,7 +99,8 @@ export default function ConversationPicker({ selectedConversation: initialConver
   const [open, setOpen] = React.useState(false);
 
   const groups = groupBy(conversations, (conversation: ConversationData) => {
-    return DateTime.fromJSDate(conversation.createdAt).startOf("day").toRelativeCalendar();
+    // TODO: https://github.com/date-fns/date-fns/issues/1218
+    return formatRelative(startOfDay(conversation.createdAt), new Date()).split(" at ")[0].toLowerCase();
   });
 
   if (readOnly) {
