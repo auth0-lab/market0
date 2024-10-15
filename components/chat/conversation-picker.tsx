@@ -98,7 +98,7 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
       if (i === 60) {
         clearInterval(poolingInterval);
       }
-    }, 10000);
+    }, 1000);
     return () => clearInterval(poolingInterval);
   }, [selectedConversationID, currentConversation]);
 

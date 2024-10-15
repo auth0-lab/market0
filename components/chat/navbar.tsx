@@ -44,8 +44,8 @@ function MenuMobile({
   outerElements?: React.ReactNode;
 }) {
   return (
-    <div className="sm:hidden flex flex-1 items-center justify-between gap-6 sm:gap-0">
-      {outerElements}
+    <div className="sm:hidden flex flex-1 items-center gap-6 justify-end">
+      <div className="flex items-center px-6 justify-center sm:justify-end w-full">{outerElements}</div>
       <Drawer direction="left" modal={false}>
         <DrawerTrigger>
           <MenuIcon />
