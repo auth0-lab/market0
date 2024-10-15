@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ClientMessage, Document } from "@/llm/types";
 
-import { FormattedText } from "./FormattedText";
-import { NotAvailableReadOnly } from "./not-available-read-only";
-import { PromptUserContainer } from "./prompt-user-container";
-import WarningWrapper from "./warning-wrapper";
+import { FormattedText } from "../FormattedText";
+import { NotAvailableReadOnly } from "../not-available-read-only";
+import { PromptUserContainer } from "../prompt-user-container";
+import WarningWrapper from "../warning-wrapper";
 
 export const Documents = ({
   documents,

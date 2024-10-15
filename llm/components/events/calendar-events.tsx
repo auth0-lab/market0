@@ -8,8 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { EnsureAPIAccess } from "@/sdk/components/ensure-api-access";
 
-import { Event, EventAvailability } from "../actions/calendar-events";
-import { NotAvailableReadOnly } from "./not-available-read-only";
+import { Event, EventAvailability } from "../../actions/calendar-events";
+import { NotAvailableReadOnly } from "../not-available-read-only";
 
 export function CalendarEvents({
   events,

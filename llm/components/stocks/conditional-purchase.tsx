@@ -10,8 +10,8 @@ import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditi
 import { getConditionalPurchaseById } from "@/llm/actions/conditional-purchases";
 import { isGuardianEnrolled } from "@/sdk/auth0/mgmt";
 
-import { NotAvailableReadOnly } from "./not-available-read-only";
-import WarningWrapper from "./warning-wrapper";
+import { NotAvailableReadOnly } from "../not-available-read-only";
+import WarningWrapper from "../warning-wrapper";
 
 export function ConditionalPurchase({
   id,

@@ -4,9 +4,9 @@ import { useActions, useUIState } from "ai/rsc";
 
 import { transactions } from "@/lib/db";
 import { cn } from "@/lib/utils";
+import { ClientMessage } from "@/llm/types";
 
-import { ClientMessage } from "../types";
-import WarningWrapper from "./warning-wrapper";
+import WarningWrapper from "../warning-wrapper";
 
 export function Positions({ positions, readOnly = false }: { positions: transactions.Position[]; readOnly?: boolean }) {
   const [, setMessages] = useUIState();

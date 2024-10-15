@@ -5,7 +5,7 @@ import { RELATION } from "@/lib/constants";
 import { getStockPrices } from "@/lib/market/stocks";
 import { defineTool } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
-import { StockPurchase } from "@/llm/components/stock-purchase";
+import { StockPurchase } from "@/llm/components/stocks";
 import { getHistory } from "@/llm/utils";
 import { withTextGeneration } from "@/llm/with-text-generation";
 import { withFGA } from "@/sdk/fga";
@@ -20,6 +20,24 @@ type ToolParams = {
   company: string;
 };
 
+/**
+ * This tool allows users to buy stocks while enforcing access control through Fine-Grained Authorization (FGA).
+ *
+ * **Purpose:**
+ * - This demo illustrates the use of FGA to determine whether a user is authorized to purchase a specific stock, demonstrating stock purchase restrictions based on user roles or attributes.
+ *
+ * **Authorization Logic:**
+ * - FGA is used to impose restrictions, such as preventing users from buying certain stocks if they are insiders or employees of financial institutions.
+ *
+ * **Examples of Restrictions:**
+ * - Users may be restricted from buying a stock if they are employed by a financial institution.
+ * - Users who are classified as insiders for a particular stock may be prohibited from purchasing shares of that stock.
+ *
+ * **Workflow:**
+ * 1. The user selects a stock they wish to buy.
+ * 2. FGA checks the user’s eligibility based on their attributes (e.g., employment, insider status).
+ * 3. If authorized, the user proceeds with the purchase. If not, the purchase is blocked, and an appropriate message is returned.
+ */
 export default defineTool("show_stock_purchase_ui", () => {
   const history = getHistory();
 

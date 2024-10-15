@@ -5,8 +5,8 @@ import Loader from "@/components/loader";
 import { RELATION } from "@/lib/constants";
 import { conditionalPurchases } from "@/lib/db";
 import { defineTool } from "@/llm/ai-helpers";
-import { ConditionalPurchase } from "@/llm/components/conditional-purchase";
 import * as serialization from "@/llm/components/serialization";
+import { ConditionalPurchase } from "@/llm/components/stocks";
 import { getHistory } from "@/llm/utils";
 import { isGuardianEnrolled } from "@/sdk/auth0/mgmt";
 import { getUser, withFGA } from "@/sdk/fga";
@@ -20,6 +20,25 @@ type ToolParams = {
   threshold: number;
 };
 
+/**
+ * This tool enables users to place conditional stock purchase orders based on a financial metric.
+ *
+ * **Inputs:**
+ * - **Stock Symbol**: The ticker symbol of the stock the user wants to purchase.
+ * - **Quantity**: The number of shares the user wants to buy.
+ * - **Financial Metric**: A metric (e.g., price-to-earnings ratio, stock price, etc.) specified by the user in natural language to define the purchase condition.
+ *
+ * **Functionality:**
+ * - The user's conditional purchase request is stored in the database, waiting for the specified financial metric to meet the condition.
+ * - When the condition is satisfied, the system triggers a purchase order, pending user confirmation via Multi-Factor Authentication (MFA).
+ *
+ * **Workflow:**
+ * 1. User specifies the stock symbol, the number of shares, and a financial metric to monitor.
+ * 2. The request is saved in the database for monitoring.
+ * 3. When the metric meets the condition, the system prompts the user with an MFA confirmation before completing the purchase.
+ *
+ * **Note:** The tool only executes the purchase after user confirmation through MFA to ensure security.
+ */
 export default defineTool("add_conditional_purchase", () => {
   const history = getHistory();
 

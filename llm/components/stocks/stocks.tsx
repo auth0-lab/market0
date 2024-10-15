@@ -5,8 +5,8 @@ import { useActions, useUIState } from "ai/rsc";
 import { StockDownIcon, StockUpIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-import { ClientMessage } from "../types";
-import WarningWrapper from "./warning-wrapper";
+import { ClientMessage } from "../../types";
+import WarningWrapper from "../warning-wrapper";
 
 export function Stocks({ stocks, readOnly = false }: { stocks: any[]; readOnly?: boolean }) {
   const [, setMessages] = useUIState();
