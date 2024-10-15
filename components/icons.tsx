@@ -2,9 +2,38 @@
 
 import * as React from "react";
 
+function Auth0Icon({ className, ...props }: React.ComponentProps<"svg">) {
+  return (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 165 200"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M154.126 86.8204C121.335 81.4191 95.6511 54.33 90.2492 21.5383L90.2292 21.5181L88.4223 5.75483C88.0404 3.28492 89.6873 -0.229182 92.8598 0.0117584C117.639 1.93953 141.014 10.1124 154.026 15.4338C160.471 18.0844 164.688 24.3496 164.688 31.3175V82.7241C164.688 85.7761 161.958 88.1054 158.946 87.6036L154.126 86.8204ZM74.439 21.5426C69.0377 54.3143 43.3542 81.4234 10.5624 86.8247V86.8447L5.74308 87.6278C2.73097 88.1104 0 85.8009 0 82.7484V31.342C0 24.374 4.21695 18.0887 10.6629 15.4581C23.6952 10.1368 47.0491 1.96392 71.8284 0.0362072C75.0015 -0.204796 76.6884 3.26918 76.2466 5.77928L74.439 21.5426ZM154.106 101.204C109.306 110.039 88.5023 139.819 88.5023 196.205C88.5023 199.037 91.3136 200.985 93.663 199.419C114.266 185.523 159.608 149.257 164.286 103.874C164.435 99.1916 159.675 100.142 156.18 100.84L156.18 100.84C155.403 100.995 154.689 101.138 154.106 101.204ZM76.1784 196.23C76.1784 139.843 55.3749 110.064 10.5749 101.228C9.99101 101.162 9.27717 101.02 8.50096 100.865C5.00582 100.167 0.246104 99.216 0.393989 103.899C5.07279 149.281 50.415 185.547 71.0177 199.443C73.3671 201.009 76.1784 199.061 76.1784 196.23Z"
+        fill="black"
+      />
+    </svg>
+  );
+}
+
 function IconAuth0({ className, ...props }: React.ComponentProps<"svg">) {
   return (
-    <svg width="140" height="30" viewBox="0 0 140 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="140"
+      height="30"
+      viewBox="0 0 140 30"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
       <path
         d="M32.4695 21.1688L37.1234 8.93911H38.9171L43.553 21.1688H41.9336L40.6447 17.8674H35.3297L34.0408 21.1688H32.4695ZM40.188 16.4878L37.9737 10.5989L35.7774 16.4878H40.188Z"
         fill="black"
@@ -136,8 +165,8 @@ function SimplePlusIcon() {
     <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M8.2795 8.267H8.65634V7.89015V3.35682C8.65634 3.2704 8.72641 3.20033 8.81283 3.20033C8.89925 3.20033 8.96932 3.2704 8.96932 3.35682V7.89015V8.267H9.34616H13.8795C13.9659 8.267 14.036 8.33708 14.036 8.42349C14.036 8.50989 13.9659 8.57997 13.8795 8.57997H9.34616H8.96932V8.95682V13.4902C8.96932 13.5766 8.89923 13.6466 8.81283 13.6466C8.72643 13.6466 8.65634 13.5766 8.65634 13.4902V8.95682V8.57997H8.2795H3.74616C3.65974 8.57997 3.58968 8.50991 3.58968 8.42349C3.58968 8.33706 3.65974 8.267 3.74616 8.267H8.2795Z"
-        fill="#020617"
-        stroke="#F8FAFC"
+        fill="currentColor"
+        stroke="currentColor"
         strokeWidth="0.753695"
       />
     </svg>
@@ -533,6 +562,29 @@ function ChevronDownIcon() {
   );
 }
 
+function ChevronUpDownIcon({ className, ...props }: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <path
+        d="M7 15L12 20L17 15"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M7 9L12 4L17 9" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function ShareIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -705,9 +757,16 @@ function CircleCheckBigIcon() {
   );
 }
 
-function CheckIcon() {
+function CheckIcon({ className }: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
       <path
         d="M13.3333 4L5.99996 11.3333L2.66663 8"
         stroke="currentColor"
@@ -992,6 +1051,7 @@ function TrashIcon() {
 }
 
 export {
+  Auth0Icon,
   GoogleIcon,
   GoogleCalendarIcon,
   LogoutIcon,
@@ -1007,6 +1067,7 @@ export {
   CartIcon,
   ChevronRightIcon,
   ChevronDownIcon,
+  ChevronUpDownIcon,
   ArrowRightIcon,
   IconAuth0,
   ExternalLink,

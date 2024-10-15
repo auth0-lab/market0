@@ -32,9 +32,20 @@ import {
 } from "../ui/drawer";
 import { DropdownMenu, DropdownMenuGroup, DropdownMenuItem, DropdownMenuShortcut } from "../ui/dropdown-menu";
 
-function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNode }) {
+const toArray = (children: React.ReactNode[] | React.ReactNode) => (Array.isArray(children) ? children : [children]);
+
+function MenuMobile({
+  user,
+  children,
+  outerElements,
+}: {
+  user: Claims;
+  children?: React.ReactNode;
+  outerElements?: React.ReactNode;
+}) {
   return (
-    <div className="sm:hidden flex items-center">
+    <div className="sm:hidden flex flex-1 items-center gap-6 justify-end">
+      <div className="flex items-center px-6 justify-center sm:justify-end w-full">{outerElements}</div>
       <Drawer direction="left" modal={false}>
         <DrawerTrigger>
           <MenuIcon />
@@ -44,7 +55,7 @@ function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNo
             <DrawerTitle className="px-1">
               <div className="flex justify-between items-center">
                 <Link href="https://auth0.com" rel="noopener" target="_blank">
-                  <IconAuth0 className="w-5 h-5 sm:h-6 sm:w-6" />
+                  <IconAuth0 className="inline-flex" />
                 </Link>
 
                 <DrawerClose>
@@ -70,7 +81,15 @@ function MenuMobile({ user, children }: { user: Claims; children?: React.ReactNo
                 <ArrowRightIcon />
               </Link>
             </li>
-            {children && <li className="border-t border-[#E2E8F0]">{children}</li>}
+
+            {toArray(children).map(
+              (child, idx) =>
+                child && (
+                  <li key={`navbar-inner-child-item-${idx}`} className="border-t border-[#E2E8F0]">
+                    {child}
+                  </li>
+                )
+            )}
 
             <li className="border-t border-[#E2E8F0]">
               <Link
@@ -170,7 +189,15 @@ function MenuDesktop({ user, children }: { user: Claims; children?: React.ReactN
   );
 }
 
-export function Navbar({ user, children }: { user: Claims; children?: React.ReactNode }) {
+export function Navbar({
+  user,
+  children,
+  outerElements,
+}: {
+  user: Claims;
+  children?: React.ReactNode;
+  outerElements?: React.ReactNode;
+}) {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -179,8 +206,17 @@ export function Navbar({ user, children }: { user: Claims; children?: React.Reac
 
   return (
     <>
-      {!isDesktop && <MenuMobile user={user}>{children}</MenuMobile>}
-      {isDesktop && <MenuDesktop user={user}>{children}</MenuDesktop>}
+      {!isDesktop && (
+        <MenuMobile user={user} outerElements={outerElements}>
+          {children}
+        </MenuMobile>
+      )}
+      {isDesktop && (
+        <MenuDesktop user={user}>
+          {outerElements}
+          {children}
+        </MenuDesktop>
+      )}
     </>
   );
 }

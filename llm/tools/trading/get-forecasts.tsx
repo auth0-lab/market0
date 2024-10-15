@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import toPlainObject from "lodash.toplainobject";
+import { toPlainObject } from "lodash-es";
 import { z } from "zod";
 
 import { userUsage } from "@/lib/db";

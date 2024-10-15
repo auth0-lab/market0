@@ -1,8 +1,9 @@
-import { createTransaction } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+
+import { transactions } from "@/lib/db";
 import { getByID, getMatchingPurchases, update } from "@/lib/db/conditional-purchases";
 import { getStockPrices } from "@/lib/market/stocks";
 import { pollMode } from "@/sdk/auth0/ciba";
-import { NextRequest, NextResponse } from "next/server";
 
 function getRandomPrice(min: number, max: number): number {
   return Math.random() * (max - min) + min;
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
         const { accessToken } = await pollMode(purchase.user_id);
         // TODO: in a real-world scenario, you will take the user access token to perform the purchase
 
-        await createTransaction(purchase.symbol, price, purchase.quantity, "buy", purchase.user_id);
+        await transactions.create(purchase.symbol, price, purchase.quantity, "buy", purchase.user_id);
         await update(purchase.id, { status: "completed" });
         console.log(`completed purchase with id ${purchase.id}`);
       } catch (err) {

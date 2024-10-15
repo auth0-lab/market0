@@ -6,7 +6,7 @@ import stocks from "@/lib/market/stocks.json";
 dotenv.config({ path: ".env.local" });
 
 import { getDocumentsVectorStore } from "../../lib/documents";
-import { deleteDocuments, documents } from "../../lib/db";
+import { documents } from "../../lib/db";
 import { openai } from "@ai-sdk/openai";
 import { generateId, generateText } from "ai";
 
@@ -56,7 +56,7 @@ async function main() {
   const vectorStore = await getDocumentsVectorStore();
 
   // Delete all earnings documents for a fresh start
-  await deleteDocuments('forecast');
+  await documents.removeAll('forecast');
   const docs = [];
   for (const stock of stocks) {
     const { symbol, longname: name } = stock;

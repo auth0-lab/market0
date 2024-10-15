@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { getPositions } from "@/lib/db";
+import { transactions } from "@/lib/db";
 import { defineTool } from "@/llm/ai-helpers";
 import { Positions } from "@/llm/components/positions";
 import * as serialization from "@/llm/components/serialization";
@@ -15,7 +15,7 @@ export default defineTool("show_current_positions", () => {
     parameters: z.object({}),
     generate: async function* () {
       const user = await getUser();
-      const positions = await getPositions(user.sub);
+      const positions = await transactions.getPositions(user.sub);
 
       history.update({
         role: "assistant",

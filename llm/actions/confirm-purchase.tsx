@@ -3,7 +3,7 @@
 import { createStreamableUI, getMutableAIState } from "ai/rsc";
 
 import { RELATION } from "@/lib/constants";
-import { createTransaction } from "@/lib/db";
+import { transactions } from "@/lib/db";
 import { runAsyncFnWithoutBlocking } from "@/lib/utils";
 import * as serialization from "@/llm/components/serialization";
 import { StockPurchase } from "@/llm/components/stock-purchase";
@@ -43,7 +43,7 @@ const confirmPurchaseInternal = async (
         status="in-progress" />
     );
 
-    await createTransaction(symbol, price, quantity, "buy", user.sub);
+    await transactions.create(symbol, price, quantity, "buy", user.sub);
     const message = `You have successfully purchased ${quantity} $${symbol}.`;
     purchasing.done(
       <StockPurchaseStatus

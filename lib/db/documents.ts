@@ -43,3 +43,10 @@ export const getByID = async (id: string): Promise<Document> => {
   `;
   return res[0];
 };
+
+export const removeAll = async (docType: "earning" | "forecast"): Promise<void> => {
+  await sql`
+    DELETE FROM documents
+    WHERE metadata->>'type' = ${docType}
+  `;
+};

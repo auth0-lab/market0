@@ -3,7 +3,7 @@
 import { generateId } from "ai";
 import { createAI, getAIState } from "ai/rsc";
 
-import { saveAIStateToStore } from "@/lib/db";
+import { conversations } from "@/lib/db";
 import { confirmPurchase } from "@/llm/actions/confirm-purchase";
 import { continueConversation } from "@/llm/actions/continue-conversation";
 import { checkEnrollment } from "@/llm/actions/newsletter";
@@ -26,17 +26,14 @@ export const AI = (p: Props) => {
       confirmPurchase,
       checkEnrollment,
     },
-    onSetAIState: async ({ state, done }) => {
+    onSetAIState: async ({ state }) => {
       "use server";
-
-      if (done) {
-        const user = await getUser();
-        await saveAIStateToStore({
-          conversationID,
-          messages: state,
-          userID: user.sub,
-        });
-      }
+      const user = await getUser();
+      await conversations.save({
+        conversationID,
+        messages: state,
+        ownerID: user.sub,
+      });
     },
     // @ts-ignore
     onGetUIState: async () => {

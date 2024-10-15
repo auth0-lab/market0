@@ -5,7 +5,7 @@ import stocks from "@/lib/market/stocks.json";
 dotenv.config({ path: ".env.local" });
 
 import { getDocumentsVectorStore } from "../../lib/documents";
-import { deleteDocuments } from "../../lib/db";
+import { documents } from "../../lib/db";
 import { generateId, generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
 
@@ -50,9 +50,9 @@ async function main() {
   const vectorStore = await getDocumentsVectorStore();
 
   // Delete all earnings documents for a fresh start
-  await deleteDocuments('earning');
+  await documents.removeAll('earning');
 
-  const documents = [];
+  const docs = [];
 
   const last4Quarters = [
     '4th Quarter 2023',
@@ -85,11 +85,11 @@ async function main() {
         pageContent: earningReport,
       };
 
-      documents.push(document);
+      docs.push(document);
     }
   }
 
-  await vectorStore.addDocuments(documents);
+  await vectorStore.addDocuments(docs);
   process.exit(0);
 }
 
