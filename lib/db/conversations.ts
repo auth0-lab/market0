@@ -6,10 +6,13 @@ import { Conversation, ServerMessage } from "@/llm/types";
 
 import { sql } from "./sql";
 
-const summarizeConversation = async (conversationID: string) => {
-  const conversation = await get({ conversationID });
-  const messages = conversation.messages;
-  const userMessageCount = messages.filter((m) => m.role === "user").length;
+const summarizeConversation = async (conversationID: string, messages?: ServerMessage[]) => {
+  if (typeof messages === undefined) {
+    const conversation = await get({ conversationID });
+    messages = conversation.messages;
+  }
+
+  const userMessageCount = (messages ?? []).filter((m) => m.role === "user").length;
   if (userMessageCount > 4 || userMessageCount === 0) {
     return;
   }
@@ -64,7 +67,7 @@ export const save = async ({ conversationID, ownerID, messages }: Pick<Conversat
 
   await deletePreviousConversations(ownerID);
 
-  await summarizeConversation(conversationID);
+  await summarizeConversation(conversationID, messages);
 };
 
 export const get = async ({ conversationID }: { conversationID: string }): Promise<Conversation> => {
