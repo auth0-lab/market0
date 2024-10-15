@@ -1,6 +1,6 @@
 "use server";
 
-import { aiState } from "@/lib/db";
+import { conversations } from "@/lib/db";
 import { getUser } from "@/sdk/fga";
 
 /**
@@ -11,10 +11,10 @@ import { getUser } from "@/sdk/fga";
  * @returns
  */
 export const getHistoryFromStore = async (id: string) => {
-  return await aiState.get({ conversationID: id });
+  return await conversations.get({ conversationID: id });
 };
 
 export const listUserConversations = async () => {
   const user = await getUser();
-  return await aiState.list({ ownerID: user.sub });
+  return await conversations.list({ ownerID: user.sub });
 };

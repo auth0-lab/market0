@@ -3,7 +3,7 @@
 import { generateId } from "ai";
 import { createAI, getAIState } from "ai/rsc";
 
-import { aiState } from "@/lib/db";
+import { conversations } from "@/lib/db";
 import { confirmPurchase } from "@/llm/actions/confirm-purchase";
 import { continueConversation } from "@/llm/actions/continue-conversation";
 import { checkEnrollment } from "@/llm/actions/newsletter";
@@ -31,10 +31,10 @@ export const AI = (p: Props) => {
 
       if (done) {
         const user = await getUser();
-        await aiState.save({
+        await conversations.save({
           conversationID,
           messages: state,
-          userID: user.sub,
+          ownerID: user.sub,
         });
       }
     },

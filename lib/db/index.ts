@@ -3,4 +3,4 @@ export * as userUsage from "./userUsage";
 export * as documents from "./documents";
 export * as chatUsers from "./chat-users";
 export * as transactions from "./transactions";
-export * as aiState from "./aiState";
+export * as conversations from "./conversations";

@@ -6,15 +6,6 @@ import { Conversation, ServerMessage } from "@/llm/types";
 
 import { sql } from "./sql";
 
-export type SaveAIState = {
-  conversationID: string;
-  userID: string;
-  messages: ServerMessage[];
-  createdAt: Date;
-  updatedAt: Date;
-  title: string;
-};
-
 const summarizeConversation = async (conversationID: string) => {
   const conversation = await get({ conversationID });
   const messages = conversation.messages;
@@ -23,14 +14,6 @@ const summarizeConversation = async (conversationID: string) => {
     return;
   }
 
-  const previousTitles = (
-    await sql`
-    SELECT title
-    FROM chat_histories
-    WHERE conversation_id != ${conversationID}
-  `
-  ).map((c: Partial<SaveAIState>) => c.title);
-
   const { text } = await generateText({
     ...aiParams,
     system: await getSystemPrompt(),
@@ -38,7 +21,7 @@ const summarizeConversation = async (conversationID: string) => {
       ...(messages as CoreMessage[]),
       {
         role: "assistant",
-        content: `Generate title of max 5 words summarizing the main topic(s) of this conversation. Do not use long names for companies or time references.
+        content: `Generate title of max 5 words summarizing the main topic(s) of this conversation. Always use tickers instead of company names.
       `,
       },
     ],
@@ -64,14 +47,14 @@ const deletePreviousConversations = async (userID: string) => {
   `;
 };
 
-export const save = async ({ conversationID, userID, messages }: SaveAIState): Promise<void> => {
+export const save = async ({ conversationID, ownerID, messages }: Pick<Conversation, 'conversationID' | 'ownerID' | 'messages'>): Promise<void> => {
   const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
 
   await sql`
     INSERT INTO chat_histories (conversation_id, user_id, messages, updated_at)
     VALUES (
       ${conversationID},
-      ${userID},
+      ${ownerID},
       ${formattedMessages}::json,
       NOW()
     )
@@ -79,7 +62,7 @@ export const save = async ({ conversationID, userID, messages }: SaveAIState): P
     DO UPDATE SET messages = EXCLUDED.messages, updated_at = NOW();
   `;
 
-  await deletePreviousConversations(userID);
+  await deletePreviousConversations(ownerID);
 
   await summarizeConversation(conversationID);
 };
@@ -88,6 +71,7 @@ export const get = async ({ conversationID }: { conversationID: string }): Promi
   const result = await sql`
     SELECT messages,
       title,
+      conversation_id as "conversationID",
       user_id as "ownerID",
       updated_at as "updatedAt",
       created_at as "createdAt"
@@ -97,21 +81,21 @@ export const get = async ({ conversationID }: { conversationID: string }): Promi
 
   return result[0]
     ? (result[0] as Conversation)
-    : { messages: [], ownerID: "", title: "", createdAt: new Date(), updatedAt: new Date() };
+    : { conversationID, title: "New chat", messages: [], ownerID: "", createdAt: new Date(), updatedAt: new Date() };
 };
 
 /**
  * The conversation metadata without the messages.
  */
-export type ConversationData = Omit<SaveAIState, "messages">;
+export type ConversationData = Omit<Conversation, "messages">;
 
 export const list = async ({ ownerID }: { ownerID: string }): Promise<ConversationData[]> => {
   const r = await sql`
-    SELECT conversation_id,
-           user_id,
-           title,
-          updated_at,
-          created_at
+    SELECT title,
+          conversation_id as "conversationID",
+          user_id as "ownerID",
+          updated_at as "updatedAt",
+          created_at as "createdAt"
     FROM chat_histories
     WHERE user_id = ${ownerID}
     ORDER BY created_at DESC
@@ -123,15 +107,9 @@ export const list = async ({ ownerID }: { ownerID: string }): Promise<Conversati
       if (c.title) {
         return;
       }
-      await summarizeConversation(c.conversation_id);
+      await summarizeConversation(c.conversationID);
     })
   );
 
-  return r.map((c) => ({
-    title: c.title,
-    conversationID: c.conversation_id,
-    userID: c.user_id,
-    updatedAt: c.updated_at,
-    createdAt: c.created_at,
-  }));
+  return r.map((c) => c as ConversationData);
 };

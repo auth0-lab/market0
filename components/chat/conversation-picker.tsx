@@ -16,17 +16,16 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ConversationData } from "@/lib/db/aiState";
+import { ConversationData } from "@/lib/db/conversations";
 import { cn } from "@/lib/utils";
-import { getHistoryFromStore, listUserConversations } from "@/llm/actions/history";
+import { listUserConversations } from "@/llm/actions/history";
 
 import { CheckIcon, ChevronUpDownIcon, SimplePlusIcon } from "../icons";
-import { useChat } from "./context";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
 interface ConversationPickerProps extends PopoverTriggerProps {
-  selectedConversationID: string;
+  selectedConversation: ConversationData;
 }
 
 const getTitle = (conversation?: ConversationData) => {
@@ -60,30 +59,21 @@ const PickerButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({ childre
 
 PickerButton.displayName = "PickerButton";
 
-export default function ConversationPicker({ selectedConversationID }: ConversationPickerProps) {
+export default function ConversationPicker({ selectedConversation: initialConversation }: ConversationPickerProps) {
   const [currentConversation] = useUIState();
   const { readOnly } = useChat();
   const [conversations, setConversations] = React.useState<ConversationData[]>([]);
-  const [selectedConversation, setSelectedConversation] = React.useState<ConversationData>();
+  const [selectedConversation, setSelectedConversation] = React.useState<ConversationData>(initialConversation);
 
-  const fetchConversations = async () => {
+  const fetchConversations = React.useCallback(async () => {
     let cs = await listUserConversations();
-    let cconv = await getHistoryFromStore(selectedConversationID);
-    if (!cs.some((c) => c.conversationID === selectedConversationID)) {
-      cs = [
-        ...cs,
-        {
-          conversationID: selectedConversationID,
-          createdAt: cconv.createdAt,
-          updatedAt: cconv.updatedAt,
-          userID: cconv.ownerID,
-          title: cconv.title,
-        },
-      ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    if (!cs.some((c) => c.conversationID === selectedConversation.conversationID)) {
+      cs = [...cs, selectedConversation].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    } else {
+      setSelectedConversation(cs.find((c) => c.conversationID === selectedConversation.conversationID)!);
     }
     setConversations(cs);
-    setSelectedConversation(cs.find((c) => c.conversationID === selectedConversationID));
-  };
+  }, [selectedConversation]);
 
   React.useEffect(() => {
     if (readOnly) {
@@ -104,7 +94,7 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
       }
     }, 1000);
     return () => clearInterval(poolingInterval);
-  }, [selectedConversationID, currentConversation]);
+  }, [selectedConversation, currentConversation, fetchConversations]);
 
   const [open, setOpen] = React.useState(false);
 
@@ -142,7 +132,9 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
                   >
                     <Link href={`/chat/${conversation.conversationID}`} className="flex w-full items-center">
                       {getTitle(conversation)}
-                      {selectedConversationID === conversation.conversationID && <CheckIcon className="ml-auto" />}
+                      {selectedConversation.conversationID === conversation.conversationID && (
+                        <CheckIcon className="ml-auto" />
+                      )}
                     </Link>
                   </CommandItem>
                 ))}
