@@ -2,11 +2,14 @@ import { z } from "zod";
 
 import { transactions } from "@/lib/db";
 import { defineTool } from "@/llm/ai-helpers";
-import { Positions } from "@/llm/components/positions";
 import * as serialization from "@/llm/components/serialization";
+import { Positions } from "@/llm/components/stocks";
 import { getHistory } from "@/llm/utils";
 import { getUser } from "@/sdk/fga";
 
+/**
+ * This tool allow the user to check their current stock positions.
+ */
 export default defineTool("show_current_positions", () => {
   const history = getHistory();
   return {

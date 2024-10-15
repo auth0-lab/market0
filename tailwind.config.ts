@@ -7,7 +7,7 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./llm/components/*.{ts,tsx}",
+    "./llm/components/**/*.{ts,tsx}",
     "./sdk/**/*.{ts,tsx}",
   ],
   prefix: "",

@@ -8,13 +8,13 @@ import { userUsage } from "@/lib/db";
 import { composeTools } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
 import { getSystemPrompt } from "@/llm/system-prompt";
+import getEvents from "@/llm/tools/events/get-events";
+import getForecasts from "@/llm/tools/forecasts/get-forecasts";
 import checkSubscription from "@/llm/tools/newsletter/check-subscription";
 import setSubscription from "@/llm/tools/newsletter/set-subscription";
 import setEmployeer from "@/llm/tools/profile/set-employeer";
 import setProfileAttributes from "@/llm/tools/profile/set-profile-attributes";
-import getEvents from "@/llm/tools/schedule/get-events";
 import addConditionalPurchase from "@/llm/tools/trading/add-conditional-purchase";
-import getForecasts from "@/llm/tools/trading/get-forecasts";
 import listStocks from "@/llm/tools/trading/list-stocks";
 import showCurrentPositions from "@/llm/tools/trading/show-current-positions";
 import showStockPrice from "@/llm/tools/trading/show-stock-price";
@@ -37,15 +37,13 @@ type ContinueConversationParams = {
   hidden: boolean;
 };
 
-export async function continueConversation(
-  input: string | ContinueConversationParams
-): Promise<ClientMessage> {
+export async function continueConversation(input: string | ContinueConversationParams): Promise<ClientMessage> {
   "use server";
   const user = await getUser();
   const history = getMutableAIState();
 
   let hidden = false;
-  if (typeof input === 'object') {
+  if (typeof input === "object") {
     hidden = input.hidden;
     input = input.message;
   }
@@ -58,10 +56,7 @@ export async function continueConversation(
     };
   }
 
-  history.update((messages: ServerMessage[]) => [
-    ...messages,
-    { role: "user", content: input, hidden },
-  ]);
+  history.update((messages: ServerMessage[]) => [...messages, { role: "user", content: input, hidden }]);
 
   const promptMessages = history.get();
 
@@ -101,7 +96,9 @@ export async function continueConversation(
     // TODO: implement a max token limit
     onFinish: async ({ usage }) => {
       const stats = await userUsage.track(user.sub, usage);
-      console.log(`User ${user.email} used ${usage.totalTokens} tokens in this conversation. Last hour: ${stats.lastHour}, last day: ${stats.lastDay}.`);
+      console.log(
+        `User ${user.email} used ${usage.totalTokens} tokens in this conversation. Last hour: ${stats.lastHour}, last day: ${stats.lastDay}.`
+      );
     },
   });
 

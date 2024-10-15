@@ -6,8 +6,8 @@ import { useId, useState } from "react";
 import { StockDownIcon, StockUpIcon } from "@/components/icons";
 import { formatNumber } from "@/lib/utils";
 
+import WarningWrapper from "../warning-wrapper";
 import { StockPurchaseStatus } from "./stock-purchase-status";
-import WarningWrapper from "./warning-wrapper";
 
 type StockPurchaseUIParams = {
   /**

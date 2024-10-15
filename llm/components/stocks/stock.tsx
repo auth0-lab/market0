@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { scaleLinear } from "d3-scale";
@@ -8,7 +7,7 @@ import { useResizeObserver } from "usehooks-ts";
 
 import { StockDownIcon, StockUpIcon } from "@/components/icons";
 
-import WarningWrapper from "./warning-wrapper";
+import WarningWrapper from "../warning-wrapper";
 
 export function Stock({
   symbol,

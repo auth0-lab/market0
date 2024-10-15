@@ -1,4 +1,4 @@
-import WarningWrapper from "./warning-wrapper";
+import WarningWrapper from "../warning-wrapper";
 
 export const StockSkeleton = () => {
   return (

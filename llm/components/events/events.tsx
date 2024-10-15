@@ -2,9 +2,10 @@
 
 import { format, parseISO } from "date-fns";
 
-import { checkAvailabilityForEvents } from "../actions/calendar-events";
+import { checkAvailabilityForEvents } from "@/llm/actions/calendar-events";
+
+import WarningWrapper from "../warning-wrapper";
 import { CalendarEvents } from "./calendar-events";
-import WarningWrapper from "./warning-wrapper";
 
 interface Event {
   date: string;
