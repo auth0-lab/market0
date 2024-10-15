@@ -11,9 +11,9 @@ export default defineTool("get_events", () => {
   const history = getHistory();
 
   return {
-    description: `List at most 3 funny imaginary events between user highlighted dates that describe stock activity. Make sure events dates are after the start date "${new Date().toLocaleDateString(
+    description: `List up to 3 fictional stock events occurring after the start date '${new Date().toLocaleDateString(
       "en-CA"
-    )}"`,
+    )}' and between user-specified dates.`,
     parameters: z.object({
       symbol: z.string().describe("The name or symbol of the stock. e.g. DOGE/AAPL/USD."),
       events: z.array(
