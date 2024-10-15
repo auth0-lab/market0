@@ -62,7 +62,7 @@ PickerButton.displayName = "PickerButton";
 
 export default function ConversationPicker({ selectedConversationID }: ConversationPickerProps) {
   const [currentConversation] = useUIState();
-  // const { readOnly } = useChat();
+  const { readOnly } = useChat();
   const [conversations, setConversations] = React.useState<ConversationData[]>([]);
   const [selectedConversation, setSelectedConversation] = React.useState<ConversationData>();
 
@@ -86,6 +86,10 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
   };
 
   React.useEffect(() => {
+    if (readOnly) {
+      return;
+    }
+
     //TODO: we should find a more reliable way to determine when the conversation has finished streaming.
     const userMessages = currentConversation.filter((m: { role: string }) => m.role === "user");
     let i = 0;
@@ -107,6 +111,10 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
   const groups = groupBy(conversations, (conversation: ConversationData) => {
     return DateTime.fromJSDate(conversation.createdAt).startOf("day").toRelativeCalendar();
   });
+
+  if (readOnly) {
+    return null;
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
