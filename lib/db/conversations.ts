@@ -34,7 +34,9 @@ const summarizeConversation = async (conversationID: string, messages?: ServerMe
   await sql`UPDATE chat_histories SET title = ${title} WHERE conversation_id = ${conversationID}`;
 };
 
-const MAX_CONVERSATIONS = 20;
+const MAX_CONVERSATIONS = process.env.MAX_CONVERSATIONS ?
+  parseInt(process.env.MAX_CONVERSATIONS, 10) :
+  5;
 
 const deletePreviousConversations = async (userID: string) => {
   await sql`
