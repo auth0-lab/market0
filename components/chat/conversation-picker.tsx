@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import Link from "next/link";
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -18,7 +18,11 @@ import {
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ConversationData } from "@/lib/db/aiState";
-import { listConversations } from "@/llm/actions/history";
+import { cn } from "@/lib/utils";
+import { getHistoryFromStore, listUserConversations } from "@/llm/actions/history";
+
+import { SimplePlusIcon } from "../icons";
+import { useChat } from "./context";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
@@ -33,26 +37,52 @@ const getTitle = (conversation?: ConversationData) => {
   return conversation.title ?? `Chat from ${DateTime.fromJSDate(conversation.createdAt).toRelative()}`;
 };
 
+const PickerButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({ children, className, ...props }, ref) => (
+  <Button
+    ref={ref}
+    variant="outline"
+    role="combobox"
+    className={cn(
+      // common styles
+      "inline-flex items-center justify-between overflow-hidden whitespace-nowrap truncate text-sm",
+      // (desktop)
+      "sm:w-[320px]",
+      // (mobile)
+      "w-full",
+      // additional styles provided by user
+      className
+    )}
+    {...props}
+  >
+    <div className="truncate">{children}</div>
+    <ChevronsUpDown size={14} className="lucide lucide-chevrons-up-down flex-shrink-0 ml-2" />
+  </Button>
+));
+
+PickerButton.displayName = "PickerButton";
+
 export default function ConversationPicker({ selectedConversationID }: ConversationPickerProps) {
   const [currentConversation] = useUIState();
-  const [conversations, setConversation] = React.useState<ConversationData[]>([]);
+  // const { readOnly } = useChat();
+  const [conversations, setConversations] = React.useState<ConversationData[]>([]);
   const [selectedConversation, setSelectedConversation] = React.useState<ConversationData>();
 
   const fetchConversations = async () => {
-    let cs = await listConversations();
+    let cs = await listUserConversations();
+    let cconv = await getHistoryFromStore(selectedConversationID);
     if (!cs.some((c) => c.conversationID === selectedConversationID)) {
       cs = [
         ...cs,
         {
           conversationID: selectedConversationID,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          userID: "",
-          title: "New chat",
+          createdAt: cconv.createdAt,
+          updatedAt: cconv.updatedAt,
+          userID: cconv.ownerID,
+          title: cconv.title,
         },
       ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     }
-    setConversation(cs);
+    setConversations(cs);
     setSelectedConversation(cs.find((c) => c.conversationID === selectedConversationID));
   };
 
@@ -69,7 +99,7 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
       if (i === 60) {
         clearInterval(poolingInterval);
       }
-    }, 1000);
+    }, 10000);
     return () => clearInterval(poolingInterval);
   }, [selectedConversationID, currentConversation]);
 
@@ -82,25 +112,7 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          aria-label="Select a team"
-          className={`inline-flex items-center justify-between pr-1 pl-2 $border-0 w-[150px] md:w-[320px] overflow-hidden whitespace-nowrap truncate`}
-        >
-          <div className="truncate">
-            <span className="text-sm truncate">{getTitle(selectedConversation)}</span>
-            {/* {subtitle && (
-                <span className="text-gray-500 font-light text-xs">
-                  {typeof subtitle === "string"
-                    ? subtitle
-                    : subtitle(selectedConversation)}
-                </span>
-              )} */}
-          </div>
-          <ChevronsUpDown size={14} className="lucide lucide-chevrons-up-down flex-shrink-0 ml-2" />
-        </Button>
+        <PickerButton>{getTitle(selectedConversation)}</PickerButton>
       </PopoverTrigger>
       <PopoverContent className="w-[350px] p-0" align="end">
         <Command>
@@ -138,13 +150,10 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
             <CommandList>
               <CommandGroup>
                 <CommandItem>
-                  <a
-                    href="/new"
-                    className="flex items-center justify-between gap-3 w-full text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                  >
+                  <Link href="/new" className="flex w-full items-center justify-between">
                     Start new chat
-                    <div className="RightSlot">+</div>
-                  </a>
+                    <SimplePlusIcon />
+                  </Link>
                 </CommandItem>
               </CommandGroup>
             </CommandList>

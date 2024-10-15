@@ -35,6 +35,9 @@ export interface ServerMessage {
 export interface Conversation {
   messages: ServerMessage[];
   ownerID: string;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ClientMessage {

@@ -14,8 +14,7 @@ export const getHistoryFromStore = async (id: string) => {
   return await aiState.get({ conversationID: id });
 };
 
-
-export const listConversations = async () => {
+export const listUserConversations = async () => {
   const user = await getUser();
-  return await aiState.list({ownerID: user.sub});
+  return await aiState.list({ ownerID: user.sub });
 };

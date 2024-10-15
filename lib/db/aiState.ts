@@ -18,34 +18,35 @@ export type SaveAIState = {
 const summarizeConversation = async (conversationID: string) => {
   const conversation = await get({ conversationID });
   const messages = conversation.messages;
-  const userMessageCount = messages.filter(m => m.role === "user").length;
+  const userMessageCount = messages.filter((m) => m.role === "user").length;
   if (userMessageCount > 4 || userMessageCount === 0) {
     return;
   }
 
-  const previousTitles = (await sql`
+  const previousTitles = (
+    await sql`
     SELECT title
     FROM chat_histories
     WHERE conversation_id != ${conversationID}
-  `).map((c: Partial<SaveAIState>) => c.title);
+  `
+  ).map((c: Partial<SaveAIState>) => c.title);
 
   const { text } = await generateText({
     ...aiParams,
     system: await getSystemPrompt(),
     messages: [
-      ...messages as CoreMessage[],
+      ...(messages as CoreMessage[]),
       {
         role: "assistant",
         content: `Generate title of max 5 words summarizing the main topic(s) of this conversation. Do not use long names for companies or time references.
       `,
       },
-    ]
+    ],
   });
   //remove start and end quotes
   const title = text.replace(/^"|"$/g, "");
   await sql`UPDATE chat_histories SET title = ${title} WHERE conversation_id = ${conversationID}`;
 };
-
 
 const MAX_CONVERSATIONS = 20;
 
@@ -61,7 +62,7 @@ const deletePreviousConversations = async (userID: string) => {
       LIMIT ${MAX_CONVERSATIONS}
     )
   `;
-}
+};
 
 export const save = async ({ conversationID, userID, messages }: SaveAIState): Promise<void> => {
   const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
@@ -86,20 +87,23 @@ export const save = async ({ conversationID, userID, messages }: SaveAIState): P
 export const get = async ({ conversationID }: { conversationID: string }): Promise<Conversation> => {
   const result = await sql`
     SELECT messages,
+      title,
       user_id as "ownerID",
-          updated_at as "updatedAt",
-          created_at as "createdAt"
+      updated_at as "updatedAt",
+      created_at as "createdAt"
     FROM chat_histories
     WHERE conversation_id = ${conversationID}
   `;
 
-  return result[0] ? (result[0] as Conversation) : { messages: [], ownerID: "" };
+  return result[0]
+    ? (result[0] as Conversation)
+    : { messages: [], ownerID: "", title: "", createdAt: new Date(), updatedAt: new Date() };
 };
 
 /**
  * The conversation metadata without the messages.
  */
-export type ConversationData = Omit<SaveAIState, 'messages'>;
+export type ConversationData = Omit<SaveAIState, "messages">;
 
 export const list = async ({ ownerID }: { ownerID: string }): Promise<ConversationData[]> => {
   const r = await sql`
@@ -114,12 +118,16 @@ export const list = async ({ ownerID }: { ownerID: string }): Promise<Conversati
     LIMIT 20
   `;
 
-  await Promise.all(r.map(async (c) => {
-    if (c.title) { return; }
-    await summarizeConversation(c.conversation_id);
-  }));
+  await Promise.all(
+    r.map(async (c) => {
+      if (c.title) {
+        return;
+      }
+      await summarizeConversation(c.conversation_id);
+    })
+  );
 
-  return r.map(c => ({
+  return r.map((c) => ({
     title: c.title,
     conversationID: c.conversation_id,
     userID: c.user_id,

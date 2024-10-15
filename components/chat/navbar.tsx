@@ -44,7 +44,7 @@ function MenuMobile({
   outerElements?: React.ReactNode;
 }) {
   return (
-    <div className="sm:hidden flex items-center">
+    <div className="sm:hidden flex flex-1 items-center justify-between gap-6 sm:gap-0">
       {outerElements}
       <Drawer direction="left" modal={false}>
         <DrawerTrigger>
@@ -55,7 +55,7 @@ function MenuMobile({
             <DrawerTitle className="px-1">
               <div className="flex justify-between items-center">
                 <Link href="https://auth0.com" rel="noopener" target="_blank">
-                  <IconAuth0 className="w-5 h-5 sm:h-6 sm:w-6" />
+                  <IconAuth0 className="inline-flex" />
                 </Link>
 
                 <DrawerClose>
