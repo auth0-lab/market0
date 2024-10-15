@@ -112,7 +112,7 @@ export default function ConversationPicker({ selectedConversation: initialConver
       <PopoverTrigger asChild>
         <PickerButton>{getTitle(selectedConversation)}</PickerButton>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] p-0" align="end">
+      <PopoverContent className="w-[350px] p-0">
         <Command>
           <CommandList>
             <CommandEmpty>No chats found.</CommandEmpty>
