@@ -91,12 +91,9 @@ export default function ConversationPicker({ selectedConversation: initialConver
     if (userMessages.length > 4) {
       return;
     }
-    let timeout: NodeJS.Timeout;
     (async () => {
       await fetchConversations();
-      timeout = setTimeout(fetchConversations, 5000);
     })();
-    return () => timeout && clearTimeout(timeout);
   }, [selectedConversation, currentConversation, fetchConversations, readOnly]);
 
   const [open, setOpen] = React.useState(false);
