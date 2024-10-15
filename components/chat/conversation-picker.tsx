@@ -1,7 +1,6 @@
 "use client";
-
 import { useUIState } from "ai/rsc";
-import { groupBy } from "lodash-es";
+import { groupBy, isEqual } from "lodash-es";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import * as React from "react";
@@ -66,15 +65,21 @@ export default function ConversationPicker({ selectedConversation: initialConver
   const [conversations, setConversations] = React.useState<ConversationData[]>([]);
   const [selectedConversation, setSelectedConversation] = React.useState<ConversationData>(initialConversation);
 
+  React.useEffect(() => {
+    const c = conversations.find((c) => c.conversationID === selectedConversation.conversationID);
+    if (!c) {
+      return;
+    }
+    setSelectedConversation(c);
+  }, [selectedConversation, conversations]);
+
   const fetchConversations = React.useCallback(async () => {
     let cs = await listUserConversations();
-    if (!cs.some((c) => c.conversationID === selectedConversation.conversationID)) {
-      cs = [...cs, selectedConversation].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-    } else {
-      setSelectedConversation(cs.find((c) => c.conversationID === selectedConversation.conversationID)!);
+    if (isEqual(cs, conversations)) {
+      return;
     }
     setConversations(cs);
-  }, [selectedConversation]);
+  }, [conversations]);
 
   React.useEffect(() => {
     if (readOnly) {
@@ -83,19 +88,16 @@ export default function ConversationPicker({ selectedConversation: initialConver
 
     //TODO: we should find a more reliable way to determine when the conversation has finished streaming.
     const userMessages = currentConversation.filter((m: { role: string }) => m.role === "user");
-    let i = 0;
     if (userMessages.length > 4) {
       return;
     }
-    const poolingInterval = setInterval(async () => {
-      i++;
+    let timeout: NodeJS.Timeout;
+    (async () => {
       await fetchConversations();
-      if (i === 60) {
-        clearInterval(poolingInterval);
-      }
-    }, 1000);
-    return () => clearInterval(poolingInterval);
-  }, [selectedConversation, currentConversation, fetchConversations]);
+      timeout = setTimeout(fetchConversations, 5000);
+    })();
+    return () => timeout && clearTimeout(timeout);
+  }, [selectedConversation, currentConversation, fetchConversations, readOnly]);
 
   const [open, setOpen] = React.useState(false);
 
