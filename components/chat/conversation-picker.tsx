@@ -2,7 +2,6 @@
 
 import { useUIState } from "ai/rsc";
 import { groupBy } from "lodash-es";
-import { Check, ChevronsUpDown } from "lucide-react";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import * as React from "react";
@@ -21,7 +20,7 @@ import { ConversationData } from "@/lib/db/aiState";
 import { cn } from "@/lib/utils";
 import { getHistoryFromStore, listUserConversations } from "@/llm/actions/history";
 
-import { SimplePlusIcon } from "../icons";
+import { CheckIcon, ChevronUpDownIcon, SimplePlusIcon } from "../icons";
 import { useChat } from "./context";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
@@ -46,16 +45,16 @@ const PickerButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({ childre
       // common styles
       "inline-flex items-center justify-between overflow-hidden whitespace-nowrap truncate text-sm",
       // (desktop)
-      "sm:w-[320px]",
+      "sm:max-w-[320px]",
       // (mobile)
-      "w-full",
+      "w-full max-w-[240px]",
       // additional styles provided by user
       className
     )}
     {...props}
   >
     <div className="truncate">{children}</div>
-    <ChevronsUpDown size={14} className="lucide lucide-chevrons-up-down flex-shrink-0 ml-2" />
+    <ChevronUpDownIcon className="h-4 w-4 ml-2.5" />
   </Button>
 ));
 
@@ -135,9 +134,7 @@ export default function ConversationPicker({ selectedConversationID }: Conversat
                   >
                     <Link href={`/chat/${conversation.conversationID}`} className="flex w-full items-center">
                       {getTitle(conversation)}
-                      {selectedConversationID === conversation.conversationID && (
-                        <Check className={"ml-auto h-4 w-4"} />
-                      )}
+                      {selectedConversationID === conversation.conversationID && <CheckIcon className="ml-auto" />}
                     </Link>
                   </CommandItem>
                 ))}

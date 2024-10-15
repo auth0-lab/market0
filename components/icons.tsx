@@ -562,6 +562,29 @@ function ChevronDownIcon() {
   );
 }
 
+function ChevronUpDownIcon({ className, ...props }: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <path
+        d="M7 15L12 20L17 15"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M7 9L12 4L17 9" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function ShareIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -734,9 +757,16 @@ function CircleCheckBigIcon() {
   );
 }
 
-function CheckIcon() {
+function CheckIcon({ className }: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
       <path
         d="M13.3333 4L5.99996 11.3333L2.66663 8"
         stroke="currentColor"
@@ -1037,6 +1067,7 @@ export {
   CartIcon,
   ChevronRightIcon,
   ChevronDownIcon,
+  ChevronUpDownIcon,
   ArrowRightIcon,
   IconAuth0,
   ExternalLink,
