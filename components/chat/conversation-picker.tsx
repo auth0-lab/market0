@@ -2,7 +2,6 @@
 import { useUIState } from "ai/rsc";
 import { formatDistance, formatRelative, startOfDay } from "date-fns";
 import { groupBy, isEqual } from "lodash-es";
-import Link from "next/link";
 import * as React from "react";
 
 import { Button, ButtonProps } from "@/components/ui/button";
@@ -44,9 +43,9 @@ const PickerButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({ childre
       // common styles
       "inline-flex items-center justify-between overflow-hidden whitespace-nowrap truncate text-sm",
       // (desktop)
-      "sm:max-w-[320px]",
+      "sm:w-[320px]",
       // (mobile)
-      "w-full max-w-[240px]",
+      "w-[220px]",
       // additional styles provided by user
       className
     )}
@@ -111,7 +110,7 @@ export default function ConversationPicker({ selectedConversation: initialConver
       <PopoverTrigger asChild>
         <PickerButton>{getTitle(selectedConversation)}</PickerButton>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] p-0">
+      <PopoverContent className="w-[220px] sm:w-[320px] p-0" align="end">
         <Command>
           <CommandList>
             <CommandEmpty>No chats found.</CommandEmpty>
@@ -127,7 +126,7 @@ export default function ConversationPicker({ selectedConversation: initialConver
                     value={conversation.conversationID}
                   >
                     <a href={`/chat/${conversation.conversationID}`} className="flex w-full items-center">
-                      {getTitle(conversation)}
+                      <span className="truncate">{getTitle(conversation)}</span>
                       {selectedConversation.conversationID === conversation.conversationID && (
                         <CheckIcon className="ml-auto" />
                       )}
