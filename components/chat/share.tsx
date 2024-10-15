@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { addChatUsers } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ArrowRightIcon, CircleCheckBigIcon, LinkIcon2, ShareIcon, ShareMenuIcon } from "../icons";
+import { ArrowRightIcon, CircleCheckBigIcon, LinkIcon2, Share2Icon, ShareMenuIcon } from "../icons";
 import Loader from "../loader";
 import { Button, ButtonProps } from "../ui/button";
 import {
@@ -61,7 +61,7 @@ const ShareButton = React.forwardRef<HTMLButtonElement & HTMLAnchorElement, Butt
       {/** As button (desktop) */}
 
       <div className="hidden sm:flex items-center gap-2">
-        <ShareIcon />
+        <Share2Icon className="h-3.5 w-3.5" />
         Share chat
       </div>
 
