@@ -8,8 +8,8 @@ services:
       - POSTGRES_USER=${PGUSER}
       - POSTGRES_PASSWORD=${PGPASSWORD}
       - POSTGRES_DB=${PGDATABASE}
-      - TZ=${PGTZ}
-      - PGTZ=${PGTZ}
+      - TZ=${PGTZ:-UTC}
+      - PGTZ=${PGTZ:-UTC}}
     volumes:
       - ./database/create.sql:/docker-entrypoint-initdb.d/01-create.sql
       - pgdata:/var/lib/postgresql/data

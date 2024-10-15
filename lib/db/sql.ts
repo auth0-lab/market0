@@ -8,6 +8,6 @@ export const sql: ReturnType<typeof postgres> = process.env.USE_NEON
   >)
   : postgres({
     connection: {
-      TimeZone: process.env.PGTZ
+      TimeZone: process.env.PGTZ ?? "UTC",
     }
   });
