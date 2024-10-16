@@ -63,7 +63,7 @@ export function CalendarEvents({
           ),
           title: "Check your availability in Google Calendar",
           description:
-            "This will only check free/busy availability, not get full calendar acces . This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
+            "This will only check free/busy availability, not get full calendar access. This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
           action: { label: "Check" },
         }}
         shouldCheckAuthorization={true}
