@@ -9,9 +9,8 @@ services:
       - POSTGRES_PASSWORD=${PGPASSWORD}
       - POSTGRES_DB=${PGDATABASE}
       - TZ=${PGTZ:-UTC}
-      - PGTZ=${PGTZ:-UTC}}
+      - PGTZ=${PGTZ:-UTC}
     volumes:
-      - ./database/create.sql:/docker-entrypoint-initdb.d/01-create.sql
       - pgdata:/var/lib/postgresql/data
     networks:
       - market0
