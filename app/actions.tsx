@@ -30,7 +30,7 @@ export const AI = (p: Props) => {
       "use server";
       const user = await getUser();
       await conversations.save({
-        conversationID,
+        id: conversationID,
         messages: state,
         ownerID: user.sub,
       });

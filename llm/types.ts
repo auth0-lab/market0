@@ -33,7 +33,7 @@ export interface ServerMessage {
 }
 
 export interface Conversation {
-  conversationID: string;
+  id: string;
   messages: ServerMessage[];
   ownerID: string;
   title: string;

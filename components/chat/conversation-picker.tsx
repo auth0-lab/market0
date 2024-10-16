@@ -65,7 +65,7 @@ export default function ConversationPicker({ selectedConversation: initialConver
   const [selectedConversation, setSelectedConversation] = React.useState<ConversationData>(initialConversation);
 
   React.useEffect(() => {
-    const c = conversations.find((c) => c.conversationID === selectedConversation.conversationID);
+    const c = conversations.find((c) => c.id === selectedConversation.id);
     if (!c) {
       return;
     }
@@ -120,16 +120,10 @@ export default function ConversationPicker({ selectedConversation: initialConver
             {Object.entries(groups).map(([day, conversations]) => (
               <CommandGroup key={day} heading={day}>
                 {conversations.map((conversation) => (
-                  <CommandItem
-                    key={conversation.conversationID}
-                    className="text-sm"
-                    value={conversation.conversationID}
-                  >
-                    <a href={`/chat/${conversation.conversationID}`} className="flex w-full items-center">
+                  <CommandItem key={conversation.id} className="text-sm" value={conversation.id}>
+                    <a href={`/chat/${conversation.id}`} className="flex w-full items-center">
                       <span className="truncate">{getTitle(conversation)}</span>
-                      {selectedConversation.conversationID === conversation.conversationID && (
-                        <CheckIcon className="ml-auto" />
-                      )}
+                      {selectedConversation.id === conversation.id && <CheckIcon className="ml-auto" />}
                     </a>
                   </CommandItem>
                 ))}
