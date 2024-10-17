@@ -1,4 +1,4 @@
-import { CoreMessage, generateText } from "ai";
+import { CoreMessage, generateId, generateText } from "ai";
 
 import { aiParams } from "@/llm/ai-params";
 import { getSystemPrompt } from "@/llm/system-prompt";
@@ -6,9 +6,10 @@ import { Conversation, ServerMessage } from "@/llm/types";
 
 import { sql } from "./sql";
 
-const summarizeConversation = async (conversationID: string, messages?: ServerMessage[]) => {
+const summarizeConversation = async (id: string, messages?: ServerMessage[]) => {
   if (typeof messages === undefined) {
-    const conversation = await get({ conversationID });
+    const conversation = await get(id);
+    if (!conversation) { return; }
     messages = conversation.messages;
   }
 
@@ -31,62 +32,92 @@ const summarizeConversation = async (conversationID: string, messages?: ServerMe
   });
   //remove start and end quotes
   const title = text.replace(/^"|"$/g, "");
-  await sql`UPDATE chat_histories SET title = ${title} WHERE conversation_id = ${conversationID}`;
+  await sql`UPDATE conversations SET title = ${title} WHERE id = ${id}`;
 };
 
 const MAX_CONVERSATIONS = process.env.MAX_CONVERSATIONS ?
   parseInt(process.env.MAX_CONVERSATIONS, 10) :
   5;
 
-const deletePreviousConversations = async (userID: string) => {
+const deletePreviousConversations = async (ownerID: string) => {
   await sql`
-    DELETE FROM chat_histories
-    WHERE user_id = ${userID}
-    AND conversation_id NOT IN (
-      SELECT conversation_id
-      FROM chat_histories
-      WHERE user_id = ${userID}
+    DELETE FROM conversations
+    WHERE owner_id = ${ownerID}
+    AND id NOT IN (
+      SELECT id
+      FROM conversations
+      WHERE owner_id = ${ownerID}
       ORDER BY created_at DESC
       LIMIT ${MAX_CONVERSATIONS}
     )
   `;
 };
 
-export const save = async ({ conversationID, ownerID, messages }: Pick<Conversation, 'conversationID' | 'ownerID' | 'messages'>): Promise<void> => {
-  const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
+export const create = async ({ ownerID }: { ownerID: string }): Promise<string> => {
+  const maxRetries = 5;
+  let retries = 0;
+  let success = false;
+  let id = generateId();
 
-  await sql`
-    INSERT INTO chat_histories (conversation_id, user_id, messages, updated_at)
-    VALUES (
-      ${conversationID},
-      ${ownerID},
-      ${formattedMessages}::json,
-      NOW()
-    )
-    ON CONFLICT (conversation_id, user_id)
-    DO UPDATE SET messages = EXCLUDED.messages, updated_at = NOW();
-  `;
+  while (retries < maxRetries && !success) {
+    try {
+      await sql`
+        INSERT INTO conversations (id, owner_id, messages, title, updated_at)
+        VALUES (
+          ${id},
+          ${ownerID},
+          '[]'::json,
+          'New chat',
+          NOW()
+        )
+      `;
+      success = true;
+    } catch (error: any) {
+      id = generateId();
+      retries++;
+    }
+  }
+
+  if (!success) {
+    throw new Error('Failed to create the conversation.');
+  }
 
   await deletePreviousConversations(ownerID);
 
-  await summarizeConversation(conversationID, messages);
+  return id;
 };
 
-export const get = async ({ conversationID }: { conversationID: string }): Promise<Conversation> => {
-  const result = await sql`
-    SELECT messages,
-      title,
-      conversation_id as "conversationID",
-      user_id as "ownerID",
-      updated_at as "updatedAt",
-      created_at as "createdAt"
-    FROM chat_histories
-    WHERE conversation_id = ${conversationID}
+export const save = async ({ id, ownerID, messages }: Pick<Conversation, 'id' | 'ownerID' | 'messages'>): Promise<void> => {
+  const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
+
+  const updated = await sql`
+    UPDATE conversations
+    SET messages = ${formattedMessages}::json, updated_at = NOW()
+    WHERE id = ${id} AND owner_id = ${ownerID}
+    RETURNING *
   `;
 
-  return result[0]
-    ? (result[0] as Conversation)
-    : { conversationID, title: "New chat", messages: [], ownerID: "", createdAt: new Date(), updatedAt: new Date() };
+  if (!updated[0]) {
+    throw new Error('Conversation does not exists.');
+  }
+
+  await summarizeConversation(id, messages);
+};
+
+export const get = async (id: string): Promise<Conversation | undefined> => {
+  const result = await sql`
+    SELECT
+      id,
+      messages,
+      title,
+      owner_id as "ownerID",
+      updated_at as "updatedAt",
+      created_at as "createdAt"
+    FROM conversations
+    WHERE id = ${id}
+  `;
+
+  return result[0] as Conversation;
 };
 
 /**
@@ -97,12 +128,14 @@ export type ConversationData = Omit<Conversation, "messages">;
 export const list = async ({ ownerID }: { ownerID: string }): Promise<ConversationData[]> => {
   const r = await sql`
     SELECT title,
-          conversation_id as "conversationID",
-          user_id as "ownerID",
+          id,
+          owner_id as "ownerID",
           updated_at as "updatedAt",
           created_at as "createdAt"
-    FROM chat_histories
-    WHERE user_id = ${ownerID}
+    FROM conversations
+    WHERE owner_id = ${ownerID}
+      AND messages IS NOT NULL
+      AND jsonb_array_length(messages) > 0
     ORDER BY created_at DESC
     LIMIT 20
   `;
@@ -112,7 +145,7 @@ export const list = async ({ ownerID }: { ownerID: string }): Promise<Conversati
       if (c.title) {
         return;
       }
-      await summarizeConversation(c.conversationID);
+      await summarizeConversation(c.id);
     })
   );
 

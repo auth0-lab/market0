@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import { AI, fetchUserById } from "@/app/actions";
 import { ChatProvider } from "@/components/chat/context";
 import ConversationPicker from "@/components/chat/conversation-picker";
@@ -5,7 +7,7 @@ import { Header } from "@/components/chat/header";
 import { ShareConversation } from "@/components/chat/share";
 import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissions-list";
 import { ErrorContainer } from "@/components/fga/error";
-import { getHistoryFromStore } from "@/llm/actions/history";
+import { conversations } from "@/lib/db";
 import { getUser, withFGA } from "@/sdk/fga";
 import { assignChatReader, isChatOwner, isUserInvitedToChat } from "@/sdk/fga/chats";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
@@ -18,10 +20,17 @@ type RootChatParams = Readonly<{
 }>;
 
 async function RootLayout({ children, params }: RootChatParams) {
-  const conversation = await getHistoryFromStore(params.id);
+  const [conversation, isOwner, user] = await Promise.all([
+    conversations.get(params.id),
+    isChatOwner(params.id),
+    getUser(),
+  ]);
+
+  if (!conversation) {
+    return notFound();
+  }
+
   const { messages, ownerID } = conversation;
-  const isOwner = await isChatOwner(params.id);
-  const user = await getUser();
   const chatOwnerID = ownerID || (isOwner ? user.sub : undefined);
   const ownerProfile = chatOwnerID ? await fetchUserById(chatOwnerID) : undefined;
 
