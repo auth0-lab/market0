@@ -1,0 +1,64 @@
+## **Explaining**: Events Component
+
+Events component provides key upcoming events for a specific company and allows users to compare these dates against their calendars. Before running this check, users must grant Market 0 access to call the FreeBusy API.
+
+<br />
+Following you can check how to implement this feature using our SDKs:
+
+```jsx
+"use client";
+
+import { useState } from "react";
+import { GoogleCalendarIcon } from "@/components/icons";
+import { Event, EventAvailability } from "../../actions/calendar-events";
+
+import { EnsureAPIAccess } from "@/sdk/components/ensure-api-access";
+
+export function CalendarEvents({
+  events,
+  checkAvailability,
+}: {
+  events: Event[],
+  checkAvailability: (events: Event[]) => Promise<any>,
+}) {
+  const [availability, setAvailability] = useState([]);
+
+  async function onUserAuthorized() {
+    const availability = await checkAvailability(events);
+
+    setAvailability(
+      availability.sort((a: EventAvailability, b: EventAvailability) => {
+        a.date.localeCompare(b.date);
+      })
+    );
+  }
+
+  return (
+    <EnsureAPIAccess
+      provider={{
+        name: "google",
+        api: "google-calendar",
+        requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
+      }}
+      connectWidget={{
+        icon: (
+          <div className="bg-gray-200 p-3 rounded-lg flex-wrap">
+            <GoogleCalendarIcon />
+          </div>
+        ),
+        title: "Check your availability in Google Calendar",
+        description:
+          "This will only check free/busy availability, not get full calendar acces . This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
+        action: { label: "Check" },
+      }}
+      shouldCheckAuthorization={true}
+      readOnly={readOnly}
+      onUserAuthorized={onUserAuthorized}
+    >
+      {/* Custom Content */}
+    </EnsureAPIAccess>
+  );
+}
+```
+
+<UseCase type="3rd-party-apis" />

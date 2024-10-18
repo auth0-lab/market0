@@ -4,6 +4,7 @@ import { format, formatRelative } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { BrowserView, MobileView } from "react-device-detect";
 
+import { ExplanationType } from "@/components/explanation/observable";
 import { CancelRedIcon, CheckGreenIcon, TaskIcon } from "@/components/icons";
 import Loader from "@/components/loader";
 import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditional-purchases";
@@ -138,6 +139,7 @@ export function ConditionalPurchase({
         <WarningWrapper
           className="max-w-xl"
           readOnly={readOnly}
+          explanationType={ExplanationType.StockConditionalPurchase}
           message={
             <>
               {!simulating && (
