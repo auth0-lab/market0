@@ -1,3 +1,4 @@
+import { ExplanationType } from "@/components/explanation/observable";
 import { cn } from "@/lib/utils";
 
 export default function WarningWrapper({
@@ -5,14 +6,17 @@ export default function WarningWrapper({
   className,
   message,
   readOnly = false,
+  explanationType,
 }: {
   children: React.ReactNode;
   className?: string;
   message?: React.ReactNode;
   readOnly?: boolean;
+  explanationType?: ExplanationType;
 }) {
   return (
     <fieldset
+      data-explanation={explanationType}
       className={cn(
         "p-2 bg-gray-200 flex-1 rounded-3xl",
         { "diabled [&>*]:opacity-80 grayscale [&_*]:cursor-not-allowed": readOnly },
