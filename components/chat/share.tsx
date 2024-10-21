@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { addChatReader, changeChatVisibility, isChatPublic } from "@/app/chat/[id]/actions";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useCopyToClipboard } from "@/hooks/chat/use-copy-to-clipboard";
 import { cn } from "@/lib/utils";
-import { addChatUsers } from "@/sdk/fga/chats";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ArrowRightIcon, CircleCheckBigIcon, LinkIcon2, Share2Icon, ShareMenuIcon } from "../icons";
@@ -24,7 +24,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { useToast } from "../ui/use-toast";
 import { useChat } from "./context";
@@ -99,6 +99,20 @@ export function ShareConversation({ children }: ShareConversationProps) {
   const { chatId, hasMessages, readOnly } = useChat();
   const [isWorking, setIsWorking] = useState(false);
   const { toast } = useToast();
+  const [visibility, setVisibility] = useState<"private" | "public">("private");
+
+  useEffect(() => {
+    if (typeof chatId !== "string") return;
+    (async () => {
+      const isPublic = await isChatPublic(chatId);
+      setVisibility(isPublic ? "public" : "private");
+    })();
+  }, [chatId]);
+
+  const changeVisibility = async (value: "private" | "public") => {
+    setVisibility(value);
+    await changeChatVisibility(chatId!, value === "public");
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -113,7 +127,7 @@ export function ShareConversation({ children }: ShareConversationProps) {
 
     try {
       setIsWorking(true);
-      await addChatUsers(chatId!, [email]);
+      await addChatReader(chatId!, [email]);
       form.reset();
     } catch (err) {
       toast({
@@ -167,72 +181,91 @@ export function ShareConversation({ children }: ShareConversationProps) {
         </DialogHeader>
 
         <div className="flex-1">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-row justify-between gap-2 items-start pt-2"
-            >
-              <FormField
-                control={form.control}
-                name="user"
-                disabled={isWorking}
-                render={({ field }) => (
-                  <FormItem className="w-full space-y-0">
-                    <h2 className="flex text-sm font-normal mb-3" color="none">
-                      Add people to this chat
-                    </h2>
-
-                    <div className="flex justify-between items-center flex-1 p-0 bg-white border border-gray-200 rounded-md focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
-                      <FormControl>
-                        <Input
-                          autoFocus
-                          data-1p-ignore
-                          autoComplete="off"
-                          className="bg-white shadow-none p-0 px-3 border-0 focus-visible:ring-0 placeholder-slate-500/80 text-base font-light h-6 placeholder:text-sm"
-                          placeholder="Share by email"
-                          {...field}
-                        />
-                      </FormControl>
-
-                      <FormField
-                        control={form.control}
-                        name="role"
-                        render={({ field }) => (
-                          <FormItem>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger className="font-normal py-0 px-2 leading-3 border-none ring-0 focus:ring-0 shadow-none hover:bg-slate-100 rounded-l-none max-h-[34px]">
-                                  <SelectValue placeholder="Select role to for the user to share" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent align="end">
-                                <SelectItem value="Viewer">can view</SelectItem>
-                                <SelectItem value="Editor" disabled>
-                                  can edit
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormMessage className="ps-3 pt-2" />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                type="submit"
-                variant="secondary"
-                className="p-4 m-0 mt-8 text-sm leading-6 hover:ring-2 ring-[#CFD1D4] border-gray-100 hover:bg-gray-100 hover:text-black transition-all duration-300 min-w-[72px] flex items-center"
-              >
-                {isWorking ? <Loader className="ml-4 mt-1" /> : "Share"}
-              </Button>
-            </form>
-          </Form>
-
-          {children}
+          <h2 className="flex text-sm font-normal mb-3" color="none">
+            General Access
+          </h2>
+          <Select value={visibility} onValueChange={changeVisibility}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Visibility" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Visibility</SelectLabel>
+                <SelectItem value="private">Restricted</SelectItem>
+                <SelectItem value="public">Anyone with the link can read</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
+        {visibility === "private" && (
+          <div className="flex-1">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-row justify-between gap-2 items-start pt-2"
+              >
+                <FormField
+                  control={form.control}
+                  name="user"
+                  disabled={isWorking}
+                  render={({ field }) => (
+                    <FormItem className="w-full space-y-0">
+                      <h2 className="flex text-sm font-normal mb-3" color="none">
+                        Add people to this chat
+                      </h2>
+
+                      <div className="flex justify-between items-center flex-1 p-0 bg-white border border-gray-200 rounded-md focus-within:ring-stone-700 focus-within:ring-2 transition-all duration-150">
+                        <FormControl>
+                          <Input
+                            autoFocus
+                            data-1p-ignore
+                            autoComplete="off"
+                            className="bg-white shadow-none p-0 px-3 border-0 focus-visible:ring-0 placeholder-slate-500/80 text-base font-light h-6 placeholder:text-sm"
+                            placeholder="Share by email"
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormField
+                          control={form.control}
+                          name="role"
+                          render={({ field }) => (
+                            <FormItem>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="font-normal py-0 px-2 leading-3 border-none ring-0 focus:ring-0 shadow-none hover:bg-slate-100 rounded-l-none max-h-[34px]">
+                                    <SelectValue placeholder="Select role to for the user to share" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent align="end">
+                                  <SelectItem value="Viewer">can view</SelectItem>
+                                  <SelectItem value="Editor" disabled>
+                                    can edit
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <FormMessage className="ps-3 pt-2" />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="p-4 m-0 mt-8 text-sm leading-6 hover:ring-2 ring-[#CFD1D4] border-gray-100 hover:bg-gray-100 hover:text-black transition-all duration-300 min-w-[72px] flex items-center"
+                >
+                  {isWorking ? <Loader className="ml-4 mt-1" /> : "Share"}
+                </Button>
+              </form>
+            </Form>
+
+            {children}
+          </div>
+        )}
 
         <DialogFooter className="flex gap-1 h-10">
           <Button

@@ -16,7 +16,9 @@ type Props = Parameters<ReturnType<typeof createAI<ServerMessage[], ClientMessag
   conversationID: string;
   readOnly: boolean;
 };
+
 const HIDDEN_ROLES = ["system", "tool"];
+
 export const AI = (p: Props) => {
   const { conversationID, readOnly, ...params } = p;
 

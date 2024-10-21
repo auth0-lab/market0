@@ -13,7 +13,7 @@ export async function Header({
   outerElements?: React.ReactNode;
 }) {
   const session = await getSession();
-  const user = session?.user!;
+  const user = session?.user;
 
   return (
     <header className="z-50 flex items-center justify-between w-full px-5 sm:px-6 py-3 h-14 shrink-0 bg-background gap-6 sm:gap-0">

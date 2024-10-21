@@ -1,9 +1,13 @@
 import { CoreMessage, generateId, generateText } from "ai";
+import { PendingQuery } from "postgres";
 
 import { aiParams } from "@/llm/ai-params";
 import { getSystemPrompt } from "@/llm/system-prompt";
 import { Conversation, ServerMessage } from "@/llm/types";
+import { fgaClient } from "@/sdk/fga";
+import { Claims } from "@auth0/nextjs-auth0";
 
+import { chatUsers } from "./";
 import { sql } from "./sql";
 
 const summarizeConversation = async (id: string, messages?: ServerMessage[]) => {
@@ -49,11 +53,19 @@ const deletePreviousConversations = async (ownerID: string) => {
       WHERE owner_id = ${ownerID}
       ORDER BY created_at DESC
       LIMIT ${MAX_CONVERSATIONS}
-    )
+    ) AND not is_public
   `;
 };
 
-export const create = async ({ ownerID }: { ownerID: string }): Promise<string> => {
+/**
+ *
+ * Creates a new conversation.
+ *
+ * @param param0
+ * @param param0.owner - The owner of the conversation.
+ * @returns
+ */
+export const create = async ({ owner }: { owner: Claims }): Promise<string> => {
   const maxRetries = 5;
   let retries = 0;
   let success = false;
@@ -65,7 +77,7 @@ export const create = async ({ ownerID }: { ownerID: string }): Promise<string> 
         INSERT INTO conversations (id, owner_id, messages, title, updated_at)
         VALUES (
           ${id},
-          ${ownerID},
+          ${owner.sub},
           '[]'::json,
           'New chat',
           NOW()
@@ -82,17 +94,36 @@ export const create = async ({ ownerID }: { ownerID: string }): Promise<string> 
     throw new Error('Failed to create the conversation.');
   }
 
-  await deletePreviousConversations(ownerID);
+  await deletePreviousConversations(owner.sub);
+
+  await fgaClient.writeTuples([
+    {
+      user: `user:${owner.sub}`,
+      relation: "owner",
+      object: `chat:${id}`,
+    },
+  ]);
+
+  await chatUsers.add({
+    chat_id: id,
+    user_id: owner.sub,
+    email: owner.email,
+    access: "owner",
+    status: "provisioned",
+  });
 
   return id;
 };
 
-export const save = async ({ id, ownerID, messages }: Pick<Conversation, 'id' | 'ownerID' | 'messages'>): Promise<void> => {
+export const save = async ({ id, ownerID, messages, isPublic }:
+  Pick<Conversation, 'id' | 'ownerID'> & Partial<Pick<Conversation, 'messages' | 'isPublic'>>
+): Promise<void> => {
   const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
-
   const updated = await sql`
     UPDATE conversations
-    SET messages = ${formattedMessages}::json, updated_at = NOW()
+    SET updated_at = NOW()
+        ${messages !== undefined ? sql`, messages = ${formattedMessages}::json` : sql``}
+        ${isPublic !== undefined ? sql`, is_public = ${isPublic}` : sql``}
     WHERE id = ${id} AND owner_id = ${ownerID}
     RETURNING *
   `;

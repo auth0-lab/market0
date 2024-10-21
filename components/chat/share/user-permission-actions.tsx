@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import { removeChatReader } from "@/app/chat/[id]/actions";
 import { CheckIcon, ChevronDownIcon, TrashIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +15,6 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { ChatUser } from "@/lib/db/chat-users";
 import { cn } from "@/lib/utils";
-import { removeChatUser } from "@/sdk/fga/chats";
 
 export interface UserPermissionActionsProps {
   user: ChatUser;
@@ -26,7 +26,7 @@ export function UserPermissionActions({ user }: UserPermissionActionsProps) {
 
   async function handleOnRemove() {
     try {
-      await removeChatUser(id);
+      await removeChatReader(id);
     } catch (err) {
       toast({
         title: "Error!",

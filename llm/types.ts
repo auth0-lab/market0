@@ -39,6 +39,7 @@ export interface Conversation {
   title: string;
   createdAt: Date;
   updatedAt: Date;
+  isPublic: boolean;
 }
 
 export interface ClientMessage {

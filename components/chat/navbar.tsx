@@ -13,6 +13,7 @@ import {
   GitHubMenuIcon,
   IconAuth0,
   LearnMenuIcon,
+  LogInIcon,
   LogoutIcon,
   MenuIcon,
 } from "@/components/icons";
@@ -39,7 +40,7 @@ function MenuMobile({
   children,
   outerElements,
 }: {
-  user: Claims;
+  user?: Claims;
   children?: React.ReactNode;
   outerElements?: React.ReactNode;
 }) {
@@ -119,37 +120,51 @@ function MenuMobile({
                 <ExternalLink />
               </Link>
             </li>
+            {!user && (
+              <li className="border-t border-b border-[#E2E8F0]">
+                <a href="/api/auth/login" className="flex items-center justify-between py-3 px-5">
+                  <div className="flex items-center gap-4">
+                    <LogInIcon />
+                    <span className="text-sm text-gray-900">Sign-In</span>
+                  </div>
+                </a>
+              </li>
+            )}
           </ul>
-          <DrawerFooter className="border-t border-[#E2E8F0] flex flex-col items-center justify-between gap-0 p-0">
-            <div className="w-full min-h-[57px]">
-              <DrawerClose className="w-full py-3 px-5">
-                <Link href="/profile" className="flex flex-row items-center gap-4 w-full">
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.picture} alt={user.picture} />
-                      <AvatarFallback>{getAvatarFallback(user)}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                  <div className="text-sm text-gray-900 font-normal leading-6">{user.email}</div>
-                </Link>
-              </DrawerClose>
-            </div>
-            <div className="w-full border-t border-[#E2E8F0] min-h-[57px] items-center flex">
-              <a href="/api/auth/logout" className="flex items-center justify-between w-full py-3 px-5">
-                <div className="flex items-center gap-4">
-                  <LogoutIcon />
-                  <span className="text-sm text-gray-900">Logout</span>
+          {user && (
+            <>
+              <DrawerFooter className="border-t border-[#E2E8F0] flex flex-col items-center justify-between gap-0 p-0">
+                <div className="w-full min-h-[57px]">
+                  <DrawerClose className="w-full py-3 px-5">
+                    <Link href="/profile" className="flex flex-row items-center gap-4 w-full">
+                      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.picture} alt={user.picture} />
+                          <AvatarFallback>{getAvatarFallback(user)}</AvatarFallback>
+                        </Avatar>
+                      </Button>
+                      <div className="text-sm text-gray-900 font-normal leading-6">{user.email}</div>
+                    </Link>
+                  </DrawerClose>
                 </div>
-              </a>
-            </div>
-          </DrawerFooter>
+                <div className="w-full border-t border-[#E2E8F0] min-h-[57px] items-center flex">
+                  <a href="/api/auth/logout" className="flex items-center justify-between w-full py-3 px-5">
+                    <div className="flex items-center gap-4">
+                      <LogoutIcon />
+                      <span className="text-sm text-gray-900">Logout</span>
+                    </div>
+                  </a>
+                </div>
+              </DrawerFooter>
+            </>
+          )}
         </DrawerContent>
       </Drawer>
     </div>
   );
 }
 
-function MenuDesktop({ user, children }: { user: Claims; children?: React.ReactNode }) {
+function MenuDesktop({ user, children }: { user?: Claims; children?: React.ReactNode }) {
   return (
     <div className="items-center justify-end gap-6 hidden sm:flex">
       <div className="flex items-center justify-end gap-4">
@@ -172,18 +187,30 @@ function MenuDesktop({ user, children }: { user: Claims; children?: React.ReactN
         >
           <GHIcon />
         </Link>
-        <UserButton user={user}>
-          <DropdownMenu>
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Link href="/profile" className="flex gap-2 items-center">
-                  Profile
-                </Link>
-                <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenu>
-        </UserButton>
+        {!user && (
+          <a
+            href="/api/auth/login"
+            className="min-w-12 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
+          >
+            <LogInIcon width="16" height="16" />
+          </a>
+        )}
+        {user && (
+          <>
+            <UserButton user={user}>
+              <DropdownMenu>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <Link href="/profile" className="flex gap-2 items-center">
+                      Profile
+                    </Link>
+                    <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenu>
+            </UserButton>
+          </>
+        )}
       </div>
     </div>
   );
@@ -194,7 +221,7 @@ export function Navbar({
   children,
   outerElements,
 }: {
-  user: Claims;
+  user?: Claims;
   children?: React.ReactNode;
   outerElements?: React.ReactNode;
 }) {

@@ -3,11 +3,11 @@
 import React from "react";
 
 import { fetchUserById } from "@/app/actions";
+import { getChatUsers } from "@/app/chat/[id]/actions";
 import { getAvatarFallback } from "@/components/auth0/user-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatUser } from "@/lib/db/chat-users";
-import { getChatUsers } from "@/sdk/fga/chats";
 
 import { UserPermissionActions } from "./user-permission-actions";
 
