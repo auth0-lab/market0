@@ -118,21 +118,32 @@ export const create = async ({ owner }: { owner: Claims }): Promise<string> => {
 export const save = async ({ id, ownerID, messages, isPublic }:
   Pick<Conversation, 'id' | 'ownerID'> & Partial<Pick<Conversation, 'messages' | 'isPublic'>>
 ): Promise<void> => {
-  const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
-  const updated = await sql`
-    UPDATE conversations
-    SET updated_at = NOW()
-        ${messages !== undefined ? sql`, messages = ${formattedMessages}::json` : sql``}
-        ${isPublic !== undefined ? sql`, is_public = ${isPublic}` : sql``}
-    WHERE id = ${id} AND owner_id = ${ownerID}
-    RETURNING *
-  `;
-
-  if (!updated[0]) {
-    throw new Error('Conversation does not exists.');
+  if (messages !== undefined) {
+    const formattedMessages = process.env.USE_NEON ? JSON.stringify(messages) : (messages as any);
+    const { count } = await sql`
+      UPDATE conversations
+      SET updated_at = NOW(),
+        messages = ${formattedMessages}::json
+      WHERE id = ${id} AND owner_id = ${ownerID}
+      RETURNING *
+    `;
+    if (!count) {
+      throw new Error('Conversation does not exists.');
+    }
+    await summarizeConversation(id, messages);
   }
 
-  await summarizeConversation(id, messages);
+  if (isPublic !== undefined) {
+    const { count } = await sql`
+      UPDATE conversations
+      SET is_public = ${isPublic},
+        updated_at = NOW()
+      WHERE id = ${id} AND owner_id = ${ownerID}
+    `;
+    if (!count) {
+      throw new Error('Conversation does not exists.');
+    }
+  }
 };
 
 export const get = async (id: string): Promise<Conversation | undefined> => {
