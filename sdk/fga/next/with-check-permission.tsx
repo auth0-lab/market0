@@ -24,11 +24,11 @@ async function defaultOnUnauthorized(): Promise<JSX.Element> {
  * @param fn - The serverless function to wrap.
  * @returns A new serverless function that checks permissions before executing the original function.
  */
-export function withCheckPermission<Args extends any[], R>(
+export function withCheckPermission<R, F extends (...args: any[]) => Promise<R>, Args extends Parameters<F>>(
   options: WithCheckPermissionParams<Args, R>,
-  fn: (...args: Args) => Promise<R>
-): (...args: Args) => Promise<R | JSX.Element> {
-  return async function (...args: Args): Promise<R | JSX.Element> {
+  fn: F
+): F {
+  return async function (...args: Args): Promise<R> {
     let allowed = false;
 
     try {
@@ -44,7 +44,7 @@ export function withCheckPermission<Args extends any[], R>(
         return options.onUnauthorized(...args);
       }
 
-      return defaultOnUnauthorized();
+      return defaultOnUnauthorized() as R;
     }
-  };
+  } as F;
 }

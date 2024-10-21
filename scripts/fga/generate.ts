@@ -7,7 +7,8 @@ import {
   OpenFgaClient,
   TypeName,
 } from "@openfga/sdk";
-import stocks from "@/lib/market/stocks.json";
+
+import stocks from "../../lib/market/stocks.json";
 
 const fgaClient = new OpenFgaClient({
   apiUrl: process.env.FGA_API_URL,
@@ -143,7 +144,12 @@ async function asyncFilter<T>(
         },
         metadata: {
           relations: {
-            can_view: { directly_related_user_types: [{ type: "user" }] },
+            can_view: {
+              directly_related_user_types: [
+                { type: "user", wildcard: {} },
+                { type: "user" }
+              ]
+            },
             owner: { directly_related_user_types: [{ type: "user" }] },
           },
         },
