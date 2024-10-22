@@ -4,6 +4,7 @@ import { useActions, useUIState } from "ai/rsc";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { ExplanationType } from "@/components/explanation/observable";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ClientMessage, Document } from "@/llm/types";
 
@@ -49,7 +50,7 @@ export const Documents = ({
   };
 
   return (
-    <WarningWrapper className="max-w-xl" readOnly={readOnly}>
+    <WarningWrapper className="max-w-xl" readOnly={readOnly} explanationType={ExplanationType.Documents}>
       <div className="p-4 rounded-2xl bg-white">
         <FormattedText content={text} />
         {documents.length > 0 && finished && (

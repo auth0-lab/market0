@@ -4,6 +4,7 @@ import { format, formatRelative } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { BrowserView, MobileView } from "react-device-detect";
 
+import { ExplanationType } from "@/components/explanation/observable";
 import { CancelRedIcon, CheckGreenIcon, TaskIcon } from "@/components/icons";
 import Loader from "@/components/loader";
 import { ConditionalPurchase as ConditionalPurchaseType } from "@/lib/db/conditional-purchases";
@@ -138,6 +139,7 @@ export function ConditionalPurchase({
         <WarningWrapper
           className="max-w-xl"
           readOnly={readOnly}
+          explanationType={ExplanationType.StockConditionalPurchase}
           message={
             <>
               {!simulating && (
@@ -188,7 +190,11 @@ export function ConditionalPurchase({
       );
     case "canceled":
       return (
-        <WarningWrapper className="max-w-xl" readOnly={readOnly}>
+        <WarningWrapper
+          className="max-w-xl"
+          readOnly={readOnly}
+          explanationType={ExplanationType.StockConditionalPurchase}
+        >
           <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
@@ -222,7 +228,11 @@ export function ConditionalPurchase({
       );
     case "completed":
       return (
-        <WarningWrapper className="max-w-xl" readOnly={readOnly}>
+        <WarningWrapper
+          className="max-w-xl"
+          readOnly={readOnly}
+          explanationType={ExplanationType.StockConditionalPurchase}
+        >
           <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white">
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-2">
