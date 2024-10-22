@@ -7,8 +7,9 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./llm/components/**/*.{ts,tsx}",
+    "./llm/components/**/*.{ts,tsx,mdx}",
     "./sdk/**/*.{ts,tsx}",
+    "./mdx-components.tsx",
   ],
   prefix: "",
   theme: {
@@ -22,8 +23,7 @@ const config = {
 
     extend: {
       backgroundImage: {
-        "text-gradient":
-          "linear-gradient(91deg, #574ACD 57.13%, #1A163C 92.88%)",
+        "text-gradient": "linear-gradient(91deg, #574ACD 57.13%, #1A163C 92.88%)",
       },
       colors: {
         border: "hsl(var(--border))",

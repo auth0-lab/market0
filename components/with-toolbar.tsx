@@ -43,15 +43,30 @@ export function WithToolbar({ children }: { children: React.ReactNode }) {
       {currentExplanation?.type && (
         <div>
           <Button variant="secondary" onClick={handleClick} className="flex gap-2 text-sm">
-            <svg width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M0 0.533333C0 0.238784 0.238784 0 0.533333 0H9.06667C9.36117 0 9.6 0.238784 9.6 0.533333V12.2667C9.6 12.4606 9.49483 12.6391 9.32523 12.7331C9.15563 12.8271 8.94837 12.8217 8.784 12.7189L4.8 10.2289L0.816 12.7189C0.651595 12.8217 0.444363 12.8271 0.274795 12.7331C0.105216 12.6391 0 12.4606 0 12.2667V0.533333ZM1.06667 1.06667V11.3044L4.23467 9.32437C4.58055 9.10827 5.01945 9.10827 5.36533 9.32437L8.53333 11.3044V1.06667H1.06667Z"
-                fill="#020617"
+                d="M13.8333 0.5H2.16667C1.24619 0.5 0.5 1.24619 0.5 2.16667V13.8333C0.5 14.7538 1.24619 15.5 2.16667 15.5H13.8333C14.7538 15.5 15.5 14.7538 15.5 13.8333V2.16667C15.5 1.24619 14.7538 0.5 13.8333 0.5Z"
+                stroke="#020617"
+                strokeWidth="0.886667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M5.5 0.5V15.5"
+                stroke="#020617"
+                strokeWidth="0.886667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M9.66663 5.5L12.1666 8L9.66663 10.5"
+                stroke="#020617"
+                strokeWidth="0.833333"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
-            Explain
+            Explain me this
           </Button>
         </div>
       )}

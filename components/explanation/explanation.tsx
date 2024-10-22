@@ -34,21 +34,26 @@ export default function Explanation() {
   }
 
   return (
-    <div className={cn("flex flex-col flex-no-wrap h-full transition-all duration-150", expanded ? "w-full" : "w-10")}>
+    <div
+      className={cn(
+        "hidden sm:flex flex-col flex-no-wrap h-full transition-all duration-150 p-6",
+        expanded ? "w-full" : "w-[180px] max-w-[180px] h-[116px] absolute right-0"
+      )}
+    >
       <div
         className={cn(
-          "border-l border-t border-l-gray-200 border-t-gray-100 flex-1 transition-all duration-150 h-full pb-5",
-          expanded ? "bg-gray-50" : "bg-white"
+          "flex-1 transition-all duration-150 h-full bg-gray-50 rounded-3xl",
+          expanded ? "p-8" : "p-4 rounded-2xl"
         )}
       >
         <div
           className={cn(
-            "w-full h-14 bg-white flex items-center justify-between gap-3 px-2 border-gray-100",
-            expanded ? "border-b" : "border-none"
+            "w-full bg-[#FAFAFD] flex items-center justify-between gap-3 pb-5 px-0 border-[#E2E8F0] rounded-t-3xl",
+            expanded ? "border-b" : "border-none pb-0"
           )}
         >
           <div className="flex items-center gap-3">
-            <button onClick={toggleExpanded}>
+            <button onClick={toggleExpanded} className="border border-[#E2E8F0] rounded-lg p-2">
               <svg
                 width="17"
                 height="17"
@@ -67,7 +72,7 @@ export default function Explanation() {
                 />
               </svg>
             </button>
-            {expanded && <div className="text-sm font-medium">Behind the scene</div>}
+            <div className="text-sm font-medium">Explain</div>
           </div>
           {expanded && (
             <div className="flex items-center gap-2">
@@ -79,7 +84,7 @@ export default function Explanation() {
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem className="text-gray-500 text-sm" value={ExplanationType.StocksUpcomingEvents}>
-                      Call APIs on users' behalf
+                      Call APIs on users&apos; behalf
                     </SelectItem>
                     <SelectItem className="text-gray-500 text-sm" value={ExplanationType.Documents}>
                       Authorization for RAG
@@ -95,13 +100,14 @@ export default function Explanation() {
         </div>
 
         {expanded && (
-          <>
-            <div className="transition-all duration-300 overflow-y-auto h-full p-5 flex-1">
-              {lastExplanation?.type === ExplanationType.StocksUpcomingEvents && <Events />}
-              {lastExplanation?.type === ExplanationType.StockConditionalPurchase && <ConditionalPurchase />}
-              {lastExplanation?.type === ExplanationType.Documents && <Forecasts />}
-            </div>
-          </>
+          <div
+            className="transition-all duration-300 overflow-y-auto h-full p-5 -mx-8 px-8 flex-1"
+            style={{ height: "calc(100% - 56px)" }}
+          >
+            {lastExplanation?.type === ExplanationType.StocksUpcomingEvents && <Events />}
+            {lastExplanation?.type === ExplanationType.StockConditionalPurchase && <ConditionalPurchase />}
+            {lastExplanation?.type === ExplanationType.Documents && <Forecasts />}
+          </div>
         )}
       </div>
     </div>
