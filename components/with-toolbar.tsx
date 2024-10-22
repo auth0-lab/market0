@@ -66,7 +66,7 @@ export function WithToolbar({ children }: { children: React.ReactNode }) {
                 strokeLinejoin="round"
               />
             </svg>
-            Explain me this
+            How does this work in code?
           </Button>
         </div>
       )}
