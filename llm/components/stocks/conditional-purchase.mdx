@@ -2,14 +2,117 @@
 
 ### Scenario
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum feugiat quam, eu vulputate eros mattis quis.
+The user has instructed the chatbot to monitor the P/E ratio of a specific company, such as ZEKO. The chatbot will execute a purchase only when the P/E ratio exceeds zero, and it will seek user approval before executing any transaction.
+
+<br />
+This is an asynchronous process that requires human approval for the purchase if the condition is met. Auth0 will streamline
+the implementation.
 
 <UseCase type="async-human" />
 
 ### How it works
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum feugiat quam, eu vulputate eros mattis quis.
+1. The **user** instructs the chatbot to monitor the P/E ratio of a specific company.
+2. **Market0** will identify a _function_call_ to monitor the P/E ratio of the company.
+   <br />
+   <br />
+   <img src="https://cdn.auth0.com/website/labs/ai/assets/pe-1.png" className="rounded-lg" width="50%" />
+   <br />
+3. When the P/E ratio exceeds zero, **Market0** will prompt the user to approve the purchase.
+4. The **user** will receive a notification to approve the purchase.
+   <br />
+   <br />
+   <img src="https://cdn.auth0.com/website/labs/ai/assets/pe-2.png" className="rounded-lg" width="30%" />
+   <br />
+5. The **user** approves the purchase.
+6. **Market0** will execute the purchase of 10 shares of the company.
+   <br />
+   <br />
+   <img src="https://cdn.auth0.com/website/labs/ai/assets/pe-3.png" className="rounded-lg" width="50%" />
+   <br />
 
 ### Explore the code
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum feugiat quam, eu vulputate eros mattis quis.
+To implement the **Conditional Purchase** functionality, we utilize several components and helper functions. Below, we will outline the functions and components that make up this functionality.
+
+#### withCheckPermission
+
+This function checks if the user has the necessary permissions to execute a purchase.
+
+<br />
+
+| Props   | Description                                                                                                                                                 |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| checker | A function that receives the same parameter than the generate func from Vercel AI SDK and checks if the user has permission to the tool.This can be withFG. |
+
+<CodeBlock link="https://github.com/auth0-lab/market0/blob/main/llm/tools/trading/add-conditional-purchase.tsx">
+{`import { z } from "zod";
+import { RELATION } from "@/lib/constants";
+import { defineTool } from "@/llm/ai-helpers";
+import { withFGA } from "@/sdk/fga";
+import { withCheckPermission } from "@/sdk/fga/vercel-ai/with-check-permission";
+
+export default defineTool("add_conditional_purchase", () => {
+    return {
+      description: "description",
+      parameters: z.object({
+        /* Tool parameters */
+      }),
+      generate: withCheckPermission(
+        {
+          checker: (toolParams) =>
+            withFGA({
+              object: \`asset:\${toolParams.symbol.toLowerCase()}\`,
+              relation: RELATION.CAN_BUY_STOCKS,
+              context: { current_time: new Date().toISOString() },
+            }),
+        },
+        async function* ({ symbol, quantity, metric, operator, threshold }) {
+          // Tool implementation.
+        }
+      ),
+    };
+});`}
+</CodeBlock>
+
+#### startAuthenticationRequest
+
+Initiates a CIBA (Client-Initiated Backchannel Authentication) request for the specified user.
+
+<br />
+
+| Props  | Description                                                    |
+| ------ | -------------------------------------------------------------- |
+| userId | The ID of the user to authenticate                             |
+| scope  | The scope of the authentication request. Defaults to "openid". |
+
+<CodeBlock link="https://github.com/auth0-lab/market0/blob/main/sdk/auth0/ciba.ts">
+{`export async function pollMode(
+    userId: string,
+    scope: string = "openid"
+): Promise<{
+    accessToken: string;
+    idToken: string;
+    expiresIn: number;
+    scope: string;
+}> {
+    let tokenResult;
+    const { authReqId, interval } = await startAuthenticationRequest(
+      userId,
+      scope
+    );
+
+    do {
+      tokenResult = await getToken(authReqId);
+      if (!tokenResult) {
+        await new Promise((resolve) => setTimeout(resolve, interval * 1000));
+      }
+    } while (!tokenResult);
+
+    return tokenResult;
+
+}`}
+
+</CodeBlock
+
+>

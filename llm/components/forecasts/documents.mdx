@@ -2,14 +2,100 @@
 
 ### Scenario
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum feugiat quam, eu vulputate eros mattis quis.
+The user requested a forecast for a specific company, such as ZEKO. The chatbot will provide a basic forecast based on publicly available information and will encourage the user to join the premium service for access to analyst-level forecasts.
+
+<br />
+In this case, the chatbot will verify whether the user has the necessary permissions to access the premium service. OKTA
+FGA will facilitate this process.
 
 <UseCase type="authorization-rag" />
 
 ### How it works
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum feugiat quam, eu vulputate eros mattis quis.
+1. The **user** asks for a forecast for a specific company.
+2. **Market0** will identify a _function_call_ to provide the user with a basic forecast.
+   <br />
+   <br />
+   <img src=" https://cdn.auth0.com/website/labs/ai/assets/forecast-1.png" className="rounded-lg" width="50%" />
+   <br />
+3. **Market0** will prompt the user to join the premium service for access to analyst-level forecasts.
+4. The **user** accepts the invitation to join the premium service.
+   <br />
+   <br />
+   <img src=" https://cdn.auth0.com/website/labs/ai/assets/forecast-2.png" className="rounded-lg" width="50%" />
+   <br />
+5. **Market0** will verify the user's permissions to access the premium service using **OKTA FGA**.
+6. **Market0** will provide the user with access to the premium service and analyst-level forecasts.
+   <br />
+   <br />
+   <img src=" https://cdn.auth0.com/website/labs/ai/assets/forecast-3.png" className="rounded-lg" width="50%" />
+   <br />
 
 ### Explore the code
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum feugiat quam, eu vulputate eros mattis quis.
+To implement the **Forecast** functionality, we utilize several components and helper functions. Below, we will outline the functions and components that make up this functionality.
+
+#### FGAClient.check
+
+Check - Check if a user has a particular relation with an object (evaluates). More info at [OKTA FGA](https://github.com/openfga/cli).
+
+<CodeBlock link="https://github.com/auth0-lab/market0/blob/main/llm/actions/newsletter.ts">
+{`export async function checkEnrollment({ symbol }: { symbol: string }) {
+    const user = await getUser();
+    const docs = await documents.query("forecast", symbol);
+
+    if (docs.length === 0) { return false; }
+
+    const { allowed } = await fgaClient.check({
+      user: \`user:\${user.sub}\`,
+      object: \`doc:\${docs[0].metadata.id}\`,
+      relation: "can_view",
+    }, {
+      consistency: ConsistencyPreference.HigherConsistency
+    });
+
+    return allowed;
+
+}`}
+
+</CodeBlock>
+
+#### FGAClient.deleteTuples
+
+DeleteTuples - Utility method to delete tuples, wraps Write. More info at [OKTA FGA](https://github.com/openfga/cli).
+
+<CodeBlock link="https://github.com/auth0-lab/market0/blob/main/llm/actions/newsletter.ts">
+{`export async function unenrollFromNewsletter() {
+    const user = await getUser();
+    const docs = await getDocs();
+    const tuples = generateTuples(user, docs);
+    const batchCheckResult = await batchCheckTuples(tuples);
+    const deleteTuples = tuples.filter((_tuple, index) => batchCheckResult[index].allowed);
+
+    await fgaClient.deleteTuples(deleteTuples);
+
+}`}
+
+</CodeBlock>
+
+#### FGAClient.write
+
+Write - Create or delete relationship tuples. More info at [OKTA FGA](https://github.com/openfga/cli).
+
+<CodeBlock link="https://github.com/auth0-lab/market0/blob/main/llm/actions/newsletter.ts">
+{`export async function enrollToNewsletter() {
+    const user = await getUser();
+    const docs = await getDocs();
+    const tuples = generateTuples(user, docs);
+    const batchCheckResult = await batchCheckTuples(tuples);
+    const createTuples = tuples.filter((_tuple, index) => !batchCheckResult[index].allowed);
+
+    await fgaClient.write(
+      {
+        writes: createTuples,
+      }
+    );
+
+}`}
+
+</CodeBlock>
