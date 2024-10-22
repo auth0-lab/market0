@@ -73,7 +73,7 @@ export function CodeBlock({
   link?: string;
 }) {
   return (
-    <div className="rounded-xl bg-[#E6E6EB] border border-[#E2E8F0]-100 my-5">
+    <div className="rounded-xl bg-[#E6E6EB] border border-[#E2E8F0]-100 mt-5">
       <div className="h-10 border-b border-gray-100 flex items-center px-4 justify-between font-sans">
         <div className="flex items-center text-sm font-normal text-[#64748B]">{title}</div>
         {link && (

@@ -36,16 +36,11 @@ export default function Explanation() {
   return (
     <div
       className={cn(
-        "hidden sm:flex flex-col flex-no-wrap h-full transition-all duration-150 p-6",
-        expanded ? "w-full" : "w-[180px] max-w-[180px] h-[116px] absolute right-0"
+        "hidden sm:flex flex-col flex-no-wrap h-full p-6",
+        expanded ? "w-full" : "w-[116px] max-w-[116px] h-[116px] absolute right-0"
       )}
     >
-      <div
-        className={cn(
-          "flex-1 transition-all duration-150 h-full bg-gray-50 rounded-3xl",
-          expanded ? "p-8" : "p-4 rounded-2xl"
-        )}
-      >
+      <div className={cn("flex-1 h-full bg-gray-50 rounded-3xl", expanded ? "p-8" : "p-4 rounded-2xl")}>
         <div
           className={cn(
             "w-full bg-[#FAFAFD] flex items-center justify-between gap-3 pb-5 px-0 border-[#E2E8F0] rounded-t-3xl",
@@ -72,7 +67,6 @@ export default function Explanation() {
                 />
               </svg>
             </button>
-            <div className="text-sm font-medium">Explain</div>
           </div>
           {expanded && (
             <div className="flex items-center gap-2">

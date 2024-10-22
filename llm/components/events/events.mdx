@@ -37,7 +37,7 @@ This process requires calling a third-party API, specifically the Google Calenda
 
 ### Explore the code
 
-To implement the **Calendar Availability Widget** component, we utilize several components and helper functions that will eventually be included in the Auth0 AI package. In the meantime, you can explore the code and use it in accordance with our licensing terms. Below, we will outline the functions and components that make up this functionality.
+To implement the **Calendar Availability Widget** component, we utilize several components and helper functions. Below, we will outline the functions and components that make up this functionality.
 
 #### EnsureAPIAccess
 
@@ -83,30 +83,31 @@ const availability = await checkAvailability(events);
 }
 
 return (
+
 <EnsureAPIAccess
-provider={{
-        name: "google",
-        api: "google-calendar",
-        requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
-      }}
-connectWidget={{
-        icon: (
-          <div className="bg-gray-200 p-3 rounded-lg flex-wrap">
-            <GoogleCalendarIcon />
-          </div>
-        ),
-        title: "Check your availability in Google Calendar",
-        description:
-          "This will only check free/busy availability, not get full calendar acces . This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
-        action: { label: "Check" },
-      }}
-shouldCheckAuthorization={true}
-readOnly={readOnly}
-onUserAuthorized={onUserAuthorized} >
-{/* Custom Content */}
+  provider={{
+    name: "google",
+    api: "google-calendar",
+    requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
+  }}
+  connectWidget={{
+    icon: (
+      <div className="bg-gray-200 p-3 rounded-lg flex-wrap">
+        <GoogleCalendarIcon />
+      </div>
+    ),
+    title: "Check your availability in Google Calendar",
+    description:
+      "This will only check free/busy availability, not get full calendar acces . This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
+    action: { label: "Check" },
+  }}
+  shouldCheckAuthorization={true}
+  readOnly={readOnly}
+  onUserAuthorized={onUserAuthorized}
+>
+  {/* Custom Content */}
 </EnsureAPIAccess>
-);
-}`}
+); }`}
 
 </CodeBlock>
 

@@ -14,9 +14,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     // Allows customizing built-in components, e.g. to add styling.
     h2: ({ children }) => <h2 className="text-xl text-black font-light flex gap-1 mb-4">{children}</h2>,
-    h3: ({ children }) => (
-      <h3 className="text-base text-black font-medium flex gap-1 mb-4 border-[#E2E8F0] border-t pt-5">{children}</h3>
-    ),
+    h3: ({ children }) => <h3 className="text-base text-black font-medium flex gap-1 mb-4">{children}</h3>,
     h4: ({ children }) => <h4 className="text-sm font-medium text-black flex gap-1 mb-4 pt-5">{children}</h4>,
     ol: ({ children }) => (
       <ol className="ml-5" style={{ listStyle: "auto" }}>
