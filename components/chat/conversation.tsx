@@ -66,10 +66,13 @@ export default function Conversation() {
   };
 
   return (
-    <main className="flex flex-row flex-1 overflow-hidden w-full mx-auto" style={{ maxHeight: "calc(100vh - 56px)" }}>
+    <main
+      className="flex flex-row flex-1 overflow-hidden w-full mx-auto border-t border-gray-100"
+      style={{ maxHeight: "calc(100vh - 56px)" }}
+    >
       <div
         ref={scrollRef}
-        className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none gap-2 sm:gap-3 w-full border-t border-gray-100 pt-11"
+        className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none gap-2 sm:gap-3 w-full pt-11 transition-all duration-300"
       >
         <div className="flex-1 overflow-y-auto px-9">
           <div
