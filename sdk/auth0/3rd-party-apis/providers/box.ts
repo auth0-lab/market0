@@ -12,15 +12,12 @@ const fetchAccessToken = async (auth0IdToken: string): Promise<string> => {
       client_secret: process.env.AUTH0_CLIENT_SECRET,
       subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
       subject_token: auth0IdToken,
-      requested_token_type:
-        "http://auth0.com/oauth/token-type/box-access-token",
+      requested_token_type: "http://auth0.com/oauth/token-type/social-access-token/box",
     }),
   });
 
   if (!res.ok) {
-    throw new Error(
-      `Unable to get a Box API access token: ${await res.text()}`
-    );
+    throw new Error(`Unable to get a Box API access token: ${await res.text()}`);
   }
 
   const { access_token } = await res.json();
