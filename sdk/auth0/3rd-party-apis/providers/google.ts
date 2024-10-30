@@ -3,6 +3,10 @@
 import { getSession } from "@auth0/nextjs-auth0";
 
 const fetchAccessToken = async (auth0IdToken: string): Promise<string> => {
+  const connectionName = process.env.NEXT_PUBLIC_GOOGLE_CONNECTION_NAME;
+  const requestedTokenTypeBase = "http://auth0.com/oauth/token-type/social-access-token/google-oauth2";
+  const requested_token_type = connectionName ? `${requestedTokenTypeBase}/${connectionName}` : requestedTokenTypeBase;
+
   const res = await fetch(`${process.env.AUTH0_ISSUER_BASE_URL}/oauth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -12,7 +16,7 @@ const fetchAccessToken = async (auth0IdToken: string): Promise<string> => {
       client_secret: process.env.AUTH0_CLIENT_SECRET,
       subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
       subject_token: auth0IdToken,
-      requested_token_type: "http://auth0.com/oauth/token-type/social-access-token/google-oauth2",
+      requested_token_type,
     }),
   });
 
