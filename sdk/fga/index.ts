@@ -1,10 +1,6 @@
 import { getSession } from "@auth0/nextjs-auth0";
 // https://docs.fga.dev/modeling/basics/custom-roles
-import {
-  ClientCheckRequest,
-  CredentialsMethod,
-  OpenFgaClient,
-} from "@openfga/sdk";
+import { ClientCheckRequest, CredentialsMethod, OpenFgaClient } from "@openfga/sdk";
 
 const host = process.env.FGA_API_HOST || "api.us1.fga.dev";
 
