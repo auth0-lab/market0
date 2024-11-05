@@ -1,128 +1,62 @@
-## **User Prompt**: Show me ZEKO upcoming events
-
-### Scenario
-
-The user asked for upcoming events for a specific company, such as ZEKO. The chatbot will provide a list of these events and offer to check the user's availability in their Google Calendar, pending user approval.
-
-<br />
-This process requires calling a third-party API, specifically the Google Calendar API, and Auth0 will help simplify the implementation.
+## **Explained Prompt**: Show me ZEKO upcoming events
 
 <UseCase type="call-apis" />
 
+### Scenario
+
+When a user requests information about upcoming events for a company, such as ZEKO, the chatbot will retrieve and display a list of relevant events. Additionally, it will offer to check the user's availability in their Google Calendar to add reminders for selected events.
+
+<br />
+To check availability, integration with the Google Calendar API is necessary, with Auth0 handling user authentication and
+authorization for seamless access.
+
 ### How it works
 
-1. The **user** asks for upcoming events for a specific company.
-2. **Market0** will identify a _function_call_ to answer the user's request.
-3. **Market0** shows the list of upcoming events for the company and provides the user with the option to check their availability in Google Calendar.
-   <br />
-   <br />
-   <img src="https://cdn.auth0.com/website/labs/ai/assets/calendar.png" className="rounded-lg" width="70%" />
-   <br />
-4. The **user** clicks on the "Check" button.
-5. **Auth0** will handle the user's authorization to access the Google Calendar API.
-6. The user will be prompted to authorize the app to access their Google Calendar.
-   <br />
-   <br />
-   <img src="https://cdn.auth0.com/website/labs/ai/assets/calendar-g.png" className="rounded-3xl" width="70%" />
-   <br />
-7. Once the user authorizes the app, the app will check the user's availability in their Google Calendar.
-   <br />
-   <br />
-   <img
-     src="https://cdn.auth0.com/website/labs/ai/assets/calendar-availability.png"
-     className="rounded-xl"
-     width="70%"
-   />
-   <br />
+1. **Users Requests Upcoming Events**: The user requests upcoming events for a specific company such as ZEKO.
+2. **Displaying Events and Availability Check**: Market0 handles the user's request and displays the list of upcoming events. As part of the response, it offers an option for the user to check their availability in Google Calendar.
+3. **Third-Party Service Authorization**: When the user clicks the "Check" button, Auth0 will handle the user's authorization to call the Google Calendar API on their behalf.
+4. **API Call on Behalf of User**: Once authorized, the app checks the user’s Google Calendar availability, allowing users to add event reminders to their schedule.
 
 ### Explore the code
 
-To implement the **Calendar Availability Widget** component, we utilize several components and helper functions. Below, we will outline the functions and components that make up this functionality.
+To implement this functionality, we use several helper functions and components, detailed below.
 
-#### EnsureAPIAccess
-
-This component ensures that the user has the necessary API access before rendering its children:
-
-- It checks the authorization status and prompts the user to connect their account if required.
-
-<br />
-
-| Props                    | Description                                                          |
-| ------------------------ | -------------------------------------------------------------------- |
-| provider                 | The provider object containing API details and required scopes.      |
-| shouldCheckAuthorization | Flag or function to determine if authorization should be checked.    |
-| onUserAuthorized         | Optional callback function to be called when the user is authorized. |
-
-<CodeBlock link="https://github.com/auth0-lab/market0/blob/main/llm/components/events/calendar-events.tsx">
-{`"use client";
-
-import { useState } from "react";
-import { GoogleCalendarIcon } from "@/components/icons";
-import { Event, EventAvailability } from "../../actions/calendar-events";
-
-import { EnsureAPIAccess } from "@/sdk/components/ensure-api-access";
-
-export function CalendarEvents({
-    events,
-    checkAvailability,
-}: {
-    events: Event[],
-    checkAvailability: (events: Event[]) => Promise<any>,
-}) {
-  const [availability, setAvailability] = useState([]);
-
-async function onUserAuthorized() {
-const availability = await checkAvailability(events);
-
-    setAvailability(
-      availability.sort((a: EventAvailability, b: EventAvailability) => {
-        a.date.localeCompare(b.date);
-      })
-    );
-
-}
-
-return (
-
-<EnsureAPIAccess
-  provider={{
-    name: "google",
-    api: "google-calendar",
-    requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
-  }}
-  connectWidget={{
-    icon: (
-      <div className="bg-gray-200 p-3 rounded-lg flex-wrap">
-        <GoogleCalendarIcon />
-      </div>
-    ),
-    title: "Check your availability in Google Calendar",
-    description:
-      "This will only check free/busy availability, not get full calendar acces . This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
-    action: { label: "Check" },
-  }}
-  shouldCheckAuthorization={true}
-  readOnly={readOnly}
-  onUserAuthorized={onUserAuthorized}
+<CodeBlock title="EnsureAPIAccess" example="https://github.com/auth0-lab/market0/blob/main/llm/components/events/calendar-events.tsx" code="https://github.com/auth0-lab/market0/blob/main/sdk/components/ensure-api-access.tsx">
+{`<EnsureAPIAccess
+    //Configuration for the Provider
+    provider={{
+      name: "google",
+      api: "google-calendar",
+      requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
+    }}
+    //Information shown in the widget
+    connectWidget={{
+      icon: (
+        <div className="bg-gray-200 p-3 rounded-lg flex-wrap">
+          <GoogleCalendarIcon />
+        </div>
+      ),
+      title: "Check your availability in Google Calendar",
+      description:
+        "This will only check free/busy availability, not get full calendar access. This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
+      action: { label: "Check" },
+    }}
+    //Event triggered after succesful authorization
+    onUserAuthorized={onUserAuthorized}
 >
-  {/* Custom Content */}
-</EnsureAPIAccess>
-); }`}
-
+    {/* children */}
+</EnsureAPIAccess>`}
 </CodeBlock>
 
-#### withGoogleApi
-
-This function is a function that handles the authorization flow. This function is in charge of getting the Google API access token and passing it to the function that requires it.
-
-<CodeBlock link="https://github.com/auth0-lab/market0/blob/main/llm/actions/calendar-events.ts">
-  {`export async function checkAvailabilityForEvents(events: Event[]) {
-    return withGoogleApi(async function (accessToken: string) {
-      return await Promise.all(
-        events.map(async (event: Event) => {
-          return checkAvailability(accessToken, event);
-        })
-      );
-    });
+<CodeBlock title="withGoogleApi" example="https://github.com/auth0-lab/market0/blob/main/llm/actions/calendar-events.ts#L42-L50" code="https://github.com/auth0-lab/market0/blob/main/sdk/auth0/3rd-party-apis/providers/google.ts#L61-L64">
+{`export async function checkAvailabilityForEvents(events: Event[]) {
+  //Wraps a function that requires a google api access token:
+  return withGoogleApi(async function (accessToken: string) {
+    return await Promise.all(
+      events.map(async (event: Event) => {
+        return checkAvailability(accessToken, event);
+      })
+    );
+  });
 }`}
 </CodeBlock>

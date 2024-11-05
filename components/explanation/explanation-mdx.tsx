@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 
-import Image from "next/image";
 import React, { ReactNode } from "react";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
@@ -8,7 +7,7 @@ import { vs } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { cn } from "@/lib/utils";
 
-import { GHIcon } from "../icons";
+import { BookIcon, GHIcon } from "../icons";
 
 const useCases = {
   "authenticate-users": {
@@ -40,7 +39,7 @@ export function UseCase({ type }: { type: string }) {
   const data = useCases[type as keyof typeof useCases];
 
   return (
-    <div className="pb-5 mt-5">
+    <div className="pb-7 mt-5 border-b border-[#E2E8F0]">
       <div
         className={cn(
           "border border-[#E2E8F0] rounded-xl items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-6 sm:gap-2 bg-white"
@@ -66,36 +65,53 @@ SyntaxHighlighter.registerLanguage("jsx", jsx);
 export function CodeBlock({
   children,
   title = "Example Usage",
-  link,
+  example,
+  code,
 }: {
   children: ReactNode;
   title?: string;
-  link?: string;
+  example?: string;
+  code?: string;
 }) {
   return (
     <div className="rounded-xl bg-[#E6E6EB] border border-[#E2E8F0]-100 mt-5">
       <div className="h-10 border-b border-gray-100 flex items-center px-4 justify-between font-sans">
         <div className="flex items-center text-sm font-normal text-[#64748B]">{title}</div>
-        {link && (
-          <div className="flex gap-2 items-center">
-            <a
-              href={link}
-              className="flex gap-1 items-center hover:underline text-sm text-[#64748B]"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <GHIcon />
-              View Code
-            </a>
-          </div>
-        )}
+        <div className="flex gap-4">
+          {example && (
+            <div className="flex gap-2 items-center">
+              <a
+                href={example}
+                className="flex gap-1 items-center hover:underline text-sm text-[#64748B]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <BookIcon />
+                Example
+              </a>
+            </div>
+          )}
+          {code && (
+            <div className="flex gap-2 items-center">
+              <a
+                href={code}
+                className="flex gap-1 items-center hover:underline text-sm text-[#64748B]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GHIcon />
+                Code
+              </a>
+            </div>
+          )}
+        </div>
       </div>
       <div className="max-h-[400px] overflow-y-auto overscroll-y-none max-w-[100%] rounded-b-xl">
         <SyntaxHighlighter
           language="javascript"
           style={{ ...vs }}
           customStyle={{ margin: 0, border: "none" }}
-          codeTagProps={{ style: { whiteSpace: "break-spaces", fontSize: "14px" } }}
+          codeTagProps={{ style: { fontSize: "14px" } }}
           PreTag="div"
           CodeTag="div"
           showLineNumbers

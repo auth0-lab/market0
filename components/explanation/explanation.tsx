@@ -37,7 +37,7 @@ export default function Explanation() {
     <div
       className={cn(
         "hidden sm:flex flex-col flex-no-wrap h-full p-6",
-        expanded ? "w-full" : "w-[116px] max-w-[116px] h-[116px] absolute right-0"
+        expanded ? "max-w-2xl" : "w-[116px] max-w-[116px] h-[116px] absolute right-0"
       )}
     >
       <div className={cn("flex-1 h-full bg-gray-50 rounded-3xl", expanded ? "p-8" : "p-4 rounded-2xl")}>
