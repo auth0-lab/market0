@@ -1,0 +1,40 @@
+## **Explained Prompt**: Buy 10 ZEKO when P/E ratio is above 0
+
+<UseCase type="async-human" />
+
+### Scenario
+
+When the user requests to buy a specific company stock when its P/E ratio is above 0, the chatbot will monitor this metric and seek the user's approval (authorization) before executing any transaction.
+
+<br />
+This process is streamlined through Auth0, utilizing the CIBA (client-initiated backchannel authentication) flow to facilitate
+asynchronous user approval as needed. This ensures the user consents to the operation before any purchase order is executed.
+
+### How it works
+
+1. **User Initiates Purchase Request**: The user instructs the chatbot to monitor a specific company's stock, indicating a desire to purchase if the P/E ratio exceeds zero.
+2. **Monitoring and Notification**: Market0 continuously tracks the company's P/E ratio. When it rises above zero, the system notifies the user (using CIBA) to approve the purchase.
+3. **User Confirmation**: Upon notification, the user reviews the details and confirms whether to proceed with the transaction.
+4. **Purchase Completion**: Once the user approves, Market0 completes the purchase of 10 shares of the specified company.
+
+### Explore the code
+
+To implement this functionality, we use several helper functions and components, detailed below.
+
+<CodeBlock title="startAuthenticationRequest" code="https://github.com/auth0-lab/market0/blob/main/sdk/auth0/ciba.ts" example="https://github.com/auth0-lab/market0/blob/main/sdk/auth0/ciba.ts#L84-L107">
+{`/**
+  * Initiates an authentication request for the given user and scope.
+  * 
+  * @param userId - The ID of the user to authenticate.
+  * @param scope - The scope of the authentication request.
+  * @returns An object containing the authentication request ID and the polling interval.
+  */
+  const { authReqId, interval } = await startAuthenticationRequest(
+    userId,
+    scope
+  );
+`}
+
+</CodeBlock
+
+>

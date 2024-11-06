@@ -2,6 +2,7 @@
 
 import { format, parseISO } from "date-fns";
 
+import { ExplanationType } from "@/components/explanation/observable";
 import { checkAvailabilityForEvents } from "@/llm/actions/calendar-events";
 
 import WarningWrapper from "../warning-wrapper";
@@ -25,7 +26,7 @@ export function Events({
   readOnly?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" data-explanation={ExplanationType.StocksUpcomingEvents}>
       <WarningWrapper readOnly={readOnly}>
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3">

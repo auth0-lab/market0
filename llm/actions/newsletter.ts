@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import { documents } from "@/lib/db";
 import { fgaClient, getUser } from "@/sdk/fga";
@@ -7,8 +7,15 @@ import { ConsistencyPreference } from "@openfga/sdk";
 
 type Document = documents.Document;
 
+/**
+ * Generates an array of tuples representing the relationship between a user and a list of documents.
+ *
+ * @param user - The user claims object containing user information.
+ * @param docs - An array of documents to generate tuples for.
+ * @returns An array of objects, each representing a tuple with the user, document, and relation.
+ */
 function generateTuples(user: Claims, docs: Document[]) {
-  return docs.map(doc => {
+  return docs.map((doc) => {
     return {
       user: `user:${user.sub}`,
       object: `doc:${doc.metadata.id}`,
@@ -33,11 +40,9 @@ export async function enrollToNewsletter() {
   const batchCheckResult = await batchCheckTuples(tuples);
   const createTuples = tuples.filter((_tuple, index) => !batchCheckResult[index].allowed);
 
-  await fgaClient.write(
-    {
-      writes: createTuples,
-    }
-  );
+  await fgaClient.write({
+    writes: createTuples,
+  });
 }
 
 export async function unenrollFromNewsletter() {
@@ -53,16 +58,21 @@ export async function unenrollFromNewsletter() {
 export async function checkEnrollment({ symbol }: { symbol: string }) {
   const user = await getUser();
   const docs = await documents.query("forecast", symbol);
-  if (docs.length === 0) { return false; }
+  if (docs.length === 0) {
+    return false;
+  }
 
   //Test if the user is allowed to view any forecast.
-  const { allowed } = await fgaClient.check({
-    user: `user:${user.sub}`,
-    object: `doc:${docs[0].metadata.id}`,
-    relation: "can_view",
-  }, {
-    consistency: ConsistencyPreference.HigherConsistency
-  });
+  const { allowed } = await fgaClient.check(
+    {
+      user: `user:${user.sub}`,
+      object: `doc:${docs[0].metadata.id}`,
+      relation: "can_view",
+    },
+    {
+      consistency: ConsistencyPreference.HigherConsistency,
+    }
+  );
 
   return allowed;
 }

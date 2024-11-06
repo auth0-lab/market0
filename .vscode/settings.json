@@ -36,14 +36,17 @@
       "orderLevel": 30
     }
   ],
-  "importSorter.generalConfiguration.exclude": [
-    "./scripts"
-  ],
+  "importSorter.generalConfiguration.exclude": ["./scripts"],
   "sql-formatter.dialect": "pl/sql",
   "[sql]": {
     "editor.defaultFormatter": "bradymholt.pgformatter"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[mdx]": {
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false
   }
 }

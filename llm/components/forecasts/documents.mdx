@@ -1,0 +1,45 @@
+## **Explained Prompt**: Show me forecast for ZEKO
+
+<UseCase type="authorization-rag" />
+
+### Scenario
+
+When a user submits a forecast inquiry for a specific company, like Zeko, the chatbot will generate a response using relevant documents retrieved from the vector store. By default, Market0 will only include publicly available filings. However, users may also have access to analyst-level forecasts, providing them with additional insights when the response is generated.
+
+<br />
+OKTA FGA (Fine-Grained Authorization) is used to check which documents the user has access to based on their permissions.
+
+### How it works
+
+1. **User Forecast Request**: The user requests a forecast for a specific company, such as ZEKO.
+2. **Document Retrieval**: Market0 handles the request and employs a retriever to search its vector store for documents relevant to the requested information. It applies filters to ensure only the documents the user has access to are considered.
+3. **Response Generation**: Based on the retrieved documents, Market0 compiles a tailored response for the user. Depending on user's permissions the response could be based on analyst-level forecasts.
+
+### Explore the code
+
+To implement this functionality, we use several helper functions and components, detailed below.
+
+<CodeBlock title="FGARetriever (withCheckPermission)" example="https://github.com/auth0-lab/market0/blob/main/llm/actions/newsletter.ts" code="https://github.com/auth0-lab/market0/blob/main/sdk/fga/langchain/rag.ts">
+{`// Get the db vector store
+const vectorStore = await getDocumentsVectorStore();
+
+// Create a retriever that filters the documents by symbol
+const retriever = vectorStore.asRetriever({
+    filter: { symbol },
+});
+
+// Create a Retriever Wrapper that filters the documents by user access
+const fgaRetriever = new FGARetriever({
+    retriever,
+    fgaClient,
+    buildQuery: (doc) => ({
+        user: \`user:\${claims.sub}\`,
+        relation: RELATION.CAN_VIEW_DOCS,
+        object: \`doc:\${doc.metadata.id}\`,
+    })
+});
+
+const docs = await fgaRetriever.invoke('forecast of ZEKO');
+console.dir(docs);`}
+
+</CodeBlock>

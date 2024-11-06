@@ -1163,7 +1163,29 @@ function WelcomeIcon() {
   );
 }
 
+function BookIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M2.46094 3.45605H7.53271C8.42945 3.45605 9.28947 3.81228 9.92356 4.44638C10.5577 5.08047 10.9139 5.94049 10.9139 6.83723V18.6714C10.9139 17.9988 10.6467 17.3538 10.1711 16.8782C9.69557 16.4027 9.05056 16.1355 8.378 16.1355H2.46094V3.45605Z"
+        stroke="#64748B"
+        strokeWidth="1.26794"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19.367 3.45605H14.2952C13.3985 3.45605 12.5385 3.81228 11.9044 4.44638C11.2703 5.08047 10.9141 5.94049 10.9141 6.83723V18.6714C10.9141 17.9988 11.1812 17.3538 11.6568 16.8782C12.1324 16.4027 12.7774 16.1355 13.4499 16.1355H19.367V3.45605Z"
+        stroke="#64748B"
+        strokeWidth="1.26794"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export {
+  BookIcon,
   WelcomeIcon,
   Auth0Icon,
   GoogleIcon,
