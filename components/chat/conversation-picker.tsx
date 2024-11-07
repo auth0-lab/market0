@@ -46,6 +46,7 @@ const PickerButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({ childre
       "sm:w-[320px]",
       // (mobile)
       "w-[220px]",
+      "border border-gray-300 shadow-none hover:bg-white hover:ring-[#CFD1D4] hover:ring-1 transition-all duration-300",
       // additional styles provided by user
       className
     )}

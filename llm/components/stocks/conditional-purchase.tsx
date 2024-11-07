@@ -86,7 +86,10 @@ export function ConditionalPurchase({
           </div>
         </MobileView>
         <BrowserView>
-          <div className="border border-gray-300 rounded-xl items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0">
+          <div
+            className="border border-gray-300 rounded-xl items-center w-full justify-between p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-0"
+            data-explanation={ExplanationType.StockConditionalPurchase}
+          >
             <div className="flex flex-col gap-1 sm:gap-1.5">
               <h2 className="text-sm sm:text-base leading-6 font-semibold">
                 Action Required: Setup Async Authentication

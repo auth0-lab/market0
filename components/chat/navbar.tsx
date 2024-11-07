@@ -174,7 +174,7 @@ function MenuDesktop({ user, children }: { user?: Claims; children?: React.React
           href="https://discord.gg/QGHxwDsbQQ"
           rel="noopener noreferrer"
           target="_blank"
-          className="min-w-12 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
+          className="min-w-12 min-h-9 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
         >
           <DiscordIcon />
         </Link>
@@ -183,7 +183,7 @@ function MenuDesktop({ user, children }: { user?: Claims; children?: React.React
           href="https://github.com/auth0-lab/market0"
           rel="noopener noreferrer"
           target="_blank"
-          className="min-w-12 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
+          className="min-w-12 min-h-9 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
         >
           <GHIcon />
         </Link>
