@@ -47,8 +47,8 @@ const ShareButton = React.forwardRef<HTMLButtonElement & HTMLAnchorElement, Butt
         // common styles
         "flex items-center text-slate-800 shadow-none font-normal bg-transparent hover:bg-transparent",
         // button navbar styles (desktop)
-        "sm:text-sm sm:bg-gray-100 sm:hover:bg-gray-100 sm:border-gray-100 sm:ring-[#CFD1D4] sm:hover:ring-2 sm:rounded-md hover:text-black sm:transition-all sm:duration-300",
-        "sm:justify-center sm:px-3 sm:py-2 sm:h-fit-content sm:w-fit",
+        "sm:text-sm sm:bg-white sm:border sm:border-gray-300 sm:ring-[#CFD1D4] sm:hover:ring-1 sm:rounded-md hover:text-black sm:transition-all sm:duration-300",
+        "sm:justify-center sm:px-3 sm:py-2 sm:h-fit-content sm:max-h-9 sm:w-fit",
         // collapsible navbar link styles (mobile)
         "justify-between px-5 py-3 h-full w-full",
         // disabled styles
