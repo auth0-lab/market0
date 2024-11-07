@@ -13,8 +13,10 @@ import { Auth0Icon } from "./components/icons";
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     // Allows customizing built-in components, e.g. to add styling.
-    h2: ({ children }) => <h2 className="text-xl text-black font-light flex gap-1 mb-4">{children}</h2>,
-    h3: ({ children }) => <h3 className="mt-5 text-xl text-black font-medium flex gap-1 mb-4">{children}</h3>,
+    h2: ({ children }) => <h2 className="text-sm sm:text-xl text-black font-light flex gap-1 mb-4">{children}</h2>,
+    h3: ({ children }) => (
+      <h3 className="mt-5 text-sm sm:text-xl text-black font-medium flex gap-1 mb-4">{children}</h3>
+    ),
     h4: ({ children }) => <h4 className="text-sm font-medium text-black flex gap-1 mb-4 pt-5">{children}</h4>,
     a: ({ children, href }) => (
       <a href={href} target="_blank" className="border-b border-gray-400">
@@ -31,9 +33,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </ul>
     ),
-    li: ({ children }) => <li className="text-md my-3 text-gray-500 marker:text-black">{children}</li>,
+    li: ({ children }) => <li className="text-sm sm:text-md my-3 text-gray-500 marker:text-black">{children}</li>,
     strong: ({ children }) => <strong className="font-medium text-black">{children}</strong>,
-    p: ({ children }) => <p className="text-gray-500 text-base block">{children}</p>,
+    p: ({ children }) => <p className="text-gray-500 text-sm sm:text-base block">{children}</p>,
     code: ({ children }) => <CodeBlock>{children}</CodeBlock>,
     table: ({ children }) => <table className="border border-[#E2E8F0] text-gray-500 text-sm">{children}</table>,
     th: ({ children }) => <th className="border border-[#E2E8F0] px-5 text-left">{children}</th>,

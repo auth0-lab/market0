@@ -51,13 +51,13 @@ export function Content({ id }: { id: string }) {
     <ObservableProvider>
       <div className="h-full">
         <main
-          className="flex flex-row overflow-hidden w-full h-full mx-auto border-t border-gray-100 "
+          className="flex flex-col sm:flex-row overflow-y-auto sm:overflow-hidden w-full h-full mx-auto border-t border-gray-100 "
           style={{ maxHeight: "calc(100vh - 56px)" }}
         >
           <div className="flex-1 h-full w-full border-r border-[#E5EAF2] p-8">
             <Link
               href="https://auth0.ai"
-              className="hover:text-black transition-all duration-300 text-sm font-light text-slate-500 items-center gap-1 hidden sm:flex"
+              className="hover:text-black transition-all duration-300 text-sm font-light text-slate-500 items-center gap-1 flex"
             >
               <div className="rotate-180">
                 <ArrowRightIcon />
@@ -65,11 +65,11 @@ export function Content({ id }: { id: string }) {
               Back to Auth0.ai
             </Link>
 
-            <div className="bg-[#FAFAFD] mx-auto mt-16 h-[70%] p-20 rounded-3xl w-fit">
+            <div className="bg-[#FAFAFD] mx-auto mt-8 sm:mt-16 h-fit sm:h-[70%] p-6 sm:p-20 rounded-xl sm:rounded-3xl w-fit">
               <img className="object-contain h-full" src={ExplanationImageMapper[id]} alt="mock" />
             </div>
 
-            <div className="flex flex-col justify-between items-center gap-4 mt-16">
+            <div className="flex flex-col justify-between items-center gap-4 mt-8 sm:mt-16">
               <Button
                 className="py-2 px-4 m-0 text-sm font-light flex gap-2"
                 variant="default"
@@ -79,7 +79,7 @@ export function Content({ id }: { id: string }) {
               >
                 <SimplePlusIcon /> Start New Chat
               </Button>
-              <p className="ps-3 text-slate-500 font-light text-sm">
+              <p className="ps-3 text-slate-500 font-light text-sm text-center">
                 You are viewing use cases docs. Start a new chat to explore the demo.
               </p>
             </div>

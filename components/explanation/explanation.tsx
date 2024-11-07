@@ -51,7 +51,8 @@ export default function Explanation({
   return (
     <div
       className={cn(
-        "hidden sm:flex flex-col flex-no-wrap h-full p-6",
+        allowToggleExpand && "hidden",
+        "sm:flex flex-col flex-no-wrap h-full p-6",
         !allowToggleExpand && "p-0",
         expanded ? "max-w-2xl" : "w-[116px] max-w-[116px] h-[116px] absolute right-0"
       )}
@@ -59,13 +60,14 @@ export default function Explanation({
       <div
         className={cn(
           "flex-1 h-full rounded-3xl",
-          expanded ? "p-8" : "p-4 rounded-2xl",
-          allowToggleExpand ? "bg-[#FAFAFD]" : "bg-white"
+          expanded ? "p-8 pt-5 sm:p-8" : "p-4 rounded-2xl",
+          allowToggleExpand ? "bg-[#FAFAFD]" : "bg-white rounded-none",
+          "border-t sm:border-t-0"
         )}
       >
         <div
           className={cn(
-            "w-full  flex items-center justify-between gap-3 pb-5 px-0 border-[#E2E8F0] rounded-t-3xl",
+            "w-full flex items-center justify-between gap-3 pb-5 px-0 border-[#E2E8F0] rounded-t-3xl",
             allowToggleExpand ? "bg-[#FAFAFD]" : "bg-white",
             expanded ? "border-b" : "border-none pb-0"
           )}
@@ -94,13 +96,13 @@ export default function Explanation({
             </div>
           )}
 
-          {!allowToggleExpand && <span>Docs</span>}
+          {!allowToggleExpand && <span className="hidden sm:block text-sm sm:text-base">Docs</span>}
 
           {expanded && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Use case</span>
+            <div className="flex items-center gap-3 w-full sm:w-fit">
+              <div className="text-sm text-gray-600 min-w-fit">Use case</div>
               <Select value={lastExplanation?.type} onValueChange={handleOnChange}>
-                <SelectTrigger className="w-[230px] py-0 text-gray-500 text-sm">
+                <SelectTrigger className="w-full sm:w-[230px] py-0 text-gray-500 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -123,7 +125,10 @@ export default function Explanation({
 
         {expanded && (
           <div
-            className="transition-all duration-300 overflow-y-auto h-full p-5 -mx-8 px-8 flex-1"
+            className={cn(
+              "transition-all duration-300 h-full p-5 -mx-8 px-8 flex-1",
+              allowToggleExpand ? "overflow-y-auto" : "sm:overflow-y-auto"
+            )}
             style={{ height: "calc(100% - 56px)" }}
           >
             {lastExplanation?.type === ExplanationType.StocksUpcomingEvents && <Events />}

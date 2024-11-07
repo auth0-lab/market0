@@ -39,10 +39,12 @@ function MenuMobile({
   user,
   children,
   outerElements,
+  allowLogin,
 }: {
   user?: Claims;
   children?: React.ReactNode;
   outerElements?: React.ReactNode;
+  allowLogin?: boolean;
 }) {
   return (
     <div className="sm:hidden flex flex-1 items-center gap-6 justify-end">
@@ -120,7 +122,7 @@ function MenuMobile({
                 <ExternalLink />
               </Link>
             </li>
-            {!user && (
+            {!user && allowLogin && (
               <li className="border-t border-b border-[#E2E8F0]">
                 <a href="/api/auth/login" className="flex items-center justify-between py-3 px-5">
                   <div className="flex items-center gap-4">
@@ -131,7 +133,7 @@ function MenuMobile({
               </li>
             )}
           </ul>
-          {user && (
+          {user && allowLogin && (
             <>
               <DrawerFooter className="border-t border-[#E2E8F0] flex flex-col items-center justify-between gap-0 p-0">
                 <div className="w-full min-h-[57px]">
@@ -203,7 +205,7 @@ function MenuDesktop({
             <LogInIcon width="16" height="16" />
           </a>
         )}
-        {user && (
+        {user && allowLogin && (
           <>
             <UserButton user={user}>
               <DropdownMenu>
@@ -244,7 +246,7 @@ export function Navbar({
   return (
     <>
       {!isDesktop && (
-        <MenuMobile user={user} outerElements={outerElements}>
+        <MenuMobile user={user} outerElements={outerElements} allowLogin={allowLogin}>
           {children}
         </MenuMobile>
       )}
