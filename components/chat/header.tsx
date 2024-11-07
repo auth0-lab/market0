@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ArrowRightIcon, Auth0Icon, IconAuth0 } from "@/components/icons";
+import { Auth0Icon, IconAuth0 } from "@/components/icons";
 import { getSession } from "@auth0/nextjs-auth0";
 
 import { Navbar } from "./navbar";
@@ -8,9 +8,13 @@ import { Navbar } from "./navbar";
 export async function Header({
   children,
   outerElements,
+  allowLogin = true,
+  leftElements,
 }: {
   children?: React.ReactNode;
   outerElements?: React.ReactNode;
+  leftElements?: React.ReactNode;
+  allowLogin?: boolean;
 }) {
   const session = await getSession();
   const user = session?.user;
@@ -24,16 +28,10 @@ export async function Header({
             <Auth0Icon className="inline-flex sm:hidden" />
           </Link>
         </span>
-        <Link
-          href="https://auth0.ai"
-          target="_blank"
-          className="hover:text-black transition-all duration-300 text-sm font-light text-slate-500 items-center gap-1 hidden sm:flex"
-        >
-          Learn about Auth for GenAI <ArrowRightIcon />
-        </Link>
+        {leftElements}
       </div>
 
-      <Navbar user={user} outerElements={outerElements}>
+      <Navbar user={user} outerElements={outerElements} allowLogin={allowLogin}>
         {children}
       </Navbar>
     </header>

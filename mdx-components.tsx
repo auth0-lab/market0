@@ -31,7 +31,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </ul>
     ),
-    li: ({ children }) => <li className="text-md my-1 text-gray-500">{children}</li>,
+    li: ({ children }) => <li className="text-md my-3 text-gray-500 marker:text-black">{children}</li>,
     strong: ({ children }) => <strong className="font-medium text-black">{children}</strong>,
     p: ({ children }) => <p className="text-gray-500 text-base block">{children}</p>,
     code: ({ children }) => <CodeBlock>{children}</CodeBlock>,

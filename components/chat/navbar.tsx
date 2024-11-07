@@ -164,7 +164,15 @@ function MenuMobile({
   );
 }
 
-function MenuDesktop({ user, children }: { user?: Claims; children?: React.ReactNode }) {
+function MenuDesktop({
+  user,
+  children,
+  allowLogin,
+}: {
+  user?: Claims;
+  children?: React.ReactNode;
+  allowLogin?: boolean;
+}) {
   return (
     <div className="items-center justify-end gap-6 hidden sm:flex">
       <div className="flex items-center justify-end gap-4">
@@ -187,7 +195,7 @@ function MenuDesktop({ user, children }: { user?: Claims; children?: React.React
         >
           <GHIcon />
         </Link>
-        {!user && (
+        {!user && allowLogin && (
           <a
             href="/api/auth/login"
             className="min-w-12 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
@@ -220,10 +228,12 @@ export function Navbar({
   user,
   children,
   outerElements,
+  allowLogin,
 }: {
   user?: Claims;
   children?: React.ReactNode;
   outerElements?: React.ReactNode;
+  allowLogin?: boolean;
 }) {
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -239,7 +249,7 @@ export function Navbar({
         </MenuMobile>
       )}
       {isDesktop && (
-        <MenuDesktop user={user}>
+        <MenuDesktop user={user} allowLogin={allowLogin}>
           {outerElements}
           {children}
         </MenuDesktop>
