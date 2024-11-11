@@ -42,7 +42,6 @@ export default function Explanation({
   function handleOnChange(value: ExplanationType) {
     if (typeof onChange === "function") {
       onChange(value);
-      return;
     }
 
     setLastExplanation({ type: value });

@@ -42,7 +42,7 @@ export function WithToolbar({ children }: { children: React.ReactNode }) {
 
       {currentExplanation?.type && (
         <div>
-          <Button variant="secondary" onClick={handleClick} className="flex gap-2 text-sm">
+          <Button variant="secondary" onClick={handleClick} className="hidden sm:flex gap-2 text-sm">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M13.8333 0.5H2.16667C1.24619 0.5 0.5 1.24619 0.5 2.16667V13.8333C0.5 14.7538 1.24619 15.5 2.16667 15.5H13.8333C14.7538 15.5 15.5 14.7538 15.5 13.8333V2.16667C15.5 1.24619 14.7538 0.5 13.8333 0.5Z"
