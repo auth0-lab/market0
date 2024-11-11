@@ -36,13 +36,13 @@ export function Content({ id }: { id: string }) {
     //
     switch (value) {
       case ExplanationType.StocksUpcomingEvents:
-        router.push("/docs/call-apis-on-users-behalf");
+        router.replace("/docs/call-apis-on-users-behalf");
         break;
       case ExplanationType.Documents:
-        router.push("/docs/authorization-for-rag");
+        router.replace("/docs/authorization-for-rag");
         break;
       case ExplanationType.StockConditionalPurchase:
-        router.push("/docs/async-user-confirmation");
+        router.replace("/docs/async-user-confirmation");
         break;
     }
   }
