@@ -13,6 +13,35 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Auth0 AI | Market0",
   description: "Market0 is a demo app that showcases secure auth patterns for GenAI apps",
+  alternates: {
+    canonical: process.env.AUTH0_BASE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@auth0",
+    creator: "@auth0",
+    title: "Auth0 AI | Market0",
+    description: "Market0 is a demo app that showcases secure auth patterns for GenAI apps",
+    images: {
+      url: "https://cdn.auth0.com/website/labs/ai/assets/market0-card.png",
+      width: 1200,
+      height: 630,
+    },
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Auth0 AI | Market0",
+    title: "Auth0 AI | Market0",
+    description: "Market0 is a demo app that showcases secure auth patterns for GenAI apps",
+    locale: "en",
+    url: process.env.AUTH0_BASE_URL,
+    images: {
+      url: "https://cdn.auth0.com/website/labs/ai/assets/market0-card.png",
+      secureUrl: "https://cdn.auth0.com/website/labs/ai/assets/market0-card.png",
+      width: 1200,
+      height: 630,
+    },
+  },
 };
 
 export const viewport: Viewport = {
