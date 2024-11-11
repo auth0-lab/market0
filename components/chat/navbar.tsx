@@ -39,10 +39,12 @@ function MenuMobile({
   user,
   children,
   outerElements,
+  allowLogin,
 }: {
   user?: Claims;
   children?: React.ReactNode;
   outerElements?: React.ReactNode;
+  allowLogin?: boolean;
 }) {
   return (
     <div className="sm:hidden flex flex-1 items-center gap-6 justify-end">
@@ -120,7 +122,7 @@ function MenuMobile({
                 <ExternalLink />
               </Link>
             </li>
-            {!user && (
+            {!user && allowLogin && (
               <li className="border-t border-b border-[#E2E8F0]">
                 <a href="/api/auth/login" className="flex items-center justify-between py-3 px-5">
                   <div className="flex items-center gap-4">
@@ -131,7 +133,7 @@ function MenuMobile({
               </li>
             )}
           </ul>
-          {user && (
+          {user && allowLogin && (
             <>
               <DrawerFooter className="border-t border-[#E2E8F0] flex flex-col items-center justify-between gap-0 p-0">
                 <div className="w-full min-h-[57px]">
@@ -164,7 +166,15 @@ function MenuMobile({
   );
 }
 
-function MenuDesktop({ user, children }: { user?: Claims; children?: React.ReactNode }) {
+function MenuDesktop({
+  user,
+  children,
+  allowLogin,
+}: {
+  user?: Claims;
+  children?: React.ReactNode;
+  allowLogin?: boolean;
+}) {
   return (
     <div className="items-center justify-end gap-6 hidden sm:flex">
       <div className="flex items-center justify-end gap-4">
@@ -187,7 +197,7 @@ function MenuDesktop({ user, children }: { user?: Claims; children?: React.React
         >
           <GHIcon />
         </Link>
-        {!user && (
+        {!user && allowLogin && (
           <a
             href="/api/auth/login"
             className="min-w-12 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
@@ -195,7 +205,7 @@ function MenuDesktop({ user, children }: { user?: Claims; children?: React.React
             <LogInIcon width="16" height="16" />
           </a>
         )}
-        {user && (
+        {user && allowLogin && (
           <>
             <UserButton user={user}>
               <DropdownMenu>
@@ -220,10 +230,12 @@ export function Navbar({
   user,
   children,
   outerElements,
+  allowLogin,
 }: {
   user?: Claims;
   children?: React.ReactNode;
   outerElements?: React.ReactNode;
+  allowLogin?: boolean;
 }) {
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -234,12 +246,12 @@ export function Navbar({
   return (
     <>
       {!isDesktop && (
-        <MenuMobile user={user} outerElements={outerElements}>
+        <MenuMobile user={user} outerElements={outerElements} allowLogin={allowLogin}>
           {children}
         </MenuMobile>
       )}
       {isDesktop && (
-        <MenuDesktop user={user}>
+        <MenuDesktop user={user} allowLogin={allowLogin}>
           {outerElements}
           {children}
         </MenuDesktop>

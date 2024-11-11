@@ -53,7 +53,7 @@ export function UseCase({ type }: { type: string }) {
         </div>
 
         <div className="w-full sm:w-fit">
-          <img src={data.image} alt={data.title} className="min-h-24 max-h-24 min-w-[200px] object-contain" />
+          <img src={data.image} alt={data.title} className="min-h-24 max-h-24 min-w-[200px] object-contain mx-auto" />
         </div>
       </div>
     </div>

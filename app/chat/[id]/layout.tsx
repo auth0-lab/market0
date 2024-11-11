@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { AI, fetchUserById } from "@/app/actions";
@@ -8,6 +9,7 @@ import { Header } from "@/components/chat/header";
 import { ShareConversation } from "@/components/chat/share";
 import { ChatUsersPermissionsList } from "@/components/chat/share/users-permissions-list";
 import { ErrorContainer } from "@/components/fga/error";
+import { ArrowRightIcon } from "@/components/icons";
 import { conversations } from "@/lib/db";
 import { getUser, withFGA } from "@/sdk/fga";
 import { withCheckPermission } from "@/sdk/fga/next/with-check-permission";
@@ -41,7 +43,18 @@ async function RootLayout({ children, params }: RootChatParams) {
     <ChatProvider chatId={params.id} readOnly={false} hasMessages={messages.length > 0} ownerProfile={ownerProfile}>
       <AI initialAIState={messages} conversationID={params.id} readOnly={false}>
         <div className="flex flex-col h-full w-full">
-          <Header outerElements={<ConversationPicker selectedConversation={conversation} />}>
+          <Header
+            leftElements={
+              <Link
+                href="https://auth0.ai"
+                target="_blank"
+                className="hover:text-black transition-all duration-300 text-sm font-light text-slate-500 items-center gap-1 hidden sm:flex"
+              >
+                Learn about Auth for GenAI <ArrowRightIcon />
+              </Link>
+            }
+            outerElements={<ConversationPicker selectedConversation={conversation} />}
+          >
             {isOwner && (
               <ShareConversation>
                 {/**
