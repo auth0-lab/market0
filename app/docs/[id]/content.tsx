@@ -12,13 +12,13 @@ import { Button } from "@/components/ui/button";
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 60;
 
-const ExplanationUrlMapper: any = {
+const ExplanationUrlMapper: Record<string, ExplanationType> = {
   "call-apis-on-users-behalf": ExplanationType.StocksUpcomingEvents,
   "authorization-for-rag": ExplanationType.Documents,
   "async-user-confirmation": ExplanationType.StockConditionalPurchase,
 };
 
-const ExplanationImageMapper: any = {
+const ExplanationImageMapper: Record<string, string> = {
   "call-apis-on-users-behalf": "https://cdn.auth0.com/website/labs/ai/assets/use-case-2.png",
   "authorization-for-rag": "https://cdn.auth0.com/website/labs/ai/assets/use-case-3.png",
   "async-user-confirmation": "https://cdn.auth0.com/website/labs/ai/assets/use-case-4.png",
