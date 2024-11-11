@@ -24,6 +24,7 @@ import { getUser } from "@/sdk/fga";
 
 import { aiParams } from "../ai-params";
 import { FormattedText } from "../components/FormattedText";
+import getProfile from "../tools/profile/get-profile";
 
 type ContinueConversationParams = {
   /**
@@ -90,7 +91,8 @@ export async function continueConversation(input: string | ContinueConversationP
       setEmployeer,
       checkSubscription,
       setSubscription,
-      setProfileAttributes
+      setProfileAttributes,
+      getProfile
     ),
     initial: <Loader />,
     // TODO: implement a max token limit

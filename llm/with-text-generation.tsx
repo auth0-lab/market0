@@ -4,13 +4,15 @@ import { ReactNode } from "react";
 
 import { Renderer$1 } from "./ai-helpers";
 import { aiParams } from "./ai-params";
+import { FormattedText } from "./components/FormattedText";
+import * as serialization from "./components/serialization";
 import { getSystemPrompt } from "./system-prompt";
 
-type WithTextGenerationParams = Partial<Omit<Parameters<typeof generateText>[0], 'messages'>>;
+type WithTextGenerationParams = Partial<Omit<Parameters<typeof generateText>[0], "messages">>;
 
 const buildMessage = async (
   params: WithTextGenerationParams,
-  { toolName, toolCallId, toolArgs } : {toolName: string; toolCallId: string, toolArgs: any },
+  { toolName, toolCallId, toolArgs }: { toolName: string; toolCallId: string; toolArgs: any },
   toolResponse: any,
   state: ReturnType<typeof getMutableAIState>
 ) => {
@@ -46,7 +48,7 @@ const buildMessage = async (
     messages: [
       {
         role: "system",
-        content: await getSystemPrompt()
+        content: await getSystemPrompt(),
       },
       ...currentMessages,
       ...toolMessages,
@@ -58,21 +60,25 @@ const buildMessage = async (
         {
           role: "assistant",
           content: text,
-        }
+          componentName: serialization.names.get(FormattedText),
+          params: { content: text },
+        },
       ]);
-    }
+    },
   });
 
   return { textStream, text };
 };
 
-type SimpleRenderer<ToolParam> = Renderer$1<[
-  ToolParam,
-  {
-    toolName: string;
-    toolCallId: string;
-  }
-]>;
+type SimpleRenderer<ToolParam> = Renderer$1<
+  [
+    ToolParam,
+    {
+      toolName: string;
+      toolCallId: string;
+    }
+  ]
+>;
 /**
  * Wraps the generate function of a tool to generate text messages.
  *
@@ -85,32 +91,28 @@ export function withTextGeneration<ToolParam = any>(
   fn?: SimpleRenderer<ToolParam>
 ) {
   const state = getMutableAIState();
-  if (typeof params === 'function') {
+  if (typeof params === "function") {
     fn = params;
     params = {};
   }
   if (!fn) {
-    throw new Error('fn is required');
+    throw new Error("fn is required");
   }
   return async function* (
     toolParam: ToolParam,
-    { toolName, toolCallId } : {toolName: string; toolCallId: string}
+    { toolName, toolCallId }: { toolName: string; toolCallId: string }
   ): AsyncGenerator<ReactNode, ReactNode, unknown> {
-
     let itr: IteratorResult<ReactNode, ReactNode>;
     const it = fn(toolParam, { toolName, toolCallId });
     let toolReturn: any;
 
-    if (
-      it && typeof it === 'object' &&
-      (Symbol.iterator in it || Symbol.asyncIterator in it)
-    ) {
+    if (it && typeof it === "object" && (Symbol.iterator in it || Symbol.asyncIterator in it)) {
       // @ts-ignore
       while (!(itr = await it.next()).done) {
-          yield itr.value;
+        yield itr.value;
       }
       toolReturn = itr.value;
-    } else{
+    } else {
       toolReturn = await it;
     }
 
@@ -122,13 +124,13 @@ export function withTextGeneration<ToolParam = any>(
         state
       );
 
-      let currentText = '';
+      let currentText = "";
       for await (const textPart of textStream) {
         currentText += textPart;
-        yield currentText;
+        yield <FormattedText content={currentText} />;
       }
 
-      return text;
+      return <FormattedText content={await text} />;
     }
 
     return;

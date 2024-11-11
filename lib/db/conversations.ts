@@ -29,7 +29,7 @@ const summarizeConversation = async (id: string, messages?: ServerMessage[]) => 
       ...(messages as CoreMessage[]),
       {
         role: "user",
-        content: `Generate title of max 5 words summarizing the main topic(s) of this conversation. Always use tickers instead of company names.
+        content: `Generate title of max 5 words summarizing the main topic(s) of this conversation (plain text / no markdown). Always use tickers instead of company names.
       `,
       },
     ],
