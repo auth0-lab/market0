@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { WithToolbar } from "@/components/with-toolbar";
-import { useScrollAnchor } from "@/hooks/chat/use-scroll-anchor";
+import { useScrollToBottom } from "@/hooks/chat/use-scroll-to-bottom";
 import { examples } from "@/lib/examples";
 import { cn } from "@/lib/utils";
 import { ClientMessage } from "@/llm/types";
@@ -27,7 +27,7 @@ const formSchema = z.object({
 });
 
 export default function Conversation() {
-  const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
+  const [containerRef, messagesEndRef] = useScrollToBottom<HTMLDivElement>();
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
   const { readOnly, ownerProfile, setHasMessages } = useChat();
@@ -70,14 +70,11 @@ export default function Conversation() {
       className="flex flex-row flex-1 overflow-hidden w-full mx-auto border-t border-gray-100"
       style={{ maxHeight: "calc(100vh - 56px)" }}
     >
-      <div
-        ref={scrollRef}
-        className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none gap-2 sm:gap-3 w-full pt-11 transition-all duration-300"
-      >
+      <div className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none gap-2 sm:gap-3 w-full pt-11 transition-all duration-300">
         <div className="flex-1 overflow-y-auto px-0 sm:px-9">
           <div
             id="conversation"
-            ref={messagesRef}
+            ref={containerRef}
             className={cn("flex-1 min-w-0 mx-auto max-w-4xl px-3 sm:px-1", {
               hidden: conversation.length === 0,
             })}
@@ -105,7 +102,7 @@ export default function Conversation() {
               ) : null
             )}
 
-            <div ref={visibilityRef} className="w-full h-px" />
+            <div ref={messagesEndRef} className="w-full h-px" />
           </div>
 
           {conversation.length === 0 && (
