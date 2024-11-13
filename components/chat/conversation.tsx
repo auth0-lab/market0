@@ -74,7 +74,7 @@ export default function Conversation() {
         ref={scrollRef}
         className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none gap-2 sm:gap-3 w-full pt-11 transition-all duration-300"
       >
-        <div className="flex-1 overflow-y-auto px-9">
+        <div className="flex-1 overflow-y-auto px-0 sm:px-9">
           <div
             id="conversation"
             ref={messagesRef}
