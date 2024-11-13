@@ -1,13 +1,12 @@
 "use client";
 
 import { useUIState } from "ai/rsc";
-import { redirect } from "next/navigation";
 
 import { useChat } from "@/components/chat/context";
 import { CircleIcon, Market0Icon, SimplePlusIcon } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useScrollAnchor } from "@/hooks/chat/use-scroll-anchor";
+import { useScrollToBottom } from "@/hooks/chat/use-scroll-to-bottom";
 import { cn } from "@/lib/utils";
 import { ClientMessage } from "@/llm/types";
 
@@ -15,19 +14,16 @@ import { ClientMessage } from "@/llm/types";
 export const maxDuration = 60;
 
 export default function Chat() {
-  const { scrollRef, messagesRef, visibilityRef } = useScrollAnchor();
+  const [containerRef, messagesEndRef] = useScrollToBottom<HTMLDivElement>();
   const [conversation] = useUIState();
   const { readOnly, ownerProfile } = useChat();
 
   return (
     <main className="flex flex-1 overflow-hidden w-full mx-auto" style={{ maxHeight: "calc(100vh - 56px)" }}>
-      <div
-        ref={scrollRef}
-        className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none gap-2 sm:gap-3 w-full"
-      >
+      <div className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none gap-2 sm:gap-3 w-full">
         <div className="flex-1 overflow-y-auto">
           <div
-            ref={messagesRef}
+            ref={containerRef}
             className={cn("flex-1 min-w-0 max-w-4xl mx-auto w-full px-3 sm:px-1", {
               hidden: conversation.length === 0,
             })}
@@ -57,7 +53,7 @@ export default function Chat() {
               ) : null
             )}
 
-            <div ref={visibilityRef} className="w-full h-px" />
+            <div ref={messagesEndRef} className="w-full h-px" />
           </div>
           {conversation.length === 0 && (
             <div className="flex flex-col gap-60 max-w-4xl mx-auto w-full mt-auto h-full justify-between">
