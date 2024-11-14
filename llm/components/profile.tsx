@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { isGuardianEnrolled } from "@/sdk/auth0/mgmt";
 
+import { checkEnrollment as checkNewsletterSubscription } from "../actions/newsletter";
 import { ClientMessage } from "../types";
 import { PromptUserContainer } from "./prompt-user-container";
 
@@ -30,7 +31,6 @@ export const ProfileCard = ({ profile, readOnly }: ProfileCardProps) => {
   // console.dir([readOnly, profile.subscribedToNewsletter]);
   const [showAsyncAuthEnrollment, setShowAsyncAuthEnrollment] = useState(!readOnly && !profile.enrolledForAsyncAuth);
 
-  const { checkEnrollment: checkNewsletterSubscription } = useActions();
   const { continueConversation } = useActions();
   const [, setMessages] = useUIState();
 
@@ -44,7 +44,7 @@ export const ProfileCard = ({ profile, readOnly }: ProfileCardProps) => {
     checkNewsletterSubscription({ symbol: "ATKO" }).then((isEnrolled?: Boolean) => {
       setShowSubscribeNewsletter(!isEnrolled);
     });
-  }, []);
+  }, [readOnly]);
 
   const subscribeNewsletter = () => {
     setShowSubscribeNewsletter(false);
@@ -85,10 +85,12 @@ export const ProfileCard = ({ profile, readOnly }: ProfileCardProps) => {
               <p className="text-gray-500 text-sm">{profile.email}</p>
             </div>
 
-            <div className="md:pl-3 md:pr-3">
-              <h3 className="text-sm text-black font-medium">Employment Status</h3>
-              <p className="text-gray-500 text-sm">Currently employeed at {profile.employment}</p>
-            </div>
+            {profile.employment ? (
+              <div className="md:pl-3 md:pr-3">
+                <h3 className="text-sm text-black font-medium">Employment Status</h3>
+                <p className="text-gray-500 text-sm">Currently employed at {profile.employment}</p>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
