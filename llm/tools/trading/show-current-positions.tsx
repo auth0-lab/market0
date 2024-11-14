@@ -5,6 +5,7 @@ import { defineTool } from "@/llm/ai-helpers";
 import * as serialization from "@/llm/components/serialization";
 import { Positions } from "@/llm/components/stocks";
 import { getHistory } from "@/llm/utils";
+import { withTextGeneration } from "@/llm/with-text-generation";
 import { getUser } from "@/sdk/fga";
 
 /**
@@ -16,9 +17,13 @@ export default defineTool("show_current_positions", () => {
     description:
       "Show the current stock positions the user has. Use this tool when the user request to see their current stock positions or holdings.",
     parameters: z.object({}),
-    generate: async function* () {
+    generate: withTextGeneration(async function* () {
       const user = await getUser();
       const positions = await transactions.getPositions(user.sub);
+
+      if (positions.length === 0) {
+        return "You do not have any stock positions yet.";
+      }
 
       history.update({
         role: "assistant",
@@ -28,6 +33,6 @@ export default defineTool("show_current_positions", () => {
       });
 
       return <Positions positions={positions} />;
-    },
+    }),
   };
 });
