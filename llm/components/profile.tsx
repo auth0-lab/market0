@@ -88,7 +88,7 @@ export const ProfileCard = ({ profile, readOnly }: ProfileCardProps) => {
             {profile.employment ? (
               <div className="md:pl-3 md:pr-3">
                 <h3 className="text-sm text-black font-medium">Employment Status</h3>
-                <p className="text-gray-500 text-sm">Currently employeed at {profile.employment}</p>
+                <p className="text-gray-500 text-sm">Currently employed at {profile.employment}</p>
               </div>
             ) : null}
           </div>
