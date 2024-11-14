@@ -1,6 +1,6 @@
 import { CoreMessage, generateText, streamText } from "ai";
 import { getMutableAIState } from "ai/rsc";
-import { ReactNode } from "react";
+import { isValidElement, ReactNode } from "react";
 
 import { Renderer$1 } from "./ai-helpers";
 import { aiParams } from "./ai-params";
@@ -116,7 +116,8 @@ export function withTextGeneration<ToolParam = any>(
       toolReturn = await it;
     }
 
-    if (toolReturn !== undefined) {
+    //We regenerate text only when the toolReturn is something and is not a react component instance
+    if (toolReturn !== undefined && !isValidElement(toolReturn)) {
       const { text, textStream } = await buildMessage(
         params,
         { toolName, toolCallId, toolArgs: toolParam },
@@ -133,6 +134,6 @@ export function withTextGeneration<ToolParam = any>(
       return <FormattedText content={await text} />;
     }
 
-    return;
+    return toolReturn;
   };
 }
