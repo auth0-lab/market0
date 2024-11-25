@@ -16,6 +16,7 @@ This is a demo of an interactive financial assistant. It can show you stocks, te
 To setup OKTA FGA for the sample, create a client with the following permissions:
 
 - `Read/Write model, changes, and assertions`
+- `Write and delete tuples`
 - `Read and query`
 
 ### Auth0 Configuration
