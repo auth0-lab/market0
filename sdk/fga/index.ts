@@ -11,7 +11,7 @@ export const fgaClient = new OpenFgaClient({
   credentials: {
     method: CredentialsMethod.ClientCredentials,
     config: {
-      apiTokenIssuer: "fga.us.auth0.com",
+      apiTokenIssuer: process.env.FGA_API_TOKEN_ISSUER || "auth.fga.dev",
       apiAudience: `https://${host}/`,
       clientId: process.env.FGA_CLIENT_ID!,
       clientSecret: process.env.FGA_CLIENT_SECRET!,
@@ -26,12 +26,7 @@ type CheckPermissionParams = {
   context?: object;
 };
 
-async function checkPermission({
-  user,
-  object,
-  relation,
-  context,
-}: CheckPermissionParams): Promise<boolean> {
+async function checkPermission({ user, object, relation, context }: CheckPermissionParams): Promise<boolean> {
   const check: ClientCheckRequest = {
     user,
     object,
