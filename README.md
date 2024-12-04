@@ -7,13 +7,13 @@ This is a demo of an interactive financial assistant. It can show you stocks, te
 ### Prerequisites
 
 - An Auth0 Lab account, you can create one [here](https://manage.auth0lab.com/).
-- An OKTA FGA account, you can create one [here](https://dashboard.fga.dev).
+- An Okta FGA account, you can create one [here](https://dashboard.fga.dev).
 - An OpenAI account and API key create one [here](https://platform.openai.com).
 - Docker to run the postgresql container.
 
 ### FGA Configuration
 
-To setup OKTA FGA for the sample, create a client with the following permissions:
+To setup Okta FGA for the sample, create a client with the following permissions:
 
 - `Read/Write model, changes, and assertions`
 - `Write and delete tuples`

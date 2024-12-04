@@ -14,7 +14,7 @@ import { getUser } from "@/sdk/fga";
 
 /**
  * This is an example tool that uses Retrieval Augmented Generation (RAG) to generate a response.
- * As part of the retrievel process, the tool checks in OKTA FGA if the user has access to the matching document.
+ * As part of the retrievel process, the tool checks in Okta FGA if the user has access to the matching document.
  */
 export default defineTool("get_forecasts", () => {
   const history = getHistory();
