@@ -8,12 +8,12 @@ const PROVIDERS_APIS = [
   {
     name: "google",
     api: "google-calendar",
-    requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
+    requiredScopes: ["https://www.googleapis.com/auth/calendar.events"],
   },
   {
     name: "google",
     api: "google-all",
-    requiredScopes: ["https://www.googleapis.com/auth/calendar.freebusy"],
+    requiredScopes: ["https://www.googleapis.com/auth/calendar.events"],
   },
   {
     name: "box",

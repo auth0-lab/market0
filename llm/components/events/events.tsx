@@ -3,7 +3,7 @@
 import { format, parseISO } from "date-fns";
 
 import { ExplanationType } from "@/components/explanation/observable";
-import { checkAvailabilityForEvents } from "@/llm/actions/calendar-events";
+import { addEventsToCalendar } from "@/llm/actions/calendar-events";
 
 import WarningWrapper from "../warning-wrapper";
 import { CalendarEvents } from "./calendar-events";
@@ -16,15 +16,7 @@ interface Event {
   description: string;
 }
 
-export function Events({
-  events,
-  companyName,
-  readOnly = false,
-}: {
-  events: Event[];
-  companyName: string;
-  readOnly?: boolean;
-}) {
+export function Events({ events, readOnly = false }: { events: Event[]; companyName: string; readOnly?: boolean }) {
   return (
     <div className="flex flex-col gap-4" data-explanation={ExplanationType.StocksUpcomingEvents}>
       <WarningWrapper readOnly={readOnly}>
@@ -49,12 +41,7 @@ export function Events({
         </div>
       </WarningWrapper>
 
-      <CalendarEvents
-        events={events}
-        checkAvailability={checkAvailabilityForEvents}
-        companyName={companyName}
-        readOnly={readOnly}
-      />
+      <CalendarEvents events={events} addEvents={addEventsToCalendar} />
     </div>
   );
 }
