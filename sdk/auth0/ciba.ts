@@ -30,6 +30,7 @@ const startAuthenticationRequest = async (
       client_id: process.env.AUTH0_CLIENT_ID!,
       client_secret: process.env.AUTH0_CLIENT_SECRET!,
       scope,
+      binding_message: "Buy 10 Zeko shares",
       login_hint: JSON.stringify({
         format: "iss_sub",
         iss: `${process.env.AUTH0_ISSUER_BASE_URL!}/`,
