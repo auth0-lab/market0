@@ -22,8 +22,15 @@ const generateEarningsReport = async ({
   summary,
   quarter,
   previousReports,
-  situation
-}: { summary: string, name: string, symbol: string, quarter: string, previousReports: string[], situation: string }) => {
+  situation,
+}: {
+  summary: string;
+  name: string;
+  symbol: string;
+  quarter: string;
+  previousReports: string[];
+  situation: string;
+}) => {
   const { text } = await generateText({
     model: openai("gpt-4o"),
     temperature: 0.2,
@@ -36,30 +43,24 @@ const generateEarningsReport = async ({
 
       The overall situation is ${situation}.
 
-      ${previousReports.length > 0 ?
-        'The previous earnings reports were:' : ''}
+      ${previousReports.length > 0 ? "The previous earnings reports were:" : ""}
 
-      ${previousReports.join('\n')}
+      ${previousReports.join("\n")}
     `,
     prompt: `Generate the earnings report for quarter ${quarter} for ${name}.`,
   });
   return text;
-}
+};
 
 async function main() {
   const vectorStore = await getDocumentsVectorStore();
 
   // Delete all earnings documents for a fresh start
-  await documents.removeAll('earning');
+  await documents.removeAll("earning");
 
   const docs = [];
 
-  const last4Quarters = [
-    '4th Quarter 2023',
-    '1st Quarter 2024',
-    '2nd Quarter 2024',
-    '3rd Quarter 2024',
-  ];
+  const last4Quarters = ["4th Quarter 2023", "1st Quarter 2024", "2nd Quarter 2024", "3rd Quarter 2024"];
 
   for (const stock of stocks) {
     const { symbol } = stock;
@@ -70,7 +71,7 @@ async function main() {
         name: stock.longname,
         summary: stock.long_business_summary,
         quarter,
-        previousReports
+        previousReports,
       });
 
       previousReports.push(earningReport);
@@ -80,7 +81,7 @@ async function main() {
           id: generateId(),
           title: `${quarter} earnings report for ${symbol}`,
           symbol: symbol,
-          type: 'earning',
+          type: "earning",
         },
         pageContent: earningReport,
       };

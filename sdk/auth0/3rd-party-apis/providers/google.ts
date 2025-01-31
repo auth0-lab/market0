@@ -7,6 +7,8 @@ const fetchAccessToken = async (auth0IdToken: string): Promise<string> => {
   const requestedTokenTypeBase = "http://auth0.com/oauth/token-type/social-access-token/google-oauth2";
   const requested_token_type = connectionName ? `${requestedTokenTypeBase}/${connectionName}` : requestedTokenTypeBase;
 
+  console.log(auth0IdToken);
+
   const res = await fetch(`${process.env.AUTH0_ISSUER_BASE_URL}/oauth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

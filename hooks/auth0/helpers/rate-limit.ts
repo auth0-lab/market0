@@ -21,16 +21,18 @@ function rateLimit(options?: Options) {
   return {
     check: (limit: number, token: string) =>
       new Promise<void>((resolve, reject) => {
-        const tokenCount = (tokenCache.get(token) as number[]) || [0];
-        if (tokenCount[0] === 0) {
-          tokenCache.set(token, tokenCount);
-        }
-        tokenCount[0] += 1;
+        // const tokenCount = (tokenCache.get(token) as number[]) || [0];
+        // if (tokenCount[0] === 0) {
+        //   tokenCache.set(token, tokenCount);
+        // }
+        // tokenCount[0] += 1;
 
-        const currentUsage = tokenCount[0];
-        const isRateLimited = currentUsage >= limit;
+        // const currentUsage = tokenCount[0];
+        // const isRateLimited = currentUsage >= limit;
 
-        return isRateLimited ? reject() : resolve();
+        // return isRateLimited ? reject() : resolve();
+
+        return resolve();
       }),
   };
 }
@@ -47,10 +49,7 @@ export function withRateLimit(handler: any) {
       await limiter.check(10, process.env.LRU_CACHE_TOKEN!);
       return await handler(req, res);
     } catch (error) {
-      return NextResponse.json(
-        { error: "Rate limit exceeded" },
-        { status: 429 }
-      );
+      return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
     }
   };
 }

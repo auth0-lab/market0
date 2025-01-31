@@ -45,7 +45,7 @@ export const GET = handleAuth({
 
         // TODO: this approach is allowing multiple identities for the same connection, should we restrict it to 1 identity per connection?
         await linkUser(primaryUserId, {
-          provider: secondaryProvider,
+          provider: "google-oauth2",
           user_id: user.sub,
         });
 

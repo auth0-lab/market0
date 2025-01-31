@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import type { Document } from "@langchain/core/documents";
 import stocks from "@/lib/market/stocks.json";
 
-
 dotenv.config({ path: ".env.local" });
 
 import { getDocumentsVectorStore } from "../../lib/documents";
@@ -21,15 +20,15 @@ const generateForecast = async ({
   symbol,
   name,
   summary,
-  lastEarning
+  lastEarning,
 }: {
-  symbol: string,
-  name: string,
-  summary: string,
-  lastEarning: string
+  symbol: string;
+  name: string;
+  summary: string;
+  lastEarning: string;
 }) => {
-  const sentiment: 'bullish' | 'bearish' = Math.random() > 0.5 ? 'bullish' : 'bearish';
-  const marketTrend = sentiment === 'bullish' ? 'outperform' : 'underperform';
+  const sentiment: "bullish" | "bearish" = Math.random() > 0.5 ? "bullish" : "bearish";
+  const marketTrend = sentiment === "bullish" ? "outperform" : "underperform";
   const { text } = await generateText({
     model: openai("gpt-4o"),
     temperature: 0.5,
@@ -50,13 +49,13 @@ const generateForecast = async ({
     prompt: `Generate a solid and convincing forecast for ${symbol} for the next fiscal year.`,
   });
   return text;
-}
+};
 
 async function main() {
   const vectorStore = await getDocumentsVectorStore();
 
   // Delete all earnings documents for a fresh start
-  await documents.removeAll('forecast');
+  await documents.removeAll("forecast");
   const docs = [];
   for (const stock of stocks) {
     const { symbol, longname: name } = stock;
@@ -65,14 +64,14 @@ async function main() {
       symbol,
       name,
       summary: stock.long_business_summary,
-      lastEarning: lastEarnings.content
+      lastEarning: lastEarnings.content,
     });
     const document: Document = {
       metadata: {
         id: generateId(),
         title: `Forecast for ${symbol}`,
         symbol,
-        type: 'forecast',
+        type: "forecast",
       },
       pageContent: forecast,
     };
