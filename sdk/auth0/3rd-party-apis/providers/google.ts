@@ -28,11 +28,11 @@ const fetchAccessToken = async (auth0IdToken: string): Promise<string> => {
   return access_token;
 };
 
-export async function verifyAccessToken(accessToken: string, scopesToCheck: string[] | string): Promise<boolean> {
+export async function verifyAccessToken(accessToken: string | undefined, scopesToCheck: string[] | string): Promise<boolean> {
+  if (!accessToken) { return false; }
   const res = await fetch(`https://oauth2.googleapis.com/tokeninfo?access_token=${accessToken}`);
-
   if (!res.ok) {
-    console.log(`Unable to verify Google API access token: ${await res.text()}`);
+    console.log(`Unable to verify Google API access token: ${await res.text()}: ${accessToken}`);
     return false;
   }
 

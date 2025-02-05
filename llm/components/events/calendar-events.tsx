@@ -1,7 +1,7 @@
 "use client";
 
 import { format, parseISO } from "date-fns";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { GoogleCalendarIcon } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,7 @@ export function CalendarEvents({
 }) {
   const [availability, setAvailability] = useState([]);
 
-  async function onUserAuthorized() {
+  const onUserAuthorized = useCallback(async () => {
     const availability = await checkAvailability(events);
 
     setAvailability(
@@ -32,7 +32,7 @@ export function CalendarEvents({
         a.date.localeCompare(b.date);
       })
     );
-  }
+  }, [checkAvailability, events]);
 
   function getCalendarLink(event: Event) {
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${event.headline}&details=${
@@ -66,7 +66,6 @@ export function CalendarEvents({
             "This will only check free/busy availability, not get full calendar access. This showcases the Google Calendar API integration, while minimizing information disclosure necessary for a demo app.",
           action: { label: "Check" },
         }}
-        shouldCheckAuthorization={true}
         readOnly={readOnly}
         onUserAuthorized={onUserAuthorized}
       >

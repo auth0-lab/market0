@@ -1,12 +1,12 @@
 "use client";
 
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+
+import { getGoogleConnectionName, setAsyncInterval } from "@/lib/utils";
+import { PromptUserContainer } from "@/llm/components/prompt-user-container";
 
 import { getThirdPartyContext, Provider } from "../auth0/3rd-party-apis";
-import { ConnectGoogleAccount } from "./connect-google-account";
 import Loader from "./loader";
-
-type ShouldCheckAuthorizationHandler = () => boolean | Promise<boolean>;
 
 type EnsureAPIAccessProps = {
   children: ReactNode;
@@ -18,7 +18,6 @@ type EnsureAPIAccessProps = {
     action?: { label: string };
   };
   onUserAuthorized?: () => Promise<void>;
-  shouldCheckAuthorization: boolean | ShouldCheckAuthorizationHandler;
   readOnly?: boolean;
 };
 
@@ -27,58 +26,98 @@ export function EnsureAPIAccess({
   provider,
   connectWidget: { title, description, icon, action },
   onUserAuthorized,
-  shouldCheckAuthorization,
   readOnly,
 }: EnsureAPIAccessProps) {
-  const [isWorking, setIsWorking] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoginRequired, setLoginRequired] = useState(false);
+  const [loginPopup, setLoginPopup] = useState<Window | null>(null);
 
-  const init = useCallback(async () => {
-    const shouldCheck =
-      typeof shouldCheckAuthorization === "function" ? await shouldCheckAuthorization() : shouldCheckAuthorization;
+  // check if the session has the current scope
+  const getHasRequiredScopes = useCallback(async () => {
+    const ctx = await getThirdPartyContext({
+      providers: [
+        {
+          name: provider.name,
+          api: provider.api,
+          requiredScopes: provider.requiredScopes,
+        },
+      ],
+    });
+    return ctx.google.containsRequiredScopes;
+  }, [provider]);
 
-    if (shouldCheck) {
-      const ctx = await getThirdPartyContext({
-        providers: [
-          {
-            name: provider.name,
-            api: provider.api,
-            requiredScopes: provider.requiredScopes,
-          },
-        ],
-      });
-
-      if (!ctx.google.containsRequiredScopes) {
-        setLoginRequired(true);
-      } else {
-        setLoginRequired(false);
-
-        if (typeof onUserAuthorized === "function") {
-          await onUserAuthorized();
-        }
-      }
-    }
-
-    setIsWorking(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  //Trigger the component callback to load state when the user is authorized
   useEffect(() => {
-    init();
-  }, [init]);
+    if (isLoginRequired || !onUserAuthorized) {
+      return;
+    }
+    onUserAuthorized();
+  }, [isLoginRequired, onUserAuthorized]);
 
-  if (isWorking) {
+  //Poll for the login process until the popup is closed
+  // or the user is authorized
+  useEffect(() => {
+    if (!loginPopup) {
+      return;
+    }
+    const cancelPolling = setAsyncInterval(async () => {
+      const hasRequiredScopes = await getHasRequiredScopes();
+      if (!loginPopup || loginPopup.closed || hasRequiredScopes) {
+        setLoginRequired(!hasRequiredScopes);
+        cancelPolling();
+        setIsLoading(false);
+        setLoginPopup(null);
+      }
+    }, 1000);
+    return () => {
+      if (cancelPolling) {
+        cancelPolling();
+      }
+    };
+  }, [loginPopup, getHasRequiredScopes]);
+
+  //Open the login popup
+  const startLoginPopup = useCallback(async () => {
+    const params = new URLSearchParams({
+      "3rdPartyApi": provider.api,
+      linkWith: getGoogleConnectionName(),
+      returnTo: "/close",
+    });
+    const url = `/api/auth/login?${params.toString()}`;
+    const windowFeatures = "width=800,height=650,status=no,toolbar=no,menubar=no";
+    const popup = window.open(url, "_blank", windowFeatures);
+    if (!popup) {
+      console.error("Popup blocked by the browser");
+      return;
+    } else {
+      setLoginPopup(popup);
+      setIsLoading(true);
+    }
+  }, [provider]);
+
+  //Load the initial state
+  useEffect(() => {
+    (async () => {
+      const hasRequiredScopes = await getHasRequiredScopes();
+      setLoginRequired(!hasRequiredScopes);
+      setIsLoading(false);
+    })();
+  }, [getHasRequiredScopes]);
+
+  if (isLoading) {
     return <Loader />;
   }
 
   if (isLoginRequired) {
     return (
-      <ConnectGoogleAccount
+      <PromptUserContainer
         title={title}
         description={description}
         icon={icon}
-        action={action}
-        api={provider.api || provider.name}
+        action={{
+          label: action?.label ?? "Connect",
+          onClick: startLoginPopup,
+        }}
         readOnly={readOnly}
       />
     );
