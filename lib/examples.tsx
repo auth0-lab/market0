@@ -23,8 +23,8 @@ export const examples = [
   },
   {
     id: generateId(),
-    title: "Buy ZEKO if P/E ratio is above 15",
-    message: "Buy 10 ZEKO when P/E ratio is above 15",
+    title: "Buy ZEKO if P/E ratio is < 15",
+    message: "Buy 10 ZEKO when P/E ratio is < 15",
   },
 ];
 
@@ -56,7 +56,7 @@ export const menuItems = [
   },
   {
     id: generateId(),
-    message: "Buy 10 ZEKO when P/E ratio is above 15",
+    message: "Buy 10 ZEKO when P/E ratio is < 15",
     icon: <CartIcon />,
   },
 ];
