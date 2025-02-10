@@ -15,15 +15,21 @@ const MAX_CHAT_READERS = process.env.MAX_CHAT_READERS ? parseInt(process.env.MAX
  * @param wrapped - Next.js Action to wrap
  * @returns - Wrapped Next.js Action
  */
-const withCheckChatOwnership = <R>(wrapped: (id: string, ...rest: any) => Promise<R>) => withCheckPermission({
-  checker: async (chatId: string) => {
-    return withFGA({
-      relation: "owner",
-      object: `chat:${chatId}`,
-    });
-  },
-  onUnauthorized: () => { throw new Error("You are not authorized.") },
-}, wrapped);
+const withCheckChatOwnership = <R>(wrapped: (id: string, ...rest: any) => Promise<R>) =>
+  withCheckPermission(
+    {
+      checker: async (chatId: string) => {
+        return withFGA({
+          relation: "owner",
+          object: `chat:${chatId}`,
+        });
+      },
+      onUnauthorized: () => {
+        throw new Error("You are not authorized.");
+      },
+    },
+    wrapped
+  );
 
 /**
  * This function returns the list of users that have access to the chat.
@@ -39,39 +45,38 @@ export const getChatUsers = withCheckChatOwnership(
  * This function adds users to the chat.
  * It can only be called by the owner.
  */
-export const addChatReader = withCheckChatOwnership(
-  async (chatId: string, emails: string[]) => {
-    const readers = await chatUsers.list(chatId, { access: "can_view" });
-    const filteredEmails = emails.filter((email) => !readers.some((reader) => reader.email === email.toLowerCase()));
+export const addChatReader = withCheckChatOwnership(async (chatId: string, emails: string[]) => {
+  const readers = await chatUsers.list(chatId, { access: "can_view" });
+  const filteredEmails = emails.filter((email) => !readers.some((reader) => reader.email === email.toLowerCase()));
 
-    if (readers.length + filteredEmails.length > MAX_CHAT_READERS) {
-      throw new Error(
-        `You have reached the limit (${MAX_CHAT_READERS}) on the number of users that can access to this chat.`
-      );
-    }
-
-    return await Promise.all(
-      filteredEmails.map((email) => chatUsers.add({ chat_id: chatId, email, access: "can_view" }))
+  if (readers.length + filteredEmails.length > MAX_CHAT_READERS) {
+    throw new Error(
+      `You have reached the limit (${MAX_CHAT_READERS}) on the number of users that can access to this chat.`
     );
   }
-);
+
+  return await Promise.all(
+    filteredEmails.map((email: any) => chatUsers.add({ chat_id: chatId, email, access: "can_view" }))
+  );
+});
 
 /**
  * This function removes a user from the chat.
  * It can only be called by the owner.
  */
-export const removeChatReader = withCheckChatOwnership(async (id: string) => {
+export const removeChatReader = withCheckChatOwnership(async (chat_id: string, id: string) => {
   const chatUser = await chatUsers.get(id);
+
   if (!chatUser) {
     return;
   }
-  await chatUsers.remove(id);
+  await chatUsers.remove(chatUser.id);
   if (chatUser.user_id) {
     await fgaClient.deleteTuples([
       {
         user: `user:${chatUser.user_id}`,
         relation: "can_view",
-        object: `chat:${chatUser.chat_id}`,
+        object: `chat:${chat_id}`,
       },
     ]);
   }
@@ -103,11 +108,7 @@ export const setCurrentUserAsReader = async (chatId: string) => {
       object: `chat:${chatId}`,
     },
   ]);
-  await chatUsers.updateByUserEmail(
-    chatId,
-    user.email,
-    { user_id: user.sub, status: "provisioned" }
-  );
+  await chatUsers.updateByUserEmail(chatId, user.email, { user_id: user.sub, status: "provisioned" });
 };
 
 /**
@@ -115,7 +116,7 @@ export const setCurrentUserAsReader = async (chatId: string) => {
  */
 export const changeChatVisibility = withCheckChatOwnership(async (chatId: string, isPublic: boolean) => {
   try {
-    await fgaClient[isPublic ? 'writeTuples' : 'deleteTuples']([
+    await fgaClient[isPublic ? "writeTuples" : "deleteTuples"]([
       {
         user: `user:*`,
         relation: "can_view",
@@ -146,7 +147,9 @@ export const isChatPublic = withCheckChatOwnership(async (chatId: string) => {
  */
 export const isChatOwner = async function (chatId: string) {
   const user = await getUser();
-  if (!user) { return false; }
+  if (!user) {
+    return false;
+  }
   const { allowed } = await fgaClient.check({
     user: `user:${user.sub}`,
     relation: "owner",

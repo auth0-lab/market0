@@ -21,12 +21,12 @@ export interface UserPermissionActionsProps {
 }
 
 export function UserPermissionActions({ user }: UserPermissionActionsProps) {
-  const { id } = user;
+  const { chat_id, id } = user;
   const role = user.access === "can_view" ? "viewer" : "owner";
 
   async function handleOnRemove() {
     try {
-      await removeChatReader(id);
+      await removeChatReader(chat_id, id);
     } catch (err) {
       toast({
         title: "Error!",
