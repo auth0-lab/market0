@@ -74,7 +74,7 @@ export const removeChatReader = withCheckChatOwnership(async (chat_id: string, i
       {
         user: `user:${chatUser.user_id}`,
         relation: "can_view",
-        object: `chat:${chatUser.chat_id}`,
+        object: `chat:${chat_id}`,
       },
     ]);
   }
