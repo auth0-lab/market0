@@ -70,7 +70,9 @@ export const removeChatReader = withCheckChatOwnership(async (chat_id: string, i
   if (!chatUser) {
     return;
   }
+
   await chatUsers.remove(chatUser.id);
+
   if (chatUser.user_id) {
     await fgaClient.deleteTuples([
       {

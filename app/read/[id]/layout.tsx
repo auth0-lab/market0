@@ -52,7 +52,6 @@ export default withCheckPermission(
     checker: async ({ params }: RootChatParams) => {
       const chatId = params.id;
       const allowed = await withFGA({
-        user: "user:*",
         object: `chat:${chatId}`,
         relation: "can_view",
       });
