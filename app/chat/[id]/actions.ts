@@ -60,12 +60,13 @@ export const addChatReader = withCheckChatOwnership(
  * This function removes a user from the chat.
  * It can only be called by the owner.
  */
-export const removeChatReader = withCheckChatOwnership(async (id: string) => {
+export const removeChatReader = withCheckChatOwnership(async (chat_id: string, id: string) => {
   const chatUser = await chatUsers.get(id);
+  console.log("CHAT USER", chatUser);
   if (!chatUser) {
     return;
   }
-  await chatUsers.remove(id);
+  await chatUsers.remove(chatUser.id);
   if (chatUser.user_id) {
     await fgaClient.deleteTuples([
       {
