@@ -80,7 +80,11 @@ export const list = async (chat_id: string, { access }: { access?: ChatUserAcces
   `;
 
   if (access) {
-    query = sql`${query} AND access = ${access}`;
+    query = sql`
+      SELECT * FROM chat_users
+      WHERE chat_id = ${chat_id}
+      AND access = ${access}
+    `;
   }
 
   const result = await query;
