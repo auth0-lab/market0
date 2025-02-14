@@ -50,7 +50,7 @@ async function RootLayout({ children, params }: RootChatParams) {
                 target="_blank"
                 className="hover:text-black transition-all duration-300 text-sm font-light text-slate-500 items-center gap-1 hidden sm:flex"
               >
-                Learn about Auth for GenAI <ArrowRightIcon />
+                Docs <ArrowRightIcon />
               </Link>
             }
             outerElements={<ConversationPicker selectedConversation={conversation} />}
