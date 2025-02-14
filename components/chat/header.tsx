@@ -23,7 +23,7 @@ export async function Header({
     <header className="z-50 flex items-center justify-between w-full px-5 sm:px-6 py-3 h-14 shrink-0 bg-background gap-6 sm:gap-0">
       <div className="flex items-center gap-6">
         <span className="inline-flex items-center home-links whitespace-nowrap">
-          <Link href="https://auth0.com" rel="noopener" target="_blank">
+          <Link href="https://auth0.ai" rel="noopener" target="_blank">
             <IconAuth0 className="hidden sm:inline-flex" />
             <Auth0Icon className="inline-flex sm:hidden" />
           </Link>

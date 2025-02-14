@@ -57,7 +57,7 @@ function MenuMobile({
           <DrawerHeader>
             <DrawerTitle className="px-1">
               <div className="flex justify-between items-center">
-                <Link href="https://auth0.com" rel="noopener" target="_blank">
+                <Link href="https://auth0.ai" rel="noopener" target="_blank">
                   <IconAuth0 className="inline-flex" />
                 </Link>
 
@@ -94,34 +94,6 @@ function MenuMobile({
                 )
             )}
 
-            <li className="border-t border-[#E2E8F0]">
-              <Link
-                href="https://github.com/auth0-lab/market0"
-                rel="noopener noreferrer"
-                target="_blank"
-                className="flex items-center justify-between py-3 px-5"
-              >
-                <div className="flex items-center gap-4">
-                  <GitHubMenuIcon />
-                  <span className="text-sm text-gray-900">GitHub</span>
-                </div>
-                <ExternalLink />
-              </Link>
-            </li>
-            <li className="border-t border-b border-[#E2E8F0]">
-              <Link
-                href="https://discord.gg/QGHxwDsbQQ"
-                rel="noopener noreferrer"
-                target="_blank"
-                className="flex items-center justify-between py-3 px-5"
-              >
-                <div className="flex items-center gap-4">
-                  <DiscordMenuIcon />
-                  <span className="text-sm text-gray-900">Discord</span>
-                </div>
-                <ExternalLink />
-              </Link>
-            </li>
             {!user && allowLogin && (
               <li className="border-t border-b border-[#E2E8F0]">
                 <a href="/api/auth/login" className="flex items-center justify-between py-3 px-5">
@@ -179,24 +151,6 @@ function MenuDesktop({
     <div className="items-center justify-end gap-6 hidden sm:flex">
       <div className="flex items-center justify-end gap-4">
         {children}
-
-        <Link
-          href="https://discord.gg/QGHxwDsbQQ"
-          rel="noopener noreferrer"
-          target="_blank"
-          className="min-w-12 min-h-9 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
-        >
-          <DiscordIcon />
-        </Link>
-
-        <Link
-          href="https://github.com/auth0-lab/market0"
-          rel="noopener noreferrer"
-          target="_blank"
-          className="min-w-12 min-h-9 border border-gray-300 bg-white text-slate-800 flex gap-2 items-center justify-center px-3 py-2 rounded-md shadow-none hover:ring-2 ring-[#CFD1D4] text-sm hover:text-black hover:border-[transparent] transition-all duration-300"
-        >
-          <GHIcon />
-        </Link>
         {!user && allowLogin && (
           <a
             href="/api/auth/login"

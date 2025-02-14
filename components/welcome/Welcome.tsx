@@ -37,7 +37,7 @@ const WelcomeScreen = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <div className="fixed top-8 left-8 hidden md:block">
-        <Link href="https://auth0.com" rel="noopener" target="_blank">
+        <Link href="https://auth0.ai" rel="noopener" target="_blank">
           <IconAuth0 className="inline-flex" />
         </Link>
       </div>
