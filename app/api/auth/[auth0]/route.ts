@@ -44,10 +44,22 @@ export const GET = handleAuth({
         console.log(`linking ${primaryUserId} with ${user.sub}`);
 
         // TODO: this approach is allowing multiple identities for the same connection, should we restrict it to 1 identity per connection?
-        await linkUser(primaryUserId, {
+        let identityToAdd = {
           provider: secondaryProvider,
           user_id: user.sub,
-        });
+        };
+
+        // adding this because we have multiple google connections
+        if (
+          identityToAdd.provider === process.env.NEXT_PUBLIC_GOOGLE_CONNECTION_NAME &&
+          process.env.GOOGLE_CONNECTION_ID
+        ) {
+          identityToAdd.provider = "google-oauth2";
+          // @ts-ignore
+          identityToAdd.connection_id = process.env.GOOGLE_CONNECTION_ID;
+        }
+
+        await linkUser(primaryUserId, identityToAdd);
 
         // force a silent login to get a fresh session for the updated user profile
         state.returnTo = `/api/auth/login?returnTo=${encodeURI(state.returnTo)}`;
