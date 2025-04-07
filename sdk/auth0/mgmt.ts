@@ -42,6 +42,7 @@ export async function linkUser(
   identityToAdd: {
     provider: PostIdentitiesRequestProviderEnum;
     user_id: string;
+    connection_id?: string;
   }
 ) {
   await auth0.users.link({ id: userId }, identityToAdd);
