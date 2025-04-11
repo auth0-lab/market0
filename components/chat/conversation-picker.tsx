@@ -82,7 +82,7 @@ export default function ConversationPicker({ selectedConversation: initialConver
     if (isEqual(cs, conversations)) {
       return;
     }
-    setConversations(cs);
+    setConversations(cs ?? []);
   }, [conversations, currentConversation]);
 
   React.useEffect(() => {
