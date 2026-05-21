@@ -58,7 +58,7 @@
     "lodash-es": "^4.17.21",
     "lru-cache": "^11.0.1",
     "lucide-react": "^0.441.0",
-    "next": "^14.2.12",
+    "next": "^16.2.6",
     "next-themes": "^0.3.0",
     "pg": "^8.12.0",
     "postgres": "^3.4.4",
