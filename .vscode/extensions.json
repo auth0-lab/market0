@@ -1,7 +1,5 @@
 {
   "recommendations": [
-    "mikerhyssmith.ts-barrelr",
-    "mike-co.import-sorter",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
     "Tobermory.es6-string-html"
