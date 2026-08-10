@@ -1,0 +1,49 @@
+name: Sanity Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+
+jobs:
+  check:
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        os:
+          [ubuntu-24.04]
+          # windows-latest,
+          # macos-latest,
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v3
+
+      - run: npm install
+      - run: npm run lint
+
+      # Just for the scanner, the project is not released in npm
+      - run: npm pack
+      - name: Run RL Scanner
+        uses: auth0/devsecops-tooling/.github/actions/rl-scan@main
+        with:
+          artifact-name: "auth0-cloudflare-agent-starter-1.0.0.tgz"
+          artifact-path: "${{ github.workspace }}/auth0-cloudflare-agent-starter-1.0.0.tgz"
+          version: ${{ github.sha }}
+          RLSECURE_LICENSE: ${{ secrets.RLSECURE_LICENSE }}
+          RLSECURE_SITE_KEY: ${{ secrets.RLSECURE_SITE_KEY }}
+          SIGNAL_HANDLER_TOKEN: ${{ secrets.SIGNAL_HANDLER_TOKEN }}
+          SIGNAL_HANDLER_DOMAIN: ${{ secrets.SIGNAL_HANDLER_DOMAIN }}
+          PRODSEC_TOOLS_ARN: ${{ secrets.PRODSEC_TOOLS_ARN }}
+          PRODSEC_TOOLS_USER: ${{ secrets.PRODSEC_TOOLS_USER }}
+          PRODSEC_TOOLS_TOKEN: ${{ secrets.PRODSEC_TOOLS_TOKEN }}
+          PRODSEC_PYTHON_TOOLS_REPO: ${{ secrets.PRODSEC_PYTHON_TOOLS_REPO }}
